@@ -1,0 +1,55 @@
+{
+  "experiment": "S1",
+  "label": "Sensibilidad sobre X0",
+  "question": "P1-P8 (comprobación)",
+  "variants": [
+    {
+      "name": "S1_N_-10",
+      "overrides": {
+        "n_spectators": 43898
+      }
+    },
+    {
+      "name": "S1_N_+10",
+      "overrides": {
+        "n_spectators": 53653
+      }
+    },
+    {
+      "name": "S1_vel_-15",
+      "overrides": {
+        "speed_mps": {
+          "mean": 1.2325
+        }
+      }
+    },
+    {
+      "name": "S1_vel_+15",
+      "overrides": {
+        "speed_mps": {
+          "mean": 1.6675
+        }
+      }
+    },
+    {
+      "name": "S1_serv_-25",
+      "overrides": {
+        "service_time_s": {
+          "low": 1.5,
+          "mode": 3,
+          "high": 4.5
+        }
+      }
+    },
+    {
+      "name": "S1_serv_+25",
+      "overrides": {
+        "service_time_s": {
+          "low": 2.5,
+          "mode": 5,
+          "high": 7.5
+        }
+      }
+    }
+  ]
+}

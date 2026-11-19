@@ -1,0 +1,14 @@
+{
+  "experiment": "X6",
+  "label": "Cierre de puerta con redirección",
+  "question": "P7",
+  "overrides": {
+    "name": "X6_con_redireccion",
+    "redirect_on_gate_closure": true,
+    "incidents": {
+      "gate_closure": {
+        "enabled": true
+      }
+    }
+  }
+}

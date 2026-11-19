@@ -1,0 +1,209 @@
+{
+  "name": "X0",
+  "n_spectators": 48775,
+  "zones": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "zone_share": [
+    0.25,
+    0.25,
+    0.25,
+    0.25
+  ],
+  "gates_per_zone": 6,
+  "turnstiles_per_gate": 3,
+  "blocks_per_zone": 10,
+  "lower_tier_blocks": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "vomitory_capacity": 8,
+  "exits_per_zone": 6,
+  "exit_width_m": 4.0,
+  "exit_rate_per_m_min": 66,
+  "stewards_per_zone": 6,
+  "t_open_min": -90,
+  "t_start_min": 0,
+  "t_end_min": 105,
+  "max_sim_hours": 6,
+  "queue_discipline": "fifo",
+  "priority_groups": [],
+  "exit_policy": "simultaneous",
+  "exit_stagger_min": 3,
+  "redirect_on_gate_closure": true,
+  "arrival_profile": "base",
+  "arrival_profiles": {
+    "base": [
+      [
+        -90,
+        -75,
+        0.04
+      ],
+      [
+        -75,
+        -60,
+        0.06
+      ],
+      [
+        -60,
+        -45,
+        0.09
+      ],
+      [
+        -45,
+        -30,
+        0.16
+      ],
+      [
+        -30,
+        -15,
+        0.28
+      ],
+      [
+        -15,
+        0,
+        0.28
+      ],
+      [
+        0,
+        15,
+        0.07
+      ],
+      [
+        15,
+        30,
+        0.02
+      ]
+    ],
+    "anticipated": [
+      [
+        -90,
+        -75,
+        0.04
+      ],
+      [
+        -75,
+        -60,
+        0.06
+      ],
+      [
+        -60,
+        -45,
+        0.174
+      ],
+      [
+        -45,
+        -30,
+        0.244
+      ],
+      [
+        -30,
+        -15,
+        0.196
+      ],
+      [
+        -15,
+        0,
+        0.196
+      ],
+      [
+        0,
+        15,
+        0.07
+      ],
+      [
+        15,
+        30,
+        0.02
+      ]
+    ]
+  },
+  "groups": {
+    "standard": {
+      "share": 0.88,
+      "speed_factor": 1.0
+    },
+    "elderly": {
+      "share": 0.1,
+      "speed_factor": 0.8
+    },
+    "reduced_mobility": {
+      "share": 0.02,
+      "speed_factor": 0.5
+    }
+  },
+  "service_time_s": {
+    "low": 2,
+    "mode": 4,
+    "high": 6
+  },
+  "speed_mps": {
+    "mean": 1.45,
+    "sd": 0.23,
+    "min": 0.6,
+    "max": 2.2
+  },
+  "distance_m": {
+    "low": 60,
+    "high": 180
+  },
+  "vomitory_pass_s": {
+    "low": 5,
+    "mode": 10,
+    "high": 20
+  },
+  "incidents": {
+    "seat_conflict": {
+      "enabled": true,
+      "prob": 0.005,
+      "resolution_min": {
+        "low": 1,
+        "mode": 3,
+        "high": 10
+      }
+    },
+    "read_failure": {
+      "enabled": true,
+      "prob": 0.03,
+      "extra_s": {
+        "low": 5,
+        "high": 15
+      }
+    },
+    "turnstile_failure": {
+      "enabled": true,
+      "mtbf_min": 240,
+      "repair_min": {
+        "low": 3,
+        "high": 10
+      }
+    },
+    "gate_closure": {
+      "enabled": false,
+      "zone": "A",
+      "gate": 1,
+      "start_min": 20,
+      "duration_min": 10
+    }
+  },
+  "emergency": {
+    "enabled": false,
+    "alarm_min": 40,
+    "exit_width_factor": 1.3,
+    "speed_factor": 1.2,
+    "reaction_s": {
+      "low": 30,
+      "mode": 60,
+      "high": 120
+    },
+    "blocked_exit": false,
+    "blocked_exit_zone": "A",
+    "reference_min": 8
+  }
+}

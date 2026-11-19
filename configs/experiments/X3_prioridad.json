@@ -1,0 +1,13 @@
+{
+  "experiment": "X3",
+  "label": "Prioridad no expulsiva mayores y PMR",
+  "question": "P4",
+  "overrides": {
+    "name": "X3_prioridad",
+    "queue_discipline": "priority",
+    "priority_groups": [
+      "elderly",
+      "reduced_mobility"
+    ]
+  }
+}

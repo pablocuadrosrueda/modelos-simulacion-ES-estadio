@@ -1,0 +1,9 @@
+{
+  "experiment": "X1",
+  "label": "4 tornos por puerta",
+  "question": "P2",
+  "overrides": {
+    "name": "X1_4tornos",
+    "turnstiles_per_gate": 4
+  }
+}

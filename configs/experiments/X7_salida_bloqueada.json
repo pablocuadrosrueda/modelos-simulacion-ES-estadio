@@ -1,0 +1,12 @@
+{
+  "experiment": "X7",
+  "label": "Evacuación con una salida bloqueada (zona A)",
+  "question": "P8",
+  "overrides": {
+    "name": "X7_salida_bloqueada",
+    "emergency": {
+      "enabled": true,
+      "blocked_exit": true
+    }
+  }
+}

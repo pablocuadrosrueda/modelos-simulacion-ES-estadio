@@ -1,0 +1,12 @@
+{
+  "experiment": "X7",
+  "label": "Evacuación con todas las salidas",
+  "question": "P8",
+  "overrides": {
+    "name": "X7_todas_salidas",
+    "emergency": {
+      "enabled": true,
+      "blocked_exit": false
+    }
+  }
+}

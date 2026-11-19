@@ -1,0 +1,14 @@
+{
+  "experiment": "X5",
+  "label": "Conflictos 1% con 6 acomodadores",
+  "question": "P6",
+  "overrides": {
+    "name": "X5_6acomodadores",
+    "stewards_per_zone": 6,
+    "incidents": {
+      "seat_conflict": {
+        "prob": 0.01
+      }
+    }
+  }
+}

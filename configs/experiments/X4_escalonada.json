@@ -1,0 +1,10 @@
+{
+  "experiment": "X4",
+  "label": "Salida escalonada (superior +3 min)",
+  "question": "P5",
+  "overrides": {
+    "name": "X4_escalonada",
+    "exit_policy": "staggered",
+    "exit_stagger_min": 3
+  }
+}

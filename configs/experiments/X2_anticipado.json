@@ -1,0 +1,9 @@
+{
+  "experiment": "X2",
+  "label": "Perfil de llegada anticipada",
+  "question": "P3",
+  "overrides": {
+    "name": "X2_anticipado",
+    "arrival_profile": "anticipated"
+  }
+}

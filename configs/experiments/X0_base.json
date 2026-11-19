@@ -1,0 +1,8 @@
+{
+  "experiment": "X0",
+  "label": "Escenario base",
+  "question": "P1",
+  "overrides": {
+    "name": "X0_base"
+  }
+}
