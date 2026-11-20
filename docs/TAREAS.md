@@ -1,9 +1,10 @@
 # Tablero de tareas
 
 Estados: `pendiente` · `en curso` · `en revisión` · `hecho` · `bloqueada`.
-Responsables: **A** (config, rng, entities, arrivals, entry), **B** (stadium,
-exit, emergency, incidents I1/I4), **C** (metrics, runner, analysis,
-experiments, tests). Rama: `feat/<persona>-<ID>-<slug>`.
+Responsables: **A** = Pablo Cuadros (config, rng, entities, arrivals, entry),
+**B** = Pablo Pérez (stadium, exit, emergency, incidents I1/I4), **C** = Chema
+(metrics, runner, analysis, experiments, tests). Rama:
+`feat/<persona>-<ID>-<slug>` con persona = `cuadros`, `perez` o `chema`.
 
 Al empezar una tarea, pásala a `en curso` en tu rama; al abrir el PR, a
 `en revisión`; al fusionarse, a `hecho`. Los stubs del código citan el ID de su
@@ -82,3 +83,59 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | pendiente | T5.3 |
 | T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | pendiente | T5.3 |
 | T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | pendiente | T6.1, T6.2 |
+
+## Prompts de arranque de Inc1
+
+Cada persona abre su sesión de agente en su clon y pega el prompt de su rol.
+El contexto está en el repo; los prompts solo fijan el alcance y los criterios.
+
+### A · Pablo Cuadros (Claude Code) — T1.1 y T1.2
+
+```
+Eres el rol A. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Tu trabajo en Inc1 son las tareas T1.1 y T1.2 de docs/TAREAS.md, en la rama
+feat/cuadros-T1.1-arrivals y después feat/cuadros-T1.2-entry.
+- T1.1 (arrivals.py): sample_arrival_times, sample_truncated_normal y
+  generate_spectators, usando solo RngStreams. Tests: el perfil por franjas se
+  reproduce (chi-cuadrado o tolerancia), los repartos por zona y grupo cuadran, y
+  velocidades y distancias respetan sus rangos.
+- T1.2 (entry.py): build_entry_resources, priority_of (solo FIFO) y entry_process
+  sin incidencias, usando spectator.gate. Tests: orden FIFO y capacidad de tornos.
+No toques módulos de B ni de C salvo bugs triviales. Cada PR actualiza ESTADO.md y
+TAREAS.md. Antes del PR: make test y make lint limpios.
+```
+
+### B · Pablo Pérez (Claude Code) — T1.3
+
+```
+Eres el rol B. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Tu trabajo en Inc1 es la tarea T1.3 de docs/TAREAS.md, en la rama
+feat/perez-T1.3-stadium: build_stadium_resources, seating_process sin
+conflictos e is_late en stadium.py. Respeta el contrato de SimContext y escribe en
+el Spectator t_vomitory y t_seated. Tests: el vomitorio respeta su capacidad de 8
+plazas, t_seated >= t_vomitory >= t_fin_control, e is_late solo marca a quien llega
+con t < 0 y se sienta después de t = 0.
+Mientras A y C avanzan, prepara los stubs de exit.py y emergency.py para Inc3 e
+Inc4 sin implementarlos. Cada PR actualiza ESTADO.md y TAREAS.md; make test y
+make lint limpios antes del PR.
+```
+
+### C · Chema (Codex) — T1.5, T1.4, T1.6 y T1.7
+
+```
+Eres el rol C. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Tu trabajo en Inc1, por este orden (docs/TAREAS.md):
+1. T1.5 (metrics.py): queue_length_max y los KPIs de entrada; el resto, NaN.
+   Aplica D12 para turnstile_util. Pruébalo con DataFrames sintéticos.
+2. T1.4 (runner.py): run_replica (E0, un proceso por espectador entry→seating, E9
+   al sentarse el último), con las columnas de SPECTATOR_COLUMNS y df.attrs.
+   Crea configs/dev/i1_mini.json (solo la zona A, sin incidencias, N reducido).
+   Depende de T1.2 y T1.3: usa stubs o espera a que lleguen a main.
+3. T1.6: experiments.run_experiment y la CLI escriben results/<exp>_kpis.csv.
+4. T1.7: quita el xfail de test_orden_temporal, conservación limitada a la entrada
+   y un caso límite (muchos tornos → espera ≈ 0).
+Rama feat/chema-T1.x-slug por tarea. Cada PR actualiza ESTADO.md y TAREAS.md;
+make test y make lint limpios antes del PR.
+```
+
+Hito de Inc1: `make run EXP=<mini> REPS=3` escribe el CSV de KPIs.

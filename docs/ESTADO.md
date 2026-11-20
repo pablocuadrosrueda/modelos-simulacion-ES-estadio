@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-20 · `main` contiene Inc0._
+_Última actualización: 2026-11-20 · `main` contiene Inc0; arranca Inc1._
 
 ## Hecho
 
@@ -35,16 +35,15 @@ incidencias, CSV y KPIs de espera. En paralelo:
 
 | Rol | Módulos | Integrante | Sesión de agente |
 |---|---|---|---|
-| A | config, rng, entities, arrivals, entry | _por asignar_ | _por asignar_ |
-| B | stadium, exit, emergency, incidents (I1, I4) | _por asignar_ | _por asignar_ |
-| C | metrics, runner, analysis, experiments, tests | _por asignar_ | _por asignar_ |
+| A | config, rng, entities, arrivals, entry | Pablo Cuadros | Claude Code |
+| B | stadium, exit, emergency, incidents (I1, I4) | Pablo Pérez | Claude Code |
+| C | metrics, runner, analysis, experiments, tests | Chema | Codex |
 
 ## Dudas abiertas
 
-1. **Asignación de personas a roles A/B/C** y de cada sesión de agente (2 Claude
-   Code + 1 Codex). Rellenar la tabla de arriba.
+Ninguna pendiente.
 
-Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): I2/I3 en `entry.py` (D8),
+Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles A/B/C (arriba), I2/I3 en `entry.py` (D8),
 utilización de tornos (D12), puerta cerrada sin redirección (D13), evacuación de
 quien está en tránsito (D14, hipótesis) y medición temprana de rendimiento (D15).
 Probado con Python 3.10.12: 68 tests pasan, 5 xfail esperados, ruff limpio.
