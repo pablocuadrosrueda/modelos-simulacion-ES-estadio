@@ -137,8 +137,8 @@ Un KPI que no aplica al escenario vale `NaN`.
 | `evac_pct_ref` | % | % de evacuables con `t_safe - alarm_min <= reference_min` | P8 |
 | `n_abandoned` | pers. | `abandoned == True` | P8 |
 
-> La definición exacta de `turnstile_util` (denominador) y de `conflict_delay_s`
-> queda abierta a C en T1.5 / T2.8; si se cambia, actualizar esta tabla.
+> `turnstile_util` y `conflict_delay_s` quedan fijadas en `docs/DECISIONES.md`
+> (D12); si se cambia alguna, actualizar esta tabla y esa decisión.
 
 ## Firmas de los procesos (resumen)
 

@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-19 · rama `feat/i0-esqueleto`._
+_Última actualización: 2026-11-20 · `main` contiene Inc0._
 
 ## Hecho
 
@@ -42,16 +42,9 @@ incidencias, CSV y KPIs de espera. En paralelo:
 ## Dudas abiertas
 
 1. **Asignación de personas a roles A/B/C** y de cada sesión de agente (2 Claude
-   Code + 1 Codex).
-2. **I2 e I3** (fallo de lectura y avería de torno) se han asignado a A dentro de
-   `entry.py`, porque el reparto solo da I1 e I4 a B. Confirmar.
-3. **Definición fina de KPIs** que la memoria deja abierta: denominador de la
-   utilización de tornos (desde la apertura hasta el último control) y cálculo de
-   `conflict_delay_s`. Propuesta en `docs/CONTRATOS.md`; decide C en T1.5/T2.8.
-4. **Espectadores que llegan con la puerta cerrada y sin redirección**: esperan a
-   la reapertura fuera de la cola o dentro de ella. La memoria dice «espera a que
-   reabra»; se propone que mantengan su orden de llegada.
-5. **Evacuación y quien está en tránsito o en el vomitorio** al sonar la alarma
-   (no solo los sentados): la memoria solo detalla sentados y colas exteriores.
-   Propuesta: todo el que ha pasado el torno evacua desde su posición.
-6. **Rendimiento**: 48.775 procesos SimPy × ≈ 400 ejecuciones; medir en T5.4.
+   Code + 1 Codex). Rellenar la tabla de arriba.
+
+Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): I2/I3 en `entry.py` (D8),
+utilización de tornos (D12), puerta cerrada sin redirección (D13), evacuación de
+quien está en tránsito (D14, hipótesis) y medición temprana de rendimiento (D15).
+Probado con Python 3.10.12: 68 tests pasan, 5 xfail esperados, ruff limpio.

@@ -40,7 +40,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min | A | pendiente | Inc1 |
+| T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min; medir tiempo de una réplica (D15) | A | pendiente | Inc1 |
 | T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.5 (log_incident) |
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | pendiente | Inc1 |

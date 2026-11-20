@@ -50,7 +50,7 @@ El DataFrame por espectador incluye, además de los atributos de la memoria
 conflicto y evacuación solo con `compute_kpis(df, config)`. Las incidencias van
 en `df.attrs["incidents"]`.
 
-### D8 · I2 e I3 en `entry.py` (responsable A) — 2026-11-19 · _pendiente de confirmar_
+### D8 · I2 e I3 en `entry.py` (responsable A) — 2026-11-19 · confirmada 2026-11-20
 El reparto asigna a B las incidencias I1 e I4. El fallo de lectura (I2) y la
 avería de torno (I3) actúan sobre el torno, así que se implementan en `entry.py`.
 
@@ -67,3 +67,24 @@ avería de torno (I3) actúan sobre el torno, así que se implementan en `entry.
 ### D11 · Semillas de réplica — 2026-11-19
 `seed = base_seed + réplica` con `base_seed = 20261105` por defecto, igual en
 todos los escenarios (`experiments.replica_seed`).
+
+### D12 · Utilización de tornos — 2026-11-20
+`turnstile_util = U = (1/cT)∫B dt` como en la memoria (§4.4): `c` es el número
+**nominal** de tornos y `T` va desde la apertura hasta el último fin de control.
+Los tornos averiados cuentan como disponibles y no ocupados, de modo que las
+averías bajan la utilización. `conflict_delay_s` según `docs/CONTRATOS.md`.
+
+### D13 · Puerta cerrada sin redirección — 2026-11-20
+Quien llega a una puerta cerrada espera a la reapertura conservando su orden de
+llegada (SimPy reanuda en orden de registro a los procesos que esperan un mismo
+evento). Cubrir con un test en T2.6/T2.7.
+
+### D14 · Alarma y espectadores en tránsito — 2026-11-20 (hipótesis)
+Quien ya ha pasado el torno al sonar la alarma (caminando, en el vomitorio o en
+un conflicto de asiento) evacúa con su tiempo de reacción y recorre la distancia
+completa a la salida de su macrozona. Quien sigue en cola exterior abandona la
+zona y no cuenta. Hay que justificarla en la memoria de la Parte 2.
+
+### D15 · Rendimiento — 2026-11-20
+Medir el tiempo de una réplica completa (N = 48.775) ya en Inc2 (T2.1), no solo
+en T5.4, para detectar pronto cuellos de botella.
