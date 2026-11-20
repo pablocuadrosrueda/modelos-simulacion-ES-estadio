@@ -10,7 +10,7 @@ PYTHON ?= python3
 EXP    ?= X0
 REPS   ?= 1
 
-.PHONY: install test lint format run run-base venv-path
+.PHONY: install test lint format check hooks docs-check run run-base venv-path
 install:
 	$(PYTHON) -m venv "$(VENV)"
 	"$(PY)" -m pip install -q -U pip
@@ -23,6 +23,12 @@ lint:
 format:
 	"$(PY)" -m ruff check --fix src tests scripts
 	"$(PY)" -m ruff format src tests scripts
+check: lint test
+hooks:
+	git config core.hooksPath scripts/hooks
+	@echo "Hook pre-push activado (lint + tests antes de cada push)."
+docs-check:
+	"$(PY)" scripts/check_pr_docs.py --base origin/main
 run:
 	"$(PY)" scripts/run_experiment.py $(EXP) --reps $(REPS)
 run-base:

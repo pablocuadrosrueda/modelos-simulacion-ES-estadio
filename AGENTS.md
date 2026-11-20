@@ -91,6 +91,9 @@ make install            # crea el venv e instala el paquete en editable + dev
 make test               # pytest
 make lint               # ruff check + ruff format --check
 make format             # ruff --fix + format
+make check              # lint + test (lo mismo que hace la CI)
+make hooks              # activa el hook pre-push (lint + test antes de cada push)
+make docs-check         # ¿están al día ESTADO/TAREAS/AVISOS respecto a origin/main?
 make run EXP=X0 REPS=10 # ejecuta un experimento (cuando exista run_experiment)
 make venv-path          # dónde está el venv
 ```

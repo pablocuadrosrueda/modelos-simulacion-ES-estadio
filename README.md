@@ -63,6 +63,7 @@ Requiere Python ≥ 3.10.
 make install    # crea el entorno virtual e instala el paquete (editable) + pytest y ruff
 make test
 make lint
+make hooks    # opcional: lint + tests automáticos antes de cada push
 ```
 
 El entorno se crea en `.venv/`. Si la ruta del repositorio contiene `:`,
