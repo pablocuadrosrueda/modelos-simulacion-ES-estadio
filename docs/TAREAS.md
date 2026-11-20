@@ -29,7 +29,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | pendiente | — |
+| T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | en revisión | — |
 | T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | pendiente | T1.1 |
 | T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | pendiente | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | pendiente | T1.2, T1.3 |

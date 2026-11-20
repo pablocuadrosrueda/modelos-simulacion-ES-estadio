@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-20 · `main` contiene Inc0; arranca Inc1._
+_Última actualización: 2026-11-20 · `main` contiene Inc0; Inc1 en curso._
 
 ## Hecho
 
@@ -21,6 +21,15 @@ _Última actualización: 2026-11-20 · `main` contiene Inc0; arranca Inc1._
 
 Aún **no hay lógica de simulación**: `run_replica` y los procesos lanzan
 `NotImplementedError`.
+
+**Inc1 · en curso.**
+
+* T1.1 (A, en revisión): `arrivals.py` implementado. Franja por perfil + instante
+  uniforme; zona/puerta/bloque, grupo, velocidad (normal truncada por inversión
+  de la FDA, consume exactamente N uniformes) y distancia, cada uno de su flujo y
+  vectorizados. Los espectadores salen **ordenados por llegada** (`id` crece con
+  `t_arrival`); los atributos no dependen del perfil (NRC en X2).
+  Tests en `tests/test_arrivals.py` (chi-cuadrado α = 0,001).
 
 ## Siguiente paso
 
