@@ -92,7 +92,7 @@ El contexto está en el repo; los prompts solo fijan el alcance y los criterios.
 ### A · Pablo Cuadros (Claude Code) — T1.1 y T1.2
 
 ```
-Eres el rol A. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Eres el rol A. Lee AGENTS.md, docs/ESTADO.md, docs/AVISOS.md, docs/DECISIONES.md y docs/CONTRATOS.md.
 Tu trabajo en Inc1 son las tareas T1.1 y T1.2 de docs/TAREAS.md, en la rama
 feat/cuadros-T1.1-arrivals y después feat/cuadros-T1.2-entry.
 - T1.1 (arrivals.py): sample_arrival_times, sample_truncated_normal y
@@ -108,7 +108,7 @@ TAREAS.md. Antes del PR: make test y make lint limpios.
 ### B · Pablo Pérez (Claude Code) — T1.3
 
 ```
-Eres el rol B. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Eres el rol B. Lee AGENTS.md, docs/ESTADO.md, docs/AVISOS.md, docs/DECISIONES.md y docs/CONTRATOS.md.
 Tu trabajo en Inc1 es la tarea T1.3 de docs/TAREAS.md, en la rama
 feat/perez-T1.3-stadium: build_stadium_resources, seating_process sin
 conflictos e is_late en stadium.py. Respeta el contrato de SimContext y escribe en
@@ -123,7 +123,7 @@ make lint limpios antes del PR.
 ### C · Chema (Codex) — T1.5, T1.4, T1.6 y T1.7
 
 ```
-Eres el rol C. Lee AGENTS.md, docs/ESTADO.md, docs/DECISIONES.md y docs/CONTRATOS.md.
+Eres el rol C. Lee AGENTS.md, docs/ESTADO.md, docs/AVISOS.md, docs/DECISIONES.md y docs/CONTRATOS.md.
 Tu trabajo en Inc1, por este orden (docs/TAREAS.md):
 1. T1.5 (metrics.py): queue_length_max y los KPIs de entrada; el resto, NaN.
    Aplica D12 para turnstile_util. Pruébalo con DataFrames sintéticos.

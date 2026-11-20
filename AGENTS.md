@@ -3,7 +3,8 @@
 ## Al iniciar sesión (obligatorio)
 
 1. Lee este fichero entero.
-2. Lee [`docs/ESTADO.md`](docs/ESTADO.md) (dónde estamos).
+2. Lee [`docs/ESTADO.md`](docs/ESTADO.md) (dónde estamos) y
+   [`docs/AVISOS.md`](docs/AVISOS.md) (cambios de otros roles que te afectan).
 3. Lee tu tarea en [`docs/TAREAS.md`](docs/TAREAS.md) (ID, responsable, dependencias).
 4. Si tocas una interfaz compartida, lee [`docs/CONTRATOS.md`](docs/CONTRATOS.md).
    Para dudas del modelo, [`docs/ESPECIFICACION.md`](docs/ESPECIFICACION.md)
@@ -72,7 +73,8 @@ lleva cada rol se anota en `docs/ESTADO.md` (sección «Reparto»).
    actualizado. Nunca push directo a `main`; todo entra por PR.
 5. **Commits pequeños** y con mensaje claro (qué y por qué).
 6. **Todo PR actualiza** `docs/ESTADO.md` y el estado de su tarea en
-   `docs/TAREAS.md`.
+   `docs/TAREAS.md`; si cambia algo que afecta a otro rol, añade un aviso en
+   `docs/AVISOS.md` en el mismo PR.
 7. **Azar solo con `RngStreams`.** Nada de `np.random.*` global ni `random`.
    Añadir un flujo = añadirlo **al final** de `STREAM_NAMES`.
 8. **Parámetros solo en configs.** Ningún número del modelo en el código: si
