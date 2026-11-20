@@ -88,3 +88,14 @@ zona y no cuenta. Hay que justificarla en la memoria de la Parte 2.
 ### D15 · Rendimiento — 2026-11-20
 Medir el tiempo de una réplica completa (N = 48.775) ya en Inc2 (T2.1), no solo
 en T5.4, para detectar pronto cuellos de botella.
+
+### D16 · `entry_process` espera hasta la llegada; orden de los espectadores — 2026-11-20
+* `entry_process(sp, ctx)` hace `timeout` hasta `min_to_s(sp.t_arrival)` si se
+  lanza antes. `run_replica` (C) puede lanzar todos los procesos en E0 (t = −90)
+  sin calcular retardos.
+* `generate_spectators` devuelve la lista **ordenada por `t_arrival`** (`id` crece
+  con la llegada). Así, a igual instante de llegada, el orden de lanzamiento
+  (por `id`) decide el orden FIFO en el torno.
+* Nueva función pública `entry.service_time_s(config, rng)` (Triangular del
+  servicio; admite low == high para tests deterministas). Es una adición: no
+  cambia ninguna firma existente.
