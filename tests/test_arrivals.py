@@ -8,7 +8,12 @@ import numpy as np
 import pytest
 from scipy.stats import chisquare
 
-from sanmames.arrivals import generate_spectators, sample_arrival_times, sample_truncated_normal
+from sanmames.arrivals import (
+    generate_spectators,
+    sample_arrival_times,
+    sample_service_times,
+    sample_truncated_normal,
+)
 from sanmames.config import Config, TruncNormal, load_config
 from sanmames.entities import Spectator
 from sanmames.rng import RngStreams
@@ -92,8 +97,8 @@ def test_generate_count_ids_and_order(spectators: tuple[Config, list[Spectator]]
 
 def test_generate_only_initial_attributes(spectators: tuple[Config, list[Spectator]]) -> None:
     _, sps = spectators
-    defaults = Spectator(0, "A", 1, 1, "lower", "standard", 1.0, 100.0, 0.0)
-    sim_fields = [f.name for f in dataclasses.fields(Spectator)][9:]
+    defaults = Spectator(0, "A", 1, 1, "lower", "standard", 1.0, 100.0, 0.0, 4.0)
+    sim_fields = [f.name for f in dataclasses.fields(Spectator)][10:]
     for f in sim_fields:
         d = getattr(defaults, f)
         for s in sps[:200]:
@@ -155,9 +160,28 @@ def test_speed_and_distance_ranges(spectators: tuple[Config, list[Spectator]]) -
     assert abs(d.mean() - cfg.distance_m.mean) < 1.0
 
 
+def test_service_times_range_and_mean(spectators: tuple[Config, list[Spectator]]) -> None:
+    cfg, sps = spectators
+    st = cfg.service_time_s
+    x = np.array([s.service_s for s in sps])
+    assert x.min() >= st.low and x.max() <= st.high
+    assert abs(x.mean() - st.mean) < 0.03
+
+
+def test_service_times_degenerate_and_count() -> None:
+    cfg = load_config(overrides={"service_time_s": {"low": 4, "mode": 4, "high": 4}})
+    rng = RngStreams(1)["service"]
+    assert set(sample_service_times(cfg.service_time_s, 50, rng)) == {4.0}
+    # consume exactamente n números del flujo (alineación de números aleatorios comunes)
+    a, b = RngStreams(2)["service"], RngStreams(2)["service"]
+    sample_service_times(load_config().service_time_s, 100, a)
+    b.triangular(2, 4, 6, size=100)
+    assert a.random() == b.random()
+
+
 def _initial(sps: list[Spectator]) -> list[tuple]:
     """Atributos iniciales (los NaN de los campos de simulación impiden usar ``==``)."""
-    return [dataclasses.astuple(s)[:9] for s in sps]
+    return [dataclasses.astuple(s)[:10] for s in sps]
 
 
 def test_generate_deterministic(mini_config: Config) -> None:
