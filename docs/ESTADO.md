@@ -34,8 +34,10 @@ Aún **no hay lógica de simulación**: `run_replica` y los procesos lanzan
   `build_entry_resources` (un `PriorityResource` por puerta), `priority_of`
   (FIFO; `"priority"` lanza `NotImplementedError` hasta T2.4) y `entry_process`
   sin incidencias por `spectator.gate`. `entry_process` espera hasta `t_arrival`
-  (D16). Tests en `tests/test_entry.py`: orden FIFO, capacidad de tornos,
-  independencia de puertas, determinismo.
+  (D16). El servicio en torno es un atributo del espectador (`service_s`,
+  D17: números aleatorios comunes). Tests en `tests/test_entry.py`: orden FIFO,
+  capacidad de tornos, independencia de puertas, determinismo y servicio
+  idéntico con 2 y 4 tornos.
 
 ## Siguiente paso
 

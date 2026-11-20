@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import math
 
-import numpy as np
 import pytest
 import simpy
 
@@ -17,7 +16,6 @@ from sanmames.entry import (
     build_entry_resources,
     entry_process,
     priority_of,
-    service_time_s,
 )
 from sanmames.rng import RngStreams
 from sanmames.runner import SimContext
@@ -30,8 +28,10 @@ def make_ctx(config: Config, seed: int = 1) -> SimContext:
     return ctx
 
 
-def make_spectator(i: int, t_arrival: float, zone: str = "A", gate: int = 1) -> Spectator:
-    return Spectator(i, zone, gate, 1, "lower", "standard", 1.4, 100.0, t_arrival)
+def make_spectator(
+    i: int, t_arrival: float, zone: str = "A", gate: int = 1, service_s: float = 4.0
+) -> Spectator:
+    return Spectator(i, zone, gate, 1, "lower", "standard", 1.4, 100.0, t_arrival, service_s)
 
 
 def run_entry(ctx: SimContext, sps: list[Spectator]) -> None:
@@ -39,11 +39,6 @@ def run_entry(ctx: SimContext, sps: list[Spectator]) -> None:
     for sp in sps:
         ctx.env.process(entry_process(sp, ctx))
     ctx.env.run()
-
-
-def fixed_service(seconds: float) -> Config:
-    s = {"low": seconds, "mode": seconds, "high": seconds}
-    return load_config(overrides={**MINI_OVERRIDES, "service_time_s": s})
 
 
 # -- recursos y prioridad ---------------------------------------------------
@@ -73,15 +68,6 @@ def test_priority_fifo(mini_config: Config) -> None:
         assert priority_of(sp, ctx) == PRIORITY_NORMAL
 
 
-def test_service_time_range(mini_config: Config) -> None:
-    rng = RngStreams(3)["service"]
-    st = mini_config.service_time_s
-    x = np.array([service_time_s(mini_config, rng) for _ in range(5000)])
-    assert x.min() >= st.low and x.max() <= st.high
-    assert abs(x.mean() - st.mean) < 0.05
-    assert service_time_s(fixed_service(4), rng) == 4.0
-
-
 # -- proceso de entrada -----------------------------------------------------
 
 
@@ -91,8 +77,7 @@ def test_single_spectator_no_wait(mini_config: Config) -> None:
     run_entry(ctx, [sp])
     assert sp.gate_used == 2
     assert sp.t_start_control == pytest.approx(-30.0)
-    st = mini_config.service_time_s
-    assert st.low / 60 <= sp.t_end_control - sp.t_start_control <= st.high / 60
+    assert sp.t_end_control - sp.t_start_control == pytest.approx(sp.service_s / 60)
     assert sp.read_failure is False
 
 
@@ -101,7 +86,7 @@ def test_fifo_order_one_gate(mini_config: Config) -> None:
     ctx = make_ctx(mini_config)
     c = mini_config.turnstiles_per_gate
     # 60 personas en 1 min (1/s) frente a c tornos de ~4 s: se forma cola.
-    sps = [make_spectator(i, -20.0 + i / 60) for i in range(60)]
+    sps = [make_spectator(i, -20.0 + i / 60, service_s=3.0 + i % 3) for i in range(60)]
     run_entry(ctx, list(reversed(sps)))  # el orden de lanzamiento no importa
     starts = [sp.t_start_control for sp in sps]
     assert starts == sorted(starts)
@@ -115,7 +100,7 @@ def test_fifo_order_one_gate(mini_config: Config) -> None:
 
 
 def test_fifo_simultaneous_arrivals_keep_launch_order() -> None:
-    cfg = fixed_service(4)
+    cfg = load_config(overrides=MINI_OVERRIDES)
     ctx = make_ctx(cfg)
     sps = [make_spectator(i, -10.0) for i in range(10)]
     run_entry(ctx, sps)
@@ -144,7 +129,7 @@ def test_turnstile_capacity_respected(mini_config: Config) -> None:
 
 
 def test_capacity_exact_c_start_immediately() -> None:
-    cfg = fixed_service(4)
+    cfg = load_config(overrides=MINI_OVERRIDES)
     ctx = make_ctx(cfg)
     c = cfg.turnstiles_per_gate
     sps = [make_spectator(i, -5.0) for i in range(c + 1)]
@@ -154,7 +139,7 @@ def test_capacity_exact_c_start_immediately() -> None:
 
 
 def test_gates_are_independent() -> None:
-    cfg = fixed_service(4)
+    cfg = load_config(overrides=MINI_OVERRIDES)
     ctx = make_ctx(cfg)
     c = cfg.turnstiles_per_gate
     g1 = [make_spectator(i, -5.0, gate=1) for i in range(c)]
@@ -190,3 +175,23 @@ def test_priority_discipline_pending() -> None:
     )
     with pytest.raises(NotImplementedError, match="T2.4"):
         priority_of(make_spectator(0, -1.0), make_ctx(cfg))
+
+
+def test_service_time_belongs_to_spectator() -> None:
+    """D17: el servicio lo fija el espectador, no el orden en que lo atienden los tornos."""
+
+    def run(turnstiles: int) -> list[Spectator]:
+        cfg = load_config(overrides={**MINI_OVERRIDES, "turnstiles_per_gate": turnstiles})
+        ctx = make_ctx(cfg, seed=11)
+        sps = generate_spectators(cfg, ctx.rngs)
+        run_entry(ctx, sps)
+        return sps
+
+    few, many = run(2), run(4)
+    assert [s.service_s for s in few] == [s.service_s for s in many]
+    for s in few + many:
+        assert s.t_end_control - s.t_start_control == pytest.approx(s.service_s / 60)
+    # con menos tornos la espera total es mayor: los escenarios sí difieren
+    assert sum(s.t_start_control - s.t_arrival for s in few) > sum(
+        s.t_start_control - s.t_arrival for s in many
+    )

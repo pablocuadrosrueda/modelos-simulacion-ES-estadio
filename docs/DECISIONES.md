@@ -96,6 +96,19 @@ en T5.4, para detectar pronto cuellos de botella.
 * `generate_spectators` devuelve la lista **ordenada por `t_arrival`** (`id` crece
   con la llegada). Así, a igual instante de llegada, el orden de lanzamiento
   (por `id`) decide el orden FIFO en el torno.
-* Nueva función pública `entry.service_time_s(config, rng)` (Triangular del
-  servicio; admite low == high para tests deterministas). Es una adición: no
-  cambia ninguna firma existente.
+* ~~Nueva función pública `entry.service_time_s(config, rng)`~~ — sustituida por
+  D17 (el servicio se sortea por espectador en `generate_spectators`).
+
+### D17 · Números aleatorios comunes: todo sorteo por espectador, al generarlo — 2026-11-20
+**Regla:** cualquier variable aleatoria que pertenezca a un espectador se sortea
+en `arrivals.generate_spectators` (vectorizada, N números por flujo) y se guarda
+como atributo suyo; los procesos solo la leen. Sortear dentro de los procesos,
+con un flujo compartido, asigna los números según el orden en que el modelo
+atiende a la gente, que cambia entre escenarios (p. ej. 2 vs 4 tornos), y rompe
+los números aleatorios comunes que exige la memoria (§5.3).
+* Aplicado: nuevo atributo `Spectator.service_s` (columna del DataFrame),
+  `arrivals.sample_service_times`. Se elimina `entry.service_time_s`.
+* Pendiente de aplicar en T2.2 (I2): ocurrencia y tiempo extra de la relectura
+  (`read_failure_u`, `read_extra_s`); y en T2.5 (I1): ocurrencia del conflicto y
+  su duración. I3 e I4 son procesos por recurso, no por espectador: cada uno usa
+  su propio flujo.

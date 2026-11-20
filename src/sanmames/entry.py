@@ -26,10 +26,8 @@ from collections.abc import Generator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-import numpy as np
 import simpy
 
-from .config import Config
 from .entities import Spectator, min_to_s, s_to_min
 
 if TYPE_CHECKING:
@@ -51,17 +49,6 @@ class EntryResources:
     """Evento que se dispara al reabrir la puerta (para quien espera sin redirección)."""
     failed_turnstiles: dict[tuple[str, int], int] = field(default_factory=dict)
     """``tornos_averiados[p]``."""
-
-
-def service_time_s(config: Config, rng: np.random.Generator) -> float:
-    """Tiempo de servicio en torno (s): Triangular(``service_time_s``).
-
-    Admite la triangular degenerada (low == high), que numpy rechaza.
-    """
-    st = config.service_time_s
-    if st.low == st.high:
-        return float(st.low)
-    return float(rng.triangular(st.low, st.mode, st.high))
 
 
 def build_entry_resources(ctx: SimContext) -> EntryResources:
@@ -111,7 +98,6 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
     no aplica I2 (T2.2), así que ``read_failure`` queda en ``False``.
     """
     env = ctx.env
-    cfg = ctx.config
     assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
 
     t_arrival_s = min_to_s(spectator.t_arrival)
@@ -124,7 +110,7 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
     with turnstiles.request(priority=priority_of(spectator, ctx), preempt=False) as req:
         yield req
         spectator.t_start_control = s_to_min(env.now)
-        yield env.timeout(service_time_s(cfg, ctx.rngs["service"]))
+        yield env.timeout(spectator.service_s)
         spectator.t_end_control = s_to_min(env.now)
 
 

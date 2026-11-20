@@ -48,7 +48,7 @@ Flujo `name` = `default_rng(SeedSequence(entropy=seed, spawn_key=(STREAM_INDEX[n
 | 2 | `group` | colectivo | arrivals |
 | 3 | `speed` | velocidad de marcha | arrivals |
 | 4 | `distance` | distancia puerta -> asiento | arrivals |
-| 5 | `service` | servicio en torno | entry |
+| 5 | `service` | servicio en torno (por espectador, en `generate_spectators`; D17) | arrivals |
 | 6 | `read_failure` | I2 | entry |
 | 7 | `vomitory` | paso por vomitorio | stadium |
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución) | incidents |
@@ -75,6 +75,7 @@ de `entities.SPECTATOR_COLUMNS`:
 | `speed_mps` | float | arrivals | Velocidad × factor del grupo (m/s) |
 | `distance_m` | float | arrivals | Distancia puerta -> asiento (también para salir) |
 | `t_arrival` | float | arrivals | Llegada a la cola de la puerta (E1) |
+| `service_s` | float | arrivals | Tiempo de servicio en torno (s), sorteado al generar (D17) |
 | `gate_used` | int | entry | Puerta por la que entra (≠ `gate` si se redirige; -1 si no entra) |
 | `t_start_control` | float | entry | Inicio del control (E2) |
 | `t_end_control` | float | entry | Fin del control (E3) |
@@ -145,7 +146,7 @@ Un KPI que no aplica al escenario vale `NaN`.
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `service_time_s(config, rng)`, `turnstile_failure_process(zone, gate, ctx)` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |

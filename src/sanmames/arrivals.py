@@ -25,7 +25,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.stats import truncnorm
 
-from .config import ArrivalBin, Config, TruncNormal
+from .config import ArrivalBin, Config, Triangular, TruncNormal
 from .entities import Spectator
 from .rng import RngStreams
 
@@ -71,6 +71,17 @@ def sample_truncated_normal(params: TruncNormal, n: int, rng: np.random.Generato
     return np.clip(x, params.min, params.max)  # por redondeo en las colas
 
 
+def sample_service_times(params: Triangular, n: int, rng: np.random.Generator) -> np.ndarray:
+    """``n`` tiempos de servicio (s) ~ Triangular(low, mode, high).
+
+    Consume exactamente ``n`` números del flujo. Admite la triangular degenerada
+    (``low == high``), que numpy rechaza.
+    """
+    if params.low == params.high:
+        return np.full(n, float(params.low))
+    return rng.triangular(params.low, params.mode, params.high, size=n)
+
+
 def generate_spectators(config: Config, rngs: RngStreams) -> list[Spectator]:
     """Crea los ``config.n_spectators`` espectadores con sus atributos iniciales.
 
@@ -93,6 +104,7 @@ def generate_spectators(config: Config, rngs: RngStreams) -> list[Spectator]:
 
     speeds = sample_truncated_normal(config.speed_mps, n, rngs["speed"]) * factors
     distances = rngs["distance"].uniform(config.distance_m.low, config.distance_m.high, size=n)
+    services = sample_service_times(config.service_time_s, n, rngs["service"])
 
     return [
         Spectator(
@@ -105,6 +117,7 @@ def generate_spectators(config: Config, rngs: RngStreams) -> list[Spectator]:
             speed_mps=float(speeds[i]),
             distance_m=float(distances[i]),
             t_arrival=float(t_arrival[i]),
+            service_s=float(services[i]),
         )
         for i in range(n)
     ]
