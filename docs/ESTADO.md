@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-22 · `main` contiene Inc0 y T1.1/T1.2;
-T1.5 revisada localmente, pendiente de publicar, en `feat/chema-T1.5-metrics`._
+T1.5 publicada y en revisión en el PR #3, rama `feat/chema-T1.5-metrics`._
 
 ## Hecho
 
@@ -40,7 +40,7 @@ y emergencia siguen pendientes.
   D17: números aleatorios comunes). Tests en `tests/test_entry.py`: orden FIFO,
   capacidad de tornos, independencia de puertas, determinismo y servicio
   idéntico con 2 y 4 tornos.
-* T1.5 (C, en curso; revisada localmente, rama `feat/chema-T1.5-metrics`): `queue_length_max` reconstruye
+* T1.5 (C, en revisión; PR #3, rama `feat/chema-T1.5-metrics`): `queue_length_max` reconstruye
   intervalos `[llegada, inicio_control)`, sin contar esperas nulas ni sumar
   personas de puertas distintas. Un fin NaN indica que sigue esperando.
   `compute_kpis` calcula recuentos, espera media/P95, porcentaje de espera
@@ -58,11 +58,11 @@ incidencias, CSV y KPIs de espera. En paralelo:
 
 * A: T1.1 y T1.2 ya fusionadas; continuar con sus tareas de Inc2 según dependencias.
 * B: T1.3 (pendiente según el tablero).
-* C: publicar T1.5 y abrir PR para revisión del equipo; después T1.4 → T1.6 → T1.7.
+* C: revisión del equipo y merge de [T1.5, PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3);
+  después T1.4 → T1.6 → T1.7.
   T1.4 necesita T1.3; las métricas se prueban sin esperar al módulo de asiento.
-  Commit y push autorizados por Chema. Publicación pendiente: Git por HTTPS no
-  tiene credenciales locales y la conexión UJA (`jmcb0024`) devuelve HTTP 403
-  al intentar escribir en el repositorio. No se ha creado rama remota ni PR.
+  Autenticación local de Git resuelta con GitHub CLI y cuenta `jmcb0024`.
+  Rama publicada y PR abierto; todavía no fusionado en `main`.
 
 ### Revisión local del rol C
 
