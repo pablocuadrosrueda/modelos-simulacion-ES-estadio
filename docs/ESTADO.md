@@ -2,7 +2,7 @@
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
 Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
-T4.3 (integración de alarma y KPIs) está en revisión en esta rama._
+T4.3 está fusionada en PR #24. T5.1 (piloto X0–X7) está en curso en esta rama._
 
 ## Hecho
 
@@ -117,25 +117,19 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
-T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
-T5.2 está fusionada en PR #17 con salida y conservación completas.
+T4.3 fusionada en PR #24. C inicia T5.1 desde main actualizado: 12 escenarios
+X0–X7, 10 réplicas cada uno, mismas semillas 20261105–20261114. Se mantienen los
+parámetros y las hipótesis documentadas, sin alterar módulos de A/B. El script
+`scripts/run_pilot.py` guarda KPIs tras cada réplica y audita identidad y estado
+terminal; al final calcula IC del 95 %, contrastes emparejados y n estimado para
+semianchura relativa del 5 % de la espera media.
 
-C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
-estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
-incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
-Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
-variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
-en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
-5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
-aislar la capacidad, no como resultados definitivos del escenario real.
-
-Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
-T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
-calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
-T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
-oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
-I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
+Resultados de desarrollo anteriores en results; el piloto se guardará en
+`results/pilot` con configs resueltas, hashes del código, versiones y commit.
+T2.1 sigue pendiente de A; se aporta reparto observado por zona y duración por
+réplica, sin dar su tarea por completada. Después T5.3 (réplicas definitivas y
+S1) usará este piloto; T6.1 gráficas depende de T5.3. No se presentan todavía
+conclusiones definitivas para P1–P8. Siguen abiertas las dudas de I3 y X6.
 
 ## Reparto
 

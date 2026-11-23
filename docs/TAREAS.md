@@ -69,13 +69,13 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 |---|---|---|---|---|
 | T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | hecho | Inc3 |
 | T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | hecho | T4.1 |
-| T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | en revisión | T4.1 |
+| T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | hecho | T4.1 |
 
 ## Inc5 · Experimentos y estadística
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T5.1 | Ejecutar X0–X7 con 10 réplicas piloto y semillas comunes | C | pendiente | Inc4 |
+| T5.1 | Ejecutar X0–X7 con 10 réplicas piloto y semillas comunes | C | en curso | Inc4 |
 | T5.2 | `analysis`: `confidence_interval`, `required_replications`, `summarize`, `compare_with_baseline` (+ tests con datos sintéticos) | C | hecho | contrato (T0.3) |
 | T5.3 | Réplicas definitivas (≈ 30) y S1 | C | pendiente | T5.1, T5.2 |
 | T5.4 | Rendimiento: medir tiempo por réplica completa y optimizar los cuellos propios | A, B | pendiente | T5.1 |
