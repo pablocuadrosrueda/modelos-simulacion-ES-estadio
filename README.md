@@ -132,3 +132,16 @@ una de Codex. Para no pisarnos:
 ## Documentación
 
 Toda en [`docs/`](docs/): especificación, contratos, tareas, estado y decisiones.
+
+Para comprobar la cadena completa con emergencia, desde el clon:
+
+```bash
+make check
+make run EXP=configs/dev/i4_mini.json REPS=3
+```
+
+El CSV `results/i4_mini_kpis.csv` compara salidas abiertas y una bloqueada con
+600 personas y semillas comunes, incluyendo I1–I4. Es una verificación pequeña;
+los experimentos oficiales X0–X7 se ejecutan en T5.1. La réplica termina al salir
+o evacuar todos, o al alcanzar el límite desde apertura. Los indicadores de
+vaciado incompleto permanecen en NaN; ver `docs/CONTRATOS.md`.

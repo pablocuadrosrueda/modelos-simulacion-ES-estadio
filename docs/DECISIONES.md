@@ -225,7 +225,48 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
 
-### D25. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
+### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
+El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
+emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o
+del límite, nunca de que terminen los bucles de avería. La cola se reconstruye
+por puerta usada, excluyendo a quienes todavía no han llegado (`gate_used=-1`).
+P4 usa los colectivos de `priority_groups` con independencia de la disciplina.
+Para operacionalizar el «conflicto activo» de P6 se comprueba solape de intervalos
+en el mismo bloque/zona y se excluye al causante; sin población expuesta o de
+comparación, NaN. Los contadores siguen la definición literal de filas registradas:
+no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
+se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
+con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.
+
+### D26 · I2 con números comunes, sorteado en E0 en `entry` — 2026-11-23
+Igual que D18 y D21. `entry.build_entry_resources` llama a
+`entry.sample_read_failures`, que sortea del flujo `"read_failure"`, para los
+`n_spectators`, un `u` ~ Uniforme(0, 1) y un extra Uniforme(`extra_s`) en
+segundos. Se guardan en `EntryResources` (`read_failure_u`,
+`read_failure_extra_s`) por `id`, aunque la incidencia esté desactivada. Hay
+relectura si está activa y `u < prob`: al pasar de 3 % a 6 % el conjunto crece y
+conserva a los anteriores, y cada espectador tiene el mismo extra en todos los
+escenarios (también con 2/3/4 tornos y con otro perfil de llegadas).
+* La relectura va **justo después del servicio** y **no libera el torno**:
+  ocupa `service_s + extra`; ni interrumpe ni se interrumpe.
+* Incidencia `I2`: `resource` = puerta usada (`"A-G1"`), `spectator_id`,
+  `t_start` al empezar la relectura (`t_start_control + service_s`) y `t_end` =
+  `t_end_control`.
+* Sustituye, para I2, la indicación de D17 de sortearlo en
+  `generate_spectators`. **No cambia el contrato de `Spectator`** ni `arrivals`.
+* Numeración: `main` llegaba a D24 y las ramas abiertas reclaman D24 (T5.2) y
+  D25 (T2.8 y T4.1); esta toma D26 para no chocar con ninguna.
+
+### D27 · Réplica completa y KPIs de salida ordinaria (T3.3) — 2026-11-23
+Se sustituye el fin provisional de D19 por el último espectador fuera. Se crean
+los recursos de salida en E0 y se encadenan los procesos de B sin alterar sus
+módulos. El límite sigue midiéndose desde apertura y conserva todas las filas.
+El tiempo de vaciado de una réplica incompleta es NaN: el último paso observado
+no es el vaciado total. La cola por salida incluye a quien está atravesándola,
+según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
+D25, incluida la duda documentada sobre averías posteriores a la entrada.
+
+### D28. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
 * **Quién hace qué.** `emergency.alarm_process(ctx, journeys)` cambia el estado
   al sonar la alarma y llama a `interrupt()` en los procesos vivos de
   `journeys` (`journeys[i]` es el del espectador `id == i`). El proceso de cada
@@ -250,36 +291,6 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 5,9 min en atravesar las 6 salidas ensanchadas y 7,1 min con una
   bloqueada (`tests/test_emergency.py`).
-### D26 · I2 con números comunes, sorteado en E0 en `entry` — 2026-11-23
-Igual que D18 y D21. `entry.build_entry_resources` llama a
-`entry.sample_read_failures`, que sortea del flujo `"read_failure"`, para los
-`n_spectators`, un `u` ~ Uniforme(0, 1) y un extra Uniforme(`extra_s`) en
-segundos. Se guardan en `EntryResources` (`read_failure_u`,
-`read_failure_extra_s`) por `id`, aunque la incidencia esté desactivada. Hay
-relectura si está activa y `u < prob`: al pasar de 3 % a 6 % el conjunto crece y
-conserva a los anteriores, y cada espectador tiene el mismo extra en todos los
-escenarios (también con 2/3/4 tornos y con otro perfil de llegadas).
-* La relectura va **justo después del servicio** y **no libera el torno**:
-  ocupa `service_s + extra`; ni interrumpe ni se interrumpe.
-* Incidencia `I2`: `resource` = puerta usada (`"A-G1"`), `spectator_id`,
-  `t_start` al empezar la relectura (`t_start_control + service_s`) y `t_end` =
-  `t_end_control`.
-* Sustituye, para I2, la indicación de D17 de sortearlo en
-  `generate_spectators`. **No cambia el contrato de `Spectator`** ni `arrivals`.
-* Numeración: `main` llegaba a D24 y las ramas abiertas reclaman D24 (T5.2) y
-  D25 (T2.8 y T4.1); esta toma D26 para no chocar con ninguna.
-### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
-El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
-emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o
-del límite, nunca de que terminen los bucles de avería. La cola se reconstruye
-por puerta usada, excluyendo a quienes todavía no han llegado (`gate_used=-1`).
-P4 usa los colectivos de `priority_groups` con independencia de la disciplina.
-Para operacionalizar el «conflicto activo» de P6 se comprueba solape de intervalos
-en el mismo bloque/zona y se excluye al causante; sin población expuesta o de
-comparación, NaN. Los contadores siguen la definición literal de filas registradas:
-no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
-se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
-con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.
 
 ### D29 · Salidas estadísticas y muestras incompletas (T5.2) — 2026-11-23
 El análisis usa una observación por réplica, como exige §5.3 de la memoria.
@@ -295,11 +306,20 @@ Se debe comprobar el IC de nuevo al añadir réplicas. Una media cero con
 variabilidad exige un objetivo absoluto, no se inventa una precisión relativa.
 Son convenciones de salida de T5.2; no cambia ningún parámetro de la simulación.
 
-### D27 · Réplica completa y KPIs de salida ordinaria (T3.3) — 2026-11-23
-Se sustituye el fin provisional de D19 por el último espectador fuera. Se crean
-los recursos de salida en E0 y se encadenan los procesos de B sin alterar sus
-módulos. El límite sigue midiéndose desde apertura y conserva todas las filas.
-El tiempo de vaciado de una réplica incompleta es NaN: el último paso observado
-no es el vaciado total. La cola por salida incluye a quien está atravesándola,
-según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
-D25, incluida la duda documentada sobre averías posteriores a la entrada.
+### D30 · Integración completa de alarma y KPIs (T4.3) — 2026-11-23
+El proceso único por espectador captura la interrupción y continúa con la
+clasificación/evacuación de B (D28). Se lanza la alarma tras crear todos los
+recorridos. El fin sigue siendo todos los recorridos terminados o el límite;
+no se espera a los bucles de avería. I2 se admite usando el módulo de A (D26).
+Se añaden metadatos `stop_time_min` y `alarm_triggered` para distinguir una
+réplica truncada antes de la alarma o durante la evacuación.
+`evac_time_min` solo se conoce si todos los de dentro al sonar la alarma tienen
+`t_safe`. El denominador de `evac_pct_ref` son todos los de dentro al sonar la
+alarma (control terminado y sin salida ordinaria previa), no solo los que ya
+están seguros. Se calcula si la evacuación terminó o se observó el horizonte de
+referencia; antes, NaN. Sin evacuables, ambos KPIs son NaN. `n_abandoned` cuenta
+los marcados, cero si no hay; sin emergencia permanece NaN. Si sonó la alarma,
+los KPIs P5 ordinarios no aplican y quedan NaN.
+La doble D25 surgida de trabajo paralelo se desambigua: D25 = Inc2 (T2.8),
+D28 = evacuación de B. Las referencias de documentación en sus módulos se
+actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).

@@ -111,7 +111,8 @@ def _conflict_delay_s(df: pd.DataFrame, incidents: pd.DataFrame) -> float:
 def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
     """Calcula los KPIs de entrada, incidencias y salida ordinaria.
 
-    Los indicadores de evacuación quedan en NaN hasta Inc4.
+    La evacuación usa como denominador todos los espectadores dentro al sonar
+    la alarma, incluidos los pendientes si la réplica queda truncada.
     Las medias de espera y acceso usan
     los tiempos observados, sin convertir los sucesos pendientes en ceros.
     Sin observaciones, las medias y porcentajes son NaN; los recuentos y la
@@ -188,4 +189,20 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
         ),
         default=0,
     )
+    if config.emergency.enabled:
+        kpis["n_abandoned"] = int(df["abandoned"].eq(True).sum())
+    if config.emergency.enabled and df.attrs.get("alarm_triggered", False):
+        # La cola de evacuación usa t_safe, no t_exit; P5 no aplica aquí.
+        kpis["exit_time_min"] = kpis["exit_queue_max"] = math.nan
+        alarm = config.emergency.alarm_min
+        inside = df["t_end_control"].le(alarm) & ~df["t_exit"].le(alarm)
+        safe = df.loc[inside, "t_safe"]
+        if not safe.empty:
+            complete = safe.notna().all()
+            if complete:
+                kpis["evac_time_min"] = float(safe.max() - alarm)
+            deadline = alarm + config.emergency.reference_min
+            stop = df.attrs.get("stop_time_min", math.nan)
+            if complete or stop >= deadline:
+                kpis["evac_pct_ref"] = float(safe.le(deadline + _TIME_TOL_MIN).mean() * 100)
     return kpis
