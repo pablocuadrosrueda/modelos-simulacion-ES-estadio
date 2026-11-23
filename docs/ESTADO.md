@@ -1,65 +1,102 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · main verificado en `70583a0` (T1.6 fusionada).
-T5.2 local sin commit en `feat/chema-T5.2-analysis`._
+_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.3, T2.4, T2.5 y T2.6. T2.7 en revisión en `feat/cuadros-T2.7-choose-gate`._
 
 ## Hecho
 
-**Inc0 · completado.** Paquete `sanmames`, configuración validada, flujos de azar,
-entidades e interfaces compartidas. CI, plantilla de PR y comprobación documental
-fusionadas en el PR #7. `make check`, `make hooks` y `make docs-check` disponibles.
+**Inc0 · completado.** Paquete `sanmames` (`pyproject.toml`, `Makefile`, ruff y
+pytest), `configs/base.json` + experimentos X0–X7 y S1 como diff, `config.py`
+(carga, fusión profunda, validación estricta), `rng.py` (`RngStreams`, un
+generador por fuente), contratos (`entities.py`, `metrics.KPI_COLUMNS`,
+`runner.SimContext`, stubs con docstring) documentados en `docs/CONTRATOS.md`, y
+docs para agentes. Automatización (T0.5, PR #7): CI con ruff + pytest en Python
+3.10 y 3.12 y job de docs (`scripts/check_pr_docs.py`), plantilla de PR,
+`make check`, `make hooks` y `make docs-check`. Pendiente fuera del repo: activar
+la protección de `main` exigiendo esos checks.
 
-**Inc1 · implementación principal fusionada; cierre en revisión local.**
+**Inc1 · rebanada vertical — completado.**
 
-* T1.1 y T1.2 (A, hechas; PR #1 y #2): generación de espectadores ordenados por
-  llegada y entrada FIFO, con servicio sorteado por espectador (D16/D17).
-* T1.3 (B, hecha; PR #4): recursos de vomitorio y acomodadores, desplazamiento y
-  asiento sin conflictos. Paso por vomitorio sorteado por id en E0 (D18).
-* T1.4 (C, hecha; PR #6): runner de llegada → entrada → asiento, hasta sentarse
-  todos o alcanzar `max_sim_hours` desde apertura. Tabla completa y metadatos.
-  `configs/dev/i1_mini.json`: 600 espectadores, zona A, sin incidencias.
-  Permanencia, salida e incidencias siguen pendientes de integración.
-* T1.5 (C, hecha; PR #3): KPIs de entrada y cola máxima por puerta. Utilización
-  nominal desde apertura (D12); métricas de fases futuras en NaN.
-* T1.6 (C, hecha; PR #9 fusionado): réplicas con semillas comunes entre variantes,
-  tabla con columnas acordadas y CLI que acepta nombres o rutas de experimento
-  y guarda `results/<fichero>_kpis.csv`. En `feat/chema-T1.6-experiments`, carpeta
-  `modelos-simulacion-ES-estadio`. Incluye corrección numérica en métricas para
-  esperas nulas con errores de redondeo s/min (tolerancia 1e-9 min), con tests.
-* T1.7 (C, en revisión): siete pruebas nuevas de conservación en cada
+* T1.1 (A, hecho; PR #1): `arrivals.py`. Franja por perfil + instante uniforme;
+  zona/puerta/bloque, grupo, velocidad (normal truncada por inversión de la FDA)
+  y distancia, cada uno de su flujo y vectorizados. Espectadores **ordenados por
+  llegada** (`id` crece con `t_arrival`); los atributos no dependen del perfil
+  (NRC en X2). Tests en `tests/test_arrivals.py` (chi-cuadrado α = 0,001).
+* T1.2 (A, hecho; PR #2): `entry.py` con un `PriorityResource` por puerta,
+  `priority_of` y `entry_process` sin incidencias por `spectator.gate`. Espera
+  hasta `t_arrival` (D16); servicio en torno como atributo `service_s` (D17).
+* T1.3 (B, hecho; PR #4): `stadium.py`. Vomitorio FIFO de `vomitory_capacity`
+  plazas por `(zona, bloque)`, `stewards_per_zone` acomodadores por zona,
+  `seating_process` sin conflictos e `is_late`. Paso por vomitorio sorteado por
+  `id` en E0 (D18).
+* T1.4 (C, hecho; PR #6): `run_replica`, llegada → entrada → asiento, hasta
+  sentarse todos o alcanzar `max_sim_hours` desde apertura (D19). Todas las
+  columnas de `SPECTATOR_COLUMNS` y metadatos. `configs/dev/i1_mini.json`: 600
+  espectadores, zona A, FIFO, sin incidencias. Rechaza todavía incidencias,
+  emergencia y `queue_discipline = "priority"` (ver `docs/AVISOS.md`).
+* T1.5 (C, hecho; PR #3): KPIs de entrada y cola máxima por puerta. Utilización
+  nominal desde apertura (D12); esperas pendientes no se sustituyen por ceros;
+  métricas de fases futuras en NaN.
+* T1.6 (C, hecho; PR #9): réplicas con semillas comunes entre variantes, tabla
+  con las columnas acordadas y CLI que acepta nombres o rutas de experimento y
+  guarda `results/<fichero>_kpis.csv`. Incluye corrección numérica en métricas
+  para esperas nulas con redondeo s/min (tolerancia 1e-9 min), con tests.
+* T1.7 (C, hecho; PR #10): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
-  puerta saturada con las mismas llegadas/servicios. En
-  `feat/chema-T1.7-verificacion`, carpeta `modelos-simulacion-ES-estadio-T1.7`.
-  Orden temporal y conservación existentes activos; dos xfail de salida pendientes.
+  puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
+  siguen pendientes de T3.3/T3.4.
 
-**Inc2 · componentes adelantados, ya fusionados.**
+**Inc2 · en curso** (T2.3–T2.6 hechas; T2.7 en revisión).
 
-* T2.4 (A, hecha; PR #8): prioridad no expulsiva por `priority_groups`, FIFO
-  dentro de cada nivel y comparación de grupos con semillas comunes. D19 de A.
-* T2.6 (B, hecha; PR #5): `log_incident` y cierre/reapertura de puerta, registro
-  I4 y sustitución de `reopen_event`. Requiere integración con la elección de
-  puerta T2.7 (A) y el runner; Inc1 todavía rechaza incidencias activadas.
-
-**Estadística adelantada, independiente de las fases pendientes.**
-
-* T5.2 (C, en curso; local sin commit): `confidence_interval`,
-  `required_replications`, `summarize` y `compare_with_baseline` implementadas.
-  IC t-Student entre réplicas, tamaño total estimado con el piloto y comparación
-  por semillas comunes. Las tablas de resumen usan media, semianchura y n válido
-  por KPI (D24/CONTRATOS). No se presenta incertidumbre cero con una sola réplica.
-  Pruebas con valores calculados a mano, tablas t, NaN, semillas desordenadas,
-  duplicadas y ausentes. No añade dependencias ni modifica los módulos de A/B.
+* T2.3 (A, hecho; PR #14): I3 en
+  `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
+  marcha y Uniforme(`repair_min`) parado; pide una plaza con `PRIORITY_FAILURE`
+  y `preempt=False` (adelanta a toda la cola, también a `PRIORITY_HIGH`, sin
+  cortar un servicio), suma en `failed_turnstiles` y registra `I3` con
+  `resource = "A-G1-T2"`, `t_start` y `t_end`. `turnstile_failure_process` lanza
+  un sub-bucle por torno; nueva `start_turnstile_failure_processes(ctx)` para E0.
+  Generador por torno con `RngStreams.substream` (D22): calendario idéntico con
+  2, 3 o 4 tornos. Además, sin cola `t_start_control = t_arrival` exacto (aviso
+  de B sobre redondeo s/min). Tests en `tests/test_turnstile_failure.py`,
+  `tests/test_rng.py` y `tests/test_entry.py`.
+* T2.4 (A, hecho; PR #8): `priority_of` con `queue_discipline == "priority"`:
+  los grupos de `priority_groups` piden con `PRIORITY_HIGH` y adelantan a los
+  normales; no expulsiva (`preempt=False`) y FIFO dentro de cada nivel (D20).
+  Tests en `tests/test_entry.py`, con un escenario exacto a mano y la
+  comprobación, con la misma semilla, de que X3 baja la espera de mayores y PMR.
+* T2.5 (B, hecho; PR #13): I1 en
+  `incidents.py` (`sample_seat_conflicts`, `has_seat_conflict`, `seat_conflict`)
+  e integrado en `seating_process`: al llegar al asiento, con `u < prob`, el
+  espectador retiene la plaza del vomitorio, espera a un acomodador de su zona y
+  resuelve en Triangular(1, 3, 10) min. Ocurrencia y duración sorteadas en E0 por
+  `id` (D21, números comunes). Tests en `tests/test_seat_conflict.py`.
+* T2.6 (B, hecho; PR #5): `log_incident` y `gate_closure_process` (I4): cierra la
+  puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
+  `reopen_event`, que se sustituye por uno nuevo (D13). La elección de puerta
+  llega con T2.7; falta lanzarla desde el runner (C).
+* T2.7 (A, en revisión; rama `feat/cuadros-T2.7-choose-gate`): `choose_gate`
+  en `entry.py`, evaluado al llegar (E1). Puerta asignada abierta: esa. Cerrada
+  con `redirect_on_gate_closure`: la abierta de su macrozona con menos cola por
+  `(len(queue), count, nº de puerta)`, sin azar; sin redirección o sin otra
+  abierta: espera en un bucle que lee `reopen_event` en cada vuelta y entra en
+  su puerta en orden de llegada (D13). `gate_used` es la puerta real. Quien ya
+  está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
+  Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
 ## Siguiente paso
 
-* C: T1.6 fusionada (PR #9); T1.7 publicada para revisión (PR #10), ambas con CI
-  Python 3.10/3.12 y documentación correctas. Inc1 termina al fusionarse T1.7.
-  Revisar localmente T5.2 con Chema antes de hacer commit.
-* Después, T2.8 (KPIs de grupos y conflictos) requiere T2.4, ya fusionada, y T2.5
-  de B, pendiente. T3.3 (integrar salida) requiere T3.1 de B, pendiente.
-* A: puede continuar T2.7 usando T2.6 ya fusionada; B puede avanzar T2.5/T3.1
-  según el tablero. El módulo de prioridad está implementado, pero el alcance
-  provisional del runner mantiene FIFO hasta su integración posterior.
+* C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
+  (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
+  lanzar en E0 `gate_closure_process` (I4, T2.6) y
+  `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
+  (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
+  `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
+* A: revisión de T2.7; después T2.1 (cuatro macrozonas y medida de tiempo, D15)
+  y T2.2 (I2, ya tiene `log_incident`).
+* B: T3.1 (salida), de la que depende T3.3 de C.
+* Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
+  instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
+  Dudas abiertas).
 
 ## Reparto
 
@@ -71,43 +108,61 @@ fusionadas en el PR #7. `make check`, `make hooks` y `make docs-check` disponibl
 
 ## Revisión local del rol C
 
-Antes de implementar, describir objetivo, cambios y dependencias. Preparar código,
-tests y documentación **sin commit**. Al terminar, explicar los cambios y dar
-comandos completos para probarlos, con la ruta del clon; indicar tareas siguientes
-con sus dependencias. Incorporar correcciones. Commit cuando Chema lo indique;
-la publicación y el PR se tratan después. T1.4 ya revisada, publicada y fusionada.
+Por petición de Chema: antes de implementar, describir objetivo, cambios y
+dependencias. Preparar código, tests y documentación **sin commit**. Al terminar,
+explicar los cambios y dar comandos completos para probarlos, con la ruta del
+clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
+Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
-T5.2 local, Python 3.12.14: `make check` pasa con 238 tests correctos (41 de
-análisis) y 2 xfail esperados de salida; `git diff --check` limpio. Sin commit.
-Pruebas de la tarea: `.venv/bin/python -m pytest tests/test_analysis.py -v`.
-Ejemplo manual: `[1,2,3,4,5]` da media 3 e IC 95 % de semianchura 1,963243;
-piloto `[8,10,12]` con precisión relativa del 10 % estima 75 réplicas totales.
-También se ha resumido el CSV de tres réplicas de `i1_mini` generado con T1.6.
+`main` tras los PR #13 y #14 (2026-11-23, Python 3.13.2): `make lint` limpio y
+`make test` con 239 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+Rama T2.7: 253 correctos y los mismos 2 xfail; lint y `check_pr_docs` limpios.
 
-T1.4 integrada con T1.5: 157 tests correctos, 2 xfail esperados. Antes de la última
-actualización de main: T1.6, 179 correctos; T1.7, 164 correctos; lint limpio.
-Con main `2c8740e`, esta rama pasa `make check`: 197 tests correctos y 2
-xfail esperados; lint y diff limpios. Publicada en el PR #9; pendiente de revisión del equipo.
-
-T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
-`results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas
-por réplica. El CSV es generado, no versionado. `make test` y `make lint`.
-
-T1.7: desde su carpeta, `PYTHONPATH=src make test
-VENV=../modelos-simulacion-ES-estadio/.venv` y `make lint
-VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
-`PYTHONPATH=src` selecciona el código de esa carpeta.
+* T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
+  t = +31,907 min.
+* T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
+  `results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas
+  por réplica. El CSV es generado, no versionado.
+* T1.7 (PR #10): siete pruebas de conservación por espectador en cada
+  transición, cola pendiente al alcanzar el límite y muchos tornos con demanda
+  idéntica. Desde su carpeta, `PYTHONPATH=src make test
+  VENV=../modelos-simulacion-ES-estadio/.venv` y `make lint
+  VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
+  `PYTHONPATH=src` selecciona el código de esa carpeta.
 
 ## Dudas abiertas
 
-La fusión paralela dejó dos entradas D19 en `DECISIONES.md`: prioridad de A y
-alcance provisional del runner de C. Distinguirlas por título hasta acordar la
-renumeración. No cambia el comportamiento del modelo.
+* T2.3 (A → C): los procesos de avería siguen hasta el final de la réplica, así
+  que con la salida integrada `n_turnstile_failures` contará también averías
+  posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
+  `t_start` anterior al último fin de control, o dejarlo así? La memoria no lo
+  precisa; queda para T2.8.
+* T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
+  mientras dura. Alternativa: parar también los tornos de esa puerta y/o
+  redirigir su cola; ver D23.
+* T2.7 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
+  cuando solo llega el 2 % del público. En una macrozona realista (N/4, 6
+  puertas, semilla 11) afecta a 26 personas frente a 330 si empieza en −25. Con 2
+  tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
+  redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
+  P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
 
-PR de cierre de Inc1: T1.6 #9 fusionado; T1.7 #10 abierto para revisión del equipo.
+Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
+I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
+redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
+medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
+la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
 
-T1.7 actualizada con main y con la actualización remota del equipo, sin
-sobrescribirla. Resuelto el check documental: en el head `419d22a` pasan CI
-Python 3.10, Python 3.12 y docs. La rama de revisión T5.2 sigue sin commit.
+## Avance de C: T5.2 (2026-11-23)
+
+Análisis estadístico revisado por Chema y preparado para PR desde
+`feat/chema-T5.2-analysis`: IC t-Student, réplicas estimadas con el piloto,
+resúmenes por escenario y diferencias emparejadas por seed. 41 pruebas de
+análisis. Salidas documentadas en D24/CONTRATOS (D20 pertenece a prioridad).
+Los dos xfail de salida son esperados y se activarán con T3.3/T3.4.
+
+Autorización de esta sesión: implementar y publicar T5.2, T2.8 y la integración
+de salida T3.3/T3.4, con comprobaciones y PR separados. Se mantiene la revisión
+del equipo antes del merge. T3.1/T3.2 están terminadas en el PR #15, aún abierto.

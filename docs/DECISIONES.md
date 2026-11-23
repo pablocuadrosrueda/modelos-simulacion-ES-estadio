@@ -124,15 +124,6 @@ igual que `service_s`), cada espectador recibe el mismo número en todos los
 escenarios. No es columna del DataFrame. Si se prefiere un atributo
 `Spectator.vomitory_s` como `service_s`, el cambio es local a A y B.
 
-### D19 · Semántica de la prioridad en el torno (X3) — 2026-11-23
-* Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
-  se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
-* Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`
-  (0, grupos priorizados) < `PRIORITY_NORMAL` (1). Dentro de un nivel, FIFO.
-* No expulsiva: `entry_process` siempre pide con `preempt=False`.
-* Consecuencia para los KPIs (C, T2.8): `wait_mean_priority_min` y
-  `group_wait_diff_min` se calculan con `config.priority_groups`, no con la
-  disciplina.
 ### D19 · Alcance provisional del runner de Inc1 — 2026-11-23
 T1.4 encadena entrada y asiento y termina al sentarse el último espectador,
 como fija el objetivo de Inc1. La duración máxima de corrida `max_sim_hours`
@@ -144,6 +135,81 @@ que aparenten incluir fases todavía pendientes. La configuración de desarrollo
 `configs/dev/i1_mini.json` es un experimento diff con una macrozona, 600
 espectadores y todas las incidencias/emergencia desactivadas, compatible con
 `load_experiment` y con la futura CLI de T1.6. No añade parámetros al modelo.
+
+### D20 · Semántica de la prioridad en el torno (X3) — 2026-11-23
+* Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
+  se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
+* Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`
+  (0, grupos priorizados) < `PRIORITY_NORMAL` (1). Dentro de un nivel, FIFO.
+* No expulsiva: `entry_process` siempre pide con `preempt=False`.
+* Consecuencia para los KPIs (C, T2.8): `wait_mean_priority_min` y
+  `group_wait_diff_min` se calculan con `config.priority_groups`, no con la
+  disciplina.
+* Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
+  (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
+
+### D21 · I1 con números comunes, sorteado en E0 — 2026-11-23
+Igual que D18. `stadium.build_stadium_resources` llama a
+`incidents.sample_seat_conflicts`, que sortea del flujo `"seat_conflict"`, para
+los `n_spectators`, un `u` ~ Uniforme(0, 1) y una resolución
+Triangular(`resolution_min`) en segundos. Se guardan en `StadiumResources`
+(`seat_conflict_u`, `seat_conflict_resolution_s`) por `id`. Hay conflicto si
+`u < prob`: al pasar de 0,5 % a 1 % el conjunto crece y conserva a los
+anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
+* El conflicto se detecta **al llegar al asiento**, tras el paso por el
+  vomitorio, y el espectador **retiene la plaza** mientras espera al acomodador
+  de su macrozona (FIFO) y mientras dura la resolución.
+* Incidencia `I1`: `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` al
+  detectarlo y `t_end` al resolverse (incluye la espera al acomodador).
+* Sustituye, para I1, la indicación de D17 de sortearlo en `generate_spectators`.
+### D22 · Averías de torno (I3): reloj en funcionamiento y generador por torno — 2026-11-23
+* **Reloj:** el tiempo entre fallos Exponencial(`mtbf_min`) se mide **en
+  funcionamiento**: empieza en la apertura y, tras cada avería, al terminar la
+  reparación. Así `mtbf_min` es el tiempo medio de buen funcionamiento (MTBF
+  en sentido estricto) y un torno no puede encadenar fallos durante su propia
+  reparación. Cada torno hace en promedio `T / (mtbf_min + media(repair_min))`
+  averías en un horizonte `T` (≈ T / 246,5 con la base).
+* **Cuándo se para:** al vencer ese tiempo el torno se avería, pero termina el
+  servicio en curso (memoria §3.2: «cuando el torno queda libre»): la avería
+  pide una plaza con `PRIORITY_FAILURE` y `preempt=False` y la reparación
+  Uniforme(`repair_min`) cuenta desde que la consigue (`t_start` de la
+  incidencia). Como el recurso de la puerta no distingue tornos físicos, «el
+  torno k» ocupa la primera plaza que se libera; con c bucles por puerta nunca
+  hay más de c averías a la vez.
+* **Números aleatorios comunes (D17):** cada torno `(zona, puerta, k)` tiene su
+  propio generador, `rngs.substream("turnstile_failure", zona, puerta, k)`, que
+  depende solo de la semilla y de esa identidad (`SeedSequence` con
+  `spawn_key = (9, …clave codificada)`). Sortea en orden fijo Exp, Unif, Exp,
+  Unif… El calendario de sorteos del torno A-G1-T1 es el mismo con 2, 3 o 4
+  tornos por puerta (X1) y con otras macrozonas; solo cambia, inevitablemente,
+  la espera hasta que el torno queda libre. No se añade ningún flujo a
+  `STREAM_NAMES`; el flujo padre `turnstile_failure` no se consume.
+* Numeración: D21 está reservado por T2.5 (rama `feat/perez-T2.5-seat-conflict`,
+  I1 con números comunes), abierta antes; esta decisión toma D22.
+
+### D23 · Cierre de puerta (I4): a quién afecta y a qué puerta se redirige — 2026-11-23
+* **Hipótesis pendiente de confirmar por el grupo.** El cierre afecta solo a
+  quien **llega** (E1) mientras dura (memoria §3.2: «nadie entra por esa puerta»,
+  «las llegadas se redirigen o esperan»). Quien ya está en la cola o en control
+  de esa puerta al cerrarse sigue su curso y los tornos siguen atendiéndolo. Es
+  la lectura más simple y literal; la memoria no trata la cola existente.
+  * Alternativa (no implementada): parar los tornos de la puerta durante el
+    cierre y/o redirigir la cola existente. Sin redirección aumentaría la espera
+    de los que estaban en cola (hasta `duration_min` más); con redirección
+    trasladaría esa cola a las puertas vecinas. En ambos casos X6 mostraría un
+    efecto mayor del cierre y una diferencia mayor entre las dos variantes.
+* **Elección al llegar, una vez:** `choose_gate` se evalúa en E1 con el estado
+  de ese instante; quien se redirige no vuelve a cambiar de puerta. Sin
+  desplazamiento extra (la memoria no modela el exterior).
+* **Criterio y desempate:** entre las puertas **abiertas** de la macrozona, la de
+  menor `(len(queue), count, nº de puerta)`, determinista y sin azar (el flujo
+  `gate_choice` queda sin uso). Un desempate aleatorio habría que sortearlo por
+  espectador al generarlo (D17) y cambiaría `Spectator`.
+* **Sin alternativa abierta** (p. ej. `gates_per_zone = 1`) o sin redirección: se
+  espera a la reapertura (D13), leyendo `reopen_event` en cada vuelta.
+* Quien llega exactamente en el instante de reapertura puede encontrarse la
+  puerta aún cerrada según el orden de los sucesos simultáneos de SimPy; con
+  llegadas continuas tiene probabilidad nula.
 
 ### D24 · Salidas estadísticas y muestras incompletas (T5.2) — 2026-11-23
 El análisis usa una observación por réplica, como exige §5.3 de la memoria.

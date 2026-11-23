@@ -28,7 +28,8 @@ from typing import TYPE_CHECKING, Any
 
 import simpy
 
-from .entities import Spectator, min_to_s, s_to_min
+from .entities import Incident, Spectator, gate_label, min_to_s, s_to_min
+from .incidents import log_incident
 
 if TYPE_CHECKING:
     from .runner import SimContext
@@ -90,8 +91,33 @@ def priority_of(spectator: Spectator, ctx: SimContext) -> int:
 
 
 def choose_gate(spectator: Spectator, ctx: SimContext) -> int:
-    """Puerta a la que se une el espectador (E1), aplicando la redirección de I4."""
-    raise NotImplementedError("T2.7-A: choose_gate")
+    """Puerta a la que se une el espectador en E1, aplicando la redirección de I4.
+
+    Se evalúa una sola vez, al llegar, con el estado de ese instante:
+
+    * puerta asignada abierta: ``spectator.gate``;
+    * cerrada y ``redirect_on_gate_closure``: la puerta **abierta** de su
+      macrozona con menos cola, por ``(len(queue), count, nº de puerta)``;
+      determinista, sin azar (D23);
+    * cerrada sin redirección, o sin ninguna alternativa abierta: devuelve
+      ``spectator.gate`` (cerrada) y ``entry_process`` espera a que reabra.
+
+    No hay desplazamiento extra al redirigirse (la memoria no modela el exterior).
+    """
+    assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
+    entry = ctx.entry
+    zone, gate = spectator.zone, spectator.gate
+    if entry.gate_open[(zone, gate)] or not ctx.config.redirect_on_gate_closure:
+        return gate
+    open_gates = [g for g in range(1, ctx.config.gates_per_zone + 1) if entry.gate_open[(zone, g)]]
+    if not open_gates:
+        return gate
+
+    def load(g: int) -> tuple[int, int, int]:
+        res = entry.turnstiles[(zone, g)]
+        return (len(res.queue), res.count, g)
+
+    return min(open_gates, key=load)
 
 
 def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, None]:
@@ -101,27 +127,110 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
     ``read_failure``. Al terminar, el llamador continúa con
     ``stadium.seating_process``.
 
-    Si se lanza antes de ``t_arrival``, espera hasta esa hora. Inc1: usa la
-    puerta asignada (``spectator.gate``; la redirección de I4 llega en T2.7) y
-    no aplica I2 (T2.2), así que ``read_failure`` queda en ``False``.
+    Si se lanza antes de ``t_arrival``, espera hasta esa hora. En la llegada
+    elige puerta con ``choose_gate`` (``gate_used`` es la puerta realmente usada).
+    Si esa puerta está cerrada (I4 sin redirección o sin alternativa), espera a
+    que reabra leyendo ``reopen_event`` en cada vuelta, porque
+    ``gate_closure_process`` lo sustituye al dispararlo, y se une después a la
+    cola de su puerta conservando el orden de llegada (D13). El cierre solo
+    afecta a quien llega mientras dura: quien ya está en cola o en control sigue
+    (hipótesis D23). No aplica I2 (T2.2), así que ``read_failure`` queda en
+    ``False``.
     """
     env = ctx.env
     assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
 
     t_arrival_s = min_to_s(spectator.t_arrival)
+    on_time = env.now <= t_arrival_s
     if env.now < t_arrival_s:
         yield env.timeout(t_arrival_s - env.now)
 
-    gate = spectator.gate
+    t_request_s = env.now
+    gate = choose_gate(spectator, ctx)
     spectator.gate_used = gate
-    turnstiles = ctx.entry.turnstiles[(spectator.zone, gate)]
+    key = (spectator.zone, gate)
+    while not ctx.entry.gate_open[key]:
+        yield ctx.entry.reopen_event[key]
+    turnstiles = ctx.entry.turnstiles[key]
     with turnstiles.request(priority=priority_of(spectator, ctx), preempt=False) as req:
         yield req
-        spectator.t_start_control = s_to_min(env.now)
+        if on_time and env.now == t_request_s:
+            # Sin cola: la espera es exactamente 0 (s_to_min(min_to_s(t)) puede
+            # quedar ~1e-14 min por debajo de t_arrival; aviso de B en T1.3).
+            spectator.t_start_control = spectator.t_arrival
+        else:
+            spectator.t_start_control = s_to_min(env.now)
         yield env.timeout(spectator.service_s)
         spectator.t_end_control = s_to_min(env.now)
 
 
 def turnstile_failure_process(zone: str, gate: int, ctx: SimContext) -> Generator[Any, Any, None]:
-    """Proceso SimPy de averías (I3) de los tornos de una puerta."""
-    raise NotImplementedError("T2.3-A: turnstile_failure_process")
+    """Proceso SimPy de averías (I3) de los tornos de una puerta.
+
+    Lanza un sub-proceso por torno ``k = 1..turnstiles_per_gate`` (ver
+    ``_turnstile_failure_loop``) y espera a todos; como los bucles no terminan,
+    la réplica acaba por la condición del runner (``finished | time_limit``).
+    Si ``incidents.turnstile_failure.enabled`` es falso termina al instante.
+    """
+    cfg = ctx.config
+    if not cfg.incidents.turnstile_failure.enabled:
+        return
+    loops = [
+        ctx.env.process(_turnstile_failure_loop(zone, gate, k, ctx))
+        for k in range(1, cfg.turnstiles_per_gate + 1)
+    ]
+    yield ctx.env.all_of(loops)
+
+
+def _turnstile_failure_loop(
+    zone: str, gate: int, k: int, ctx: SimContext
+) -> Generator[Any, Any, None]:
+    """Ciclo de fallo y reparación del torno ``k`` de la puerta ``(zone, gate)`` (I3).
+
+    1. Funciona Exponencial(``mtbf_min``) (el reloj cuenta solo en funcionamiento,
+       D22).
+    2. Pide una plaza del recurso de la puerta con ``PRIORITY_FAILURE`` y
+       ``preempt=False``: adelanta a todos los que esperan, también a
+       ``PRIORITY_HIGH``, pero nunca corta un servicio en curso.
+    3. Al conseguirla, el torno queda parado Uniforme(``repair_min``) min: suma
+       en ``failed_turnstiles`` y registra una incidencia ``I3`` con ``t_end``
+       al terminar la reparación.
+
+    Usa un generador propio derivado de ``(zone, gate, k)`` (D22), así que el
+    calendario de sorteos de un torno es el mismo en todos los escenarios.
+    """
+    env = ctx.env
+    params = ctx.config.incidents.turnstile_failure
+    assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
+    key = (zone, gate)
+    turnstiles = ctx.entry.turnstiles[key]
+    rng = ctx.rngs.substream("turnstile_failure", zone, gate, k)
+    label = f"{gate_label(zone, gate)}-T{k}"
+    while True:
+        yield env.timeout(min_to_s(rng.exponential(params.mtbf_min)))
+        repair_s = min_to_s(rng.uniform(params.repair_min.low, params.repair_min.high))
+        with turnstiles.request(priority=PRIORITY_FAILURE, preempt=False) as req:
+            yield req
+            ctx.entry.failed_turnstiles[key] += 1
+            incident = log_incident(ctx, Incident("I3", zone, label, t_start=s_to_min(env.now)))
+            yield env.timeout(repair_s)
+            ctx.entry.failed_turnstiles[key] -= 1
+            incident.t_end = s_to_min(env.now)
+
+
+def start_turnstile_failure_processes(ctx: SimContext) -> list[simpy.Process]:
+    """Lanza ``turnstile_failure_process`` en todas las puertas (I3, E0).
+
+    Orden fijo: ``config.zones`` y, dentro de cada una, puertas 1..``gates_per_zone``.
+    Debe llamarse después de ``build_entry_resources``. Si
+    ``incidents.turnstile_failure.enabled`` es falso no crea ningún proceso y
+    devuelve una lista vacía.
+    """
+    cfg = ctx.config
+    if not cfg.incidents.turnstile_failure.enabled:
+        return []
+    return [
+        ctx.env.process(turnstile_failure_process(zone, gate, ctx))
+        for zone in cfg.zones
+        for gate in range(1, cfg.gates_per_zone + 1)
+    ]

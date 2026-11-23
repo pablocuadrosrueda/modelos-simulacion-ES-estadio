@@ -7,8 +7,8 @@ Memoria §3.1 paso 5-6 y Fase B, §4.5:
 * tras el torno, el espectador camina ``distance_m / speed_mps`` hasta su
   vomitorio (10 por macrozona, ``vomitory_capacity`` = 8 plazas, FIFO);
 * el paso por el vomitorio dura Triangular(5, 10, 20) s (flujo ``"vomitory"``);
-* si hay conflicto por asiento (I1, ver ``incidents.seat_conflict``) retiene
-  la plaza del vomitorio hasta que un acomodador lo resuelve;
+* al llegar al asiento, si hay conflicto (I1, ver ``incidents.seat_conflict``)
+  retiene la plaza del vomitorio hasta que un acomodador lo resuelve;
 * al sentarse registra ``t_seated`` y ``late`` (E4);
 * entre ``t_start_min`` y ``t_end_min`` permanece sentado; si hay emergencia,
   el proceso puede ser interrumpido (``Process.interrupt``) por la alarma.
@@ -18,6 +18,7 @@ por espectador, así que no se sortea dentro del proceso. ``build_stadium_resour
 sortea de una vez ``n_spectators`` tiempos del flujo ``"vomitory"`` y el
 espectador ``id`` usa el de su posición. Así cada espectador recibe el mismo
 número en todos los escenarios, sea cual sea el orden en que llega al vomitorio.
+Lo mismo con la ocurrencia y la duración del conflicto I1 (D21).
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import simpy
 
+from . import incidents
 from .arrivals import sample_service_times
 from .entities import Spectator, min_to_s, s_to_min
 
@@ -45,6 +47,10 @@ class StadiumResources:
     stewards: dict[str, simpy.Resource] = field(default_factory=dict)
     vomitory_pass_s: np.ndarray = field(default_factory=lambda: np.empty(0))
     """Tiempo de paso por el vomitorio (s) del espectador ``id`` (D18)."""
+    seat_conflict_u: np.ndarray = field(default_factory=lambda: np.empty(0))
+    """Uniforme(0, 1) del espectador ``id``: hay conflicto si ``< prob`` (I1, D21)."""
+    seat_conflict_resolution_s: np.ndarray = field(default_factory=lambda: np.empty(0))
+    """Duración (s) de la resolución del conflicto del espectador ``id`` (I1, D21)."""
 
 
 def build_stadium_resources(ctx: SimContext) -> StadiumResources:
@@ -52,8 +58,9 @@ def build_stadium_resources(ctx: SimContext) -> StadiumResources:
 
     Por cada bloque ``(zone, block)`` (``block`` 1-indexado) un ``Resource``
     FIFO con ``vomitory_capacity`` plazas; por cada macrozona un ``Resource``
-    con ``stewards_per_zone`` acomodadores. Sortea además los
-    ``n_spectators`` tiempos de paso por el vomitorio (D18).
+    con ``stewards_per_zone`` acomodadores. Sortea además, para los
+    ``n_spectators``, los tiempos de paso por el vomitorio (D18) y la ocurrencia
+    y duración del conflicto I1 (D21).
     """
     cfg = ctx.config
     res = StadiumResources()
@@ -64,6 +71,9 @@ def build_stadium_resources(ctx: SimContext) -> StadiumResources:
     res.vomitory_pass_s = sample_service_times(
         cfg.vomitory_pass_s, cfg.n_spectators, ctx.rngs["vomitory"]
     )
+    res.seat_conflict_u, res.seat_conflict_resolution_s = incidents.sample_seat_conflicts(
+        cfg.incidents.seat_conflict, cfg.n_spectators, ctx.rngs["seat_conflict"]
+    )
     return res
 
 
@@ -72,12 +82,11 @@ def seating_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any
 
     Parte de ``t_end_control`` (si se lanza antes, espera hasta entonces):
     camina ``distance_m / speed_mps`` s, se une a la cola del vomitorio de su
-    bloque (``t_vomitory``), ocupa una plaza durante su tiempo de paso y al
-    soltarla se sienta (``t_seated``, ``late``).
+    bloque (``t_vomitory``) y ocupa una plaza durante su tiempo de paso. Si al
+    llegar al asiento hay conflicto (I1), resuelve con un acomodador sin soltar
+    la plaza. Al soltarla se sienta (``t_seated``, ``late``).
 
-    Rellena ``t_vomitory``, ``t_seated``, ``conflict`` y ``late``. Inc1: sin
-    conflictos por asiento (I1 llega en T2.5), así que ``conflict`` queda en
-    ``False``.
+    Rellena ``t_vomitory``, ``t_seated``, ``conflict`` y ``late``.
     """
     env = ctx.env
     assert ctx.stadium is not None, "build_stadium_resources debe ejecutarse antes (E0)"
@@ -94,7 +103,8 @@ def seating_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any
     with vomitory.request() as req:
         yield req
         yield env.timeout(float(ctx.stadium.vomitory_pass_s[spectator.id]))
-        # T2.5: aquí, aún con la plaza retenida, ``yield from incidents.seat_conflict``.
+        if incidents.has_seat_conflict(spectator, ctx):
+            yield from incidents.seat_conflict(spectator, ctx)
 
     spectator.t_seated = s_to_min(env.now)
     spectator.late = is_late(spectator, ctx)
