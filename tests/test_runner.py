@@ -115,18 +115,18 @@ def test_multiple_zones() -> None:
     assert df["t_seated"].notna().all()
 
 
-def test_rejects_unimplemented_read_failure() -> None:
+def test_accepts_read_failure() -> None:
     cfg = load_config(
         overrides=deep_merge(MINI_OVERRIDES, {"incidents": {"read_failure": {"enabled": True}}})
     )
-    with pytest.raises(NotImplementedError, match="T2.2"):
-        runner.run_replica(cfg, seed=1)
+    assert runner.run_replica(cfg, seed=1)["t_exit"].notna().all()
 
 
-def test_rejects_emergency(mini_config: Config) -> None:
+def test_accepts_emergency(mini_config: Config) -> None:
     cfg = load_config(overrides={**MINI_OVERRIDES, "emergency": {"enabled": True}})
-    with pytest.raises(NotImplementedError, match="Inc4"):
-        runner.run_replica(cfg, seed=1)
+    df = runner.run_replica(cfg, seed=1)
+    assert df["t_safe"].notna().all()
+    assert df["t_exit"].isna().all()
 
 
 def test_accepts_priority_queue() -> None:

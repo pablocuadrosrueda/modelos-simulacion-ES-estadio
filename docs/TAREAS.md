@@ -69,7 +69,7 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 |---|---|---|---|---|
 | T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | hecho | Inc3 |
 | T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | hecho | T4.1 |
-| T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | pendiente | T4.1 |
+| T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | en revisión | T4.1 |
 
 ## Inc5 · Experimentos y estadística
 
@@ -144,6 +144,6 @@ make test y make lint limpios antes del PR.
 
 Hito de Inc1: `make run EXP=<mini> REPS=3` escribe el CSV de KPIs.
 
-T1.7 (PR #10): siete pruebas de cierre preparadas y publicadas; verificación con
-T1.6 integrada: 204 tests correctos y dos pendientes esperados de salida. Estado:
-en revisión. TAREAS y ESTADO actualizados en esta rama para la CI documental.
+T1.7 fusionada en PR #10; conservación completa T3.4 fusionada en PR #22.
+T5.2 fusionada en PR #17: IC t-Student, estimación de réplicas y comparación
+por semillas con el formato D29. Véase ESTADO para la verificación actual.

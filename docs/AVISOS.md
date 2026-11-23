@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
+**Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
+
+* Aplicadas T2.2, T4.1 y T4.2: I2 ya se admite; la alarma interrumpe el proceso
+  único de cada espectador y E8 espera a todos los recorridos, no a las averías.
+* Metadatos nuevos: `stop_time_min` y `alarm_triggered`. KPIs de evacuación con
+  denominador de todos los evacuables; vaciado incompleto o porcentaje aún no
+  observable, NaN. Casos/definiciones en CONTRATOS y D30.
+* La doble D25 de trabajo paralelo se desambigua: Inc2 conserva D25, evacuación
+  de B pasa a D28; estadística usa D29 (PR #17). Solo referencias en módulos de B.
+* `make run EXP=configs/dev/i4_mini.json REPS=3`: dos variantes, todas las
+  incidencias activadas, una salida bloqueada frente a todas abiertas.
+
+
 ### 2026-11-23 · C → A, B · Runner hasta salida ordinaria (T3.3, D27)
 **Estado:** **en `main`** (PR #20).
 
@@ -24,7 +38,7 @@ Reglas:
 * Caso reproducible: `make run EXP=configs/dev/i3_mini.json REPS=3`.
 
 ### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D28)
-**Estado:** **en `main`** (PR #19). Pendiente de aplicar por C (T4.3).
+**Estado:** en `main` (PR #19); aplicada por C en la rama T4.3.
 
 * **C (T4.3):** cada espectador va en un único proceso con `try` y
   `except simpy.Interrupt`. Dentro del `try`, el recorrido normal (entrada,
@@ -42,8 +56,7 @@ Reglas:
   había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
   quienes tienen `t_safe`.
 ### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
-**Estado:** **en `main`** (PR #21). Pendiente de aplicar por C: el runner aún
-rechaza `read_failure.enabled = true`, así que X0 todavía no se puede ejecutar.
+**Estado:** en `main` (PR #21); aplicada por C en la rama T4.3.
 
 * **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
   entrada están implementadas. En `main` el runner aún rechaza cualquier

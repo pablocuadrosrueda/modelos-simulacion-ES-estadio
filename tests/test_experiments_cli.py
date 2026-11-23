@@ -170,7 +170,10 @@ def test_cli_missing_file(cli_main, capsys) -> None:
     assert "no encontrado" in capsys.readouterr().err
 
 
-def test_cli_unsupported_scenario_has_no_csv(cli_main, tmp_path: Path, capsys) -> None:
-    assert cli_main(["X0", "--reps", "1"]) == 2
-    assert "Aún no implementado" in capsys.readouterr().err
-    assert not (tmp_path / "results").exists()
+def test_cli_base_scenario_supports_all_incidents(cli_main, tmp_path: Path) -> None:
+    assert cli_main(["X0", "--reps", "1"]) == 0
+    df = pd.read_csv(tmp_path / "results" / "X0_base_kpis.csv")
+    assert df.loc[0, "n_spectators"] == df.loc[0, "n_entered"] == 48775
+    assert df.loc[0, "n_read_failures"] > 0
+    assert df.loc[0, "exit_time_min"] > 0
+    assert pd.isna(df.loc[0, "evac_time_min"])

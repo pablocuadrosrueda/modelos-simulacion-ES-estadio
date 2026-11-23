@@ -25,7 +25,8 @@ import simpy
 
 from .arrivals import generate_spectators
 from .config import Config
-from .entities import INCIDENT_COLUMNS, SPECTATOR_COLUMNS, Incident, Spectator, min_to_s
+from .emergency import alarm_process, evacuation_process
+from .entities import INCIDENT_COLUMNS, SPECTATOR_COLUMNS, Incident, Spectator, min_to_s, s_to_min
 from .entry import build_entry_resources, entry_process, start_turnstile_failure_processes
 from .exit import build_exit_resources, exit_process
 from .incidents import gate_closure_process
@@ -58,9 +59,12 @@ class SimContext:
 
 def _spectator_journey(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, None]:
     """Un único proceso conserva al espectador hasta atravesar la salida."""
-    yield from entry_process(spectator, ctx)
-    yield from seating_process(spectator, ctx)
-    yield from exit_process(spectator, ctx)
+    try:
+        yield from entry_process(spectator, ctx)
+        yield from seating_process(spectator, ctx)
+        yield from exit_process(spectator, ctx)
+    except simpy.Interrupt:
+        yield from evacuation_process(spectator, ctx)
 
 
 def run_replica(config: Config, seed: int) -> pd.DataFrame:
@@ -69,8 +73,9 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
     Termina al salir el último espectador o al alcanzar ``max_sim_hours``
     desde la apertura. Si se alcanza ese límite, conserva todos los espectadores
     y deja en NaN los sucesos pendientes. Admite FIFO/prioridad, conflictos I1,
-    averías I3 y cierre I4. I2 y emergencia siguen pendientes y se rechazan
-    explícitamente. La salida aplica la política simultánea o escalonada.
+    relecturas I2, averías I3, cierre I4 y emergencia. La alarma interrumpe
+    los recorridos; quienes están dentro evacúan, los que siguen fuera abandonan
+    o no llegan (D28). La salida ordinaria aplica la política configurada.
 
     Args:
         config: escenario ya validado (``config.load_config`` / ``load_experiment``).
@@ -83,10 +88,6 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
         ``"incidents"`` (DataFrame con ``entities.INCIDENT_COLUMNS``),
         ``"seed"`` y ``"scenario"`` (``config.name``).
     """
-    if config.incidents.read_failure.enabled:
-        raise NotImplementedError("Fallo de lectura I2 pendiente de T2.2; desactiva read_failure")
-    if config.emergency.enabled:
-        raise NotImplementedError("Evacuación pendiente de Inc4; desactiva emergency.enabled")
     env = simpy.Environment(initial_time=min_to_s(config.t_open_min))
     ctx = SimContext(env=env, config=config, rngs=RngStreams(seed))
     ctx.entry = build_entry_resources(ctx)
@@ -99,6 +100,7 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
     # D16/D18: la lista viene ordenada por llegada e id. Cada proceso espera
     # por sí mismo hasta la llegada y usa los tiempos aleatorios de su espectador.
     journeys = [env.process(_spectator_journey(sp, ctx)) for sp in ctx.spectators]
+    env.process(alarm_process(ctx, journeys))
     finished = env.all_of(journeys)
     time_limit = env.timeout(min_to_s(config.max_sim_hours * 60))
     env.run(until=finished | time_limit)
@@ -109,4 +111,6 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
     )
     df.attrs["seed"] = seed
     df.attrs["scenario"] = config.name
+    df.attrs["stop_time_min"] = s_to_min(env.now)
+    df.attrs["alarm_triggered"] = ctx.phase == "evacuation"
     return df

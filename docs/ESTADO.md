@@ -1,7 +1,8 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 e Inc3 completos,
-Inc2 salvo T2.1, de Inc4, T4.1 y T4.2, y de Inc5, T5.2. Nada en revisión._
+_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
+Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
+T4.3 (integración de alarma y KPIs) está en revisión en esta rama._
 
 ## Hecho
 
@@ -43,9 +44,10 @@ la protección de `main` exigiendo esos checks.
   para esperas nulas con redondeo s/min (tolerancia 1e-9 min), con tests.
 * T1.7 (C, hecho; PR #10): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
-  puerta saturada con las mismas llegadas y servicios.
+  puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
+  siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (falta T2.1).
+**Inc2 · completado salvo T2.1 (reparto/rendimiento).**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -72,7 +74,7 @@ la protección de `main` exigiendo esos checks.
 * T2.6 (B, hecho; PR #5): `log_incident` y `gate_closure_process` (I4): cierra la
   puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
   `reopen_event`, que se sustituye por uno nuevo (D13). La elección de puerta
-  llega con T2.7; el runner la lanza en E0 desde T2.8.
+  llega con T2.7; falta lanzarla desde el runner (C).
 * T2.7 (A, hecho; PR #16): `choose_gate`
   en `entry.py`, evaluado al llegar (E1). Puerta asignada abierta: esa. Cerrada
   con `redirect_on_gate_closure`: la abierta de su macrozona con menos cola por
@@ -89,14 +91,9 @@ la protección de `main` exigiendo esos checks.
   relectura sigue al servicio sin liberar el torno: `read_failure = True`,
   `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
   fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
-  conjunto crece. Tests en `tests/test_read_failure.py`. El runner aún la
-  rechaza (falta quitar esa guarda, C).
-* T2.8 (C, hecho; PR #18): prioridad e incidencias I1, I3 e I4 integradas en el
-  runner (averías y cierre lanzados en E0); indicadores por grupos, conflictos y
-  recuentos de incidencias; colas por puerta real (`gate_used`). Caso de
-  desarrollo `configs/dev/i2_mini.json`. Decisión D25.
+  conjunto crece. Tests en `tests/test_read_failure.py`.
 
-**Inc3: completado.**
+**Inc3: en curso.**
 
 * T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
@@ -105,14 +102,8 @@ la protección de `main` exigiendo esos checks.
   desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
-* T3.3 (C, hecho; PR #20): el runner encadena asiento, permanencia y salida y
-  termina al salir el último; KPIs de vaciado y cola máxima por salida. Caso
-  `configs/dev/i3_mini.json`. Decisión D27.
-* T3.4 (C, hecho; PR #22): conservación individual en cada transición y en
-  puntos intermedios, con políticas, incidencias y límites de tiempo. Ya no
-  queda ningún xfail.
 
-**Inc4: en curso** (falta T4.3).
+**Inc4: en curso.**
 
 * T4.1 y T4.2 (B, hecho; PR #19): `emergency.py`
   con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
@@ -120,29 +111,31 @@ la protección de `main` exigiendo esos checks.
   `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
   interrupción de los procesos de los espectadores) y `evacuation_process`
   (abandono o reacción, marcha más rápida, salida con menos cola y `t_safe`).
-  Decisión D28. Tests en `tests/test_emergency.py`, incluida la validación del
+  Decisión D25. Tests en `tests/test_emergency.py`, incluida la validación del
   apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
   una salida bloqueada. Falta que el runner lo integre (T4.3, C).
 
-**Inc5: en curso.**
-
-* T5.2 (C, hecho; PR #17): `analysis.py` con intervalos t de Student, réplicas
-  necesarias estimadas con el piloto, resúmenes por escenario y diferencias
-  emparejadas por semilla. 41 pruebas en `tests/test_analysis.py`. Decisión D29.
-
 ## Siguiente paso
 
-* C: T4.3 (integrar la evacuación en el runner; ver `docs/AVISOS.md`) y quitar
-  la guarda que aún rechaza I2 (T2.2 ya en `main`); sin eso X0 y X7 no se pueden
-  ejecutar. Después T5.1: los experimentos oficiales
-  esperan a Inc4 y no se desactivan incidencias del modelo para presentar
-  resultados definitivos.
-* A: T2.1 (cuatro macrozonas y medida del tiempo de una réplica, D15).
-* B: T5.4 (rendimiento) en cuanto haya réplicas completas con evacuación; T6.2
-  y T6.3 con el grupo.
-* Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
-  instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
-  Dudas abiertas).
+El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
+T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
+T5.2 está fusionada en PR #17 con salida y conservación completas.
+
+C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
+estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
+incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
+Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
+variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
+en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
+5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
+aislar la capacidad, no como resultados definitivos del escenario real.
+
+Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
+T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
+calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
+T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
+oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
+I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
 
 ## Reparto
 
@@ -159,15 +152,15 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar T5.2, T2.8, T3.3 y T3.4
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4 y T4.3)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
-`main` tras los PR #18 a #22 (2026-11-23, Python 3.13.2): `make lint` limpio y
-318 tests correctos, sin ningún xfail, una vez repuesto el `import pytest` de
-`tests/test_conservacion.py` que se perdió al integrar `main` en la rama de T3.3
-(sin él, pytest no llega a ejecutar ese fichero y ruff da error).
+Rama T4.3 con todo `main`: Python 3.12, `make check` limpio, 368 tests correctos,
+sin xfail. Restaurado el import pytest necesario en conservación tras la fusión
+de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
+B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
@@ -203,3 +196,9 @@ I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
 redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
 medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
 la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
+
+## Análisis de C (T5.2, fusionada en PR #17)
+
+IC t-Student, réplicas estimadas con el piloto, resúmenes por escenario y
+diferencias emparejadas por seed. 41 pruebas propias. Formato D29/CONTRATOS.
+Los dos xfail antiguos de salida ya están activados; no quedan pruebas xfail.
