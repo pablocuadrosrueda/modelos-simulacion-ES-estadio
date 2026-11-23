@@ -97,7 +97,7 @@ siguen rechazadas mientras no estén integradas.
 | `gate_used` | int | entry | Puerta por la que entra (≠ `gate` si se redirige; -1 si no entra) |
 | `t_start_control` | float | entry | Inicio del control (E2) |
 | `t_end_control` | float | entry | Fin del control (E3) |
-| `read_failure` | bool | entry | Hubo relectura (I2) |
+| `read_failure` | bool | entry | Hubo relectura (I2): `u < prob` con `u` sorteado en E0 por `id` y guardado en `EntryResources.read_failure_u`, extra en `read_failure_extra_s` (D26) |
 | `t_vomitory` | float | stadium | Llegada a la cola del vomitorio |
 | `t_seated` | float | stadium | Sentado (E4) |
 | `conflict` | bool | stadium/incidents | Tuvo conflicto por asiento (I1) |
@@ -173,7 +173,7 @@ todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `sample_read_failures`, `has_read_failure` (I2, D26). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |

@@ -14,6 +14,25 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
+**Estado:** en la rama `feat/cuadros-T2.2-read-failure`; **aún no en `main`**.
+
+* **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
+  entrada están implementadas. En `main` el runner aún rechaza cualquier
+  incidencia con `NotImplementedError` y no lanza
+  `start_turnstile_failure_processes(ctx)` ni `gate_closure_process(ctx)`: sin
+  eso **X0, que las lleva activadas, no se puede ejecutar**. El PR abierto de
+  T2.8 ya integra I1, I3 e I4 pero sigue rechazando I2 («pendiente de T2.2»);
+  cuando T2.2 esté en `main`, esa guarda se puede quitar. I2 no necesita nada
+  en E0: el sorteo va en `build_entry_resources` y la relectura en
+  `entry_process`.
+* **C (métricas):** `n_read_failures` = filas `kind == "I2"` de
+  `df.attrs["incidents"]` (coincide con `df["read_failure"].sum()`). La
+  relectura ocupa el torno, así que entra en el servicio de `turnstile_util`
+  (`t_end_control - t_start_control`), como pide D12.
+* `build_entry_resources` consume ahora el flujo `read_failure` (no afecta a los
+  demás flujos ni a resultados previos).
+
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
 
