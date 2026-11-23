@@ -21,6 +21,9 @@ import pandas as pd
 
 from .config import Config
 
+_TIME_TOL_MIN = 1e-9
+"""Tolerancia numérica de conversión s <-> min (aviso B, D18)."""
+
 ID_COLUMNS: list[str] = ["experiment", "scenario", "replica", "seed"]
 """Columnas identificativas de cada fila de la tabla de KPIs (las añade experiments.py)."""
 
@@ -64,10 +67,10 @@ def queue_length_max(start: pd.Series, end: pd.Series) -> int:
         if pd.isna(arrival):
             continue
         if pd.notna(departure):
+            if math.isclose(departure, arrival, rel_tol=0, abs_tol=_TIME_TOL_MIN):
+                continue
             if departure < arrival:
                 raise ValueError("El fin de una espera no puede preceder a su inicio")
-            if departure == arrival:
-                continue
             events.append((departure, -1))
         events.append((arrival, 1))
 
@@ -101,6 +104,7 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
 
     # Los tiempos del DataFrame ya están en minutos (no son el reloj SimPy).
     waits = (df["t_start_control"] - df["t_arrival"]).dropna()
+    waits = waits.mask(waits.abs() <= _TIME_TOL_MIN, 0.0)
     if not waits.empty:
         kpis["wait_mean_min"] = float(waits.mean())
         kpis["wait_p95_min"] = float(waits.quantile(0.95))
