@@ -14,8 +14,22 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
+**Estado:** revisado por Chema, preparado para PR desde `feat/chema-T1.4-runner`;
+no está en `main`.
+
+* Conecta entrada y asiento con las interfaces de T1.2/T1.3. Devuelve una fila
+  por espectador, las columnas acordadas y los metadatos de la réplica.
+* Por ahora termina al sentarse el último o al alcanzar `max_sim_hours` desde
+  apertura. Las fases posteriores siguen pendientes; sucesos no ocurridos, NaN.
+* Las configuraciones deben ser FIFO y desactivar incidencias y emergencia;
+  otras opciones lanzan `NotImplementedError` (D19). Para probar, cargar
+  `configs/dev/i1_mini.json` con `load_experiment`; la CLI llega en T1.6.
+* Aplicado el aviso de B sobre D18 y tolerancia numérica en orden temporal.
+
 ### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
-**Estado:** en la rama `feat/perez-T1.3-stadium`; **aún no en `main`**.
+**Estado actualizado:** fusionado en `main` mediante PR #4 (2026-11-23).
+Aplicado por C en la rama de T1.4; se conserva el aviso para el seguimiento con A.
 
 * **C (T1.4):** `run_replica` crea `ctx.stadium = build_stadium_resources(ctx)`
   en E0 (después de `ctx.entry`) y encadena
@@ -30,9 +44,8 @@ Reglas:
   con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
 
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
-**Estado:** en las ramas `feat/cuadros-T1.1-arrivals` y `feat/cuadros-T1.2-entry`;
-**aún no en `main`** (esperan sus PR). Hasta entonces, para trabajar contra ello,
-parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
+**Estado actualizado:** T1.1 y T1.2 fusionadas en `main` (PR #1 y #2).
+Sigue vigente la aplicación de D17 a las futuras incidencias de Inc2.
 
 * **`Spectator` tiene un argumento obligatorio más:** `service_s` (tiempo de
   servicio en torno, s), justo después de `t_arrival`. Si construyes
@@ -51,8 +64,7 @@ parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
 * **`entry.service_time_s` ya no existe.** No lo uses.
 * **B (T1.3):** `seating_process` parte de `sp.t_end_control` y escribe
   `t_vomitory` y `t_seated`.
-* **C (T1.4):** `run_replica` depende de T1.2 y T1.3 en `main`; hasta entonces,
-  stubs.
+* **C (T1.4):** T1.2 y T1.3 ya están en `main`; el runner se prepara en su rama.
 
 ## Archivo
 

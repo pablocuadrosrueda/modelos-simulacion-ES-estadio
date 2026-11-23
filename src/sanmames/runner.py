@@ -10,24 +10,27 @@ Responsable: C.
 2. lanza un proceso por espectador que encadena entrada -> asiento ->
    (permanencia) -> salida, y los procesos auxiliares (averías, cierre de
    puerta, alarma) según la configuración;
-3. E9: corre hasta que salen/evacuan todos o hasta ``max_sim_hours``;
+3. E9: en Inc1 corre hasta que todos se sientan o hasta ``max_sim_hours``;
 4. devuelve el DataFrame de espectadores.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from collections.abc import Generator
+from dataclasses import asdict, dataclass, field, fields
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
+import simpy
 
+from .arrivals import generate_spectators
 from .config import Config
-from .entities import Incident, Spectator
+from .entities import INCIDENT_COLUMNS, SPECTATOR_COLUMNS, Incident, Spectator, min_to_s
+from .entry import build_entry_resources, entry_process
 from .rng import RngStreams
+from .stadium import build_stadium_resources, seating_process
 
 if TYPE_CHECKING:
-    import simpy
-
     from .entry import EntryResources
     from .exit import ExitResources
     from .stadium import StadiumResources
@@ -51,8 +54,20 @@ class SimContext:
     """Fase actual (``PHASES``)."""
 
 
+def _entry_and_seating(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, None]:
+    """Un único proceso conserva al espectador durante entrada y ubicación."""
+    yield from entry_process(spectator, ctx)
+    yield from seating_process(spectator, ctx)
+
+
 def run_replica(config: Config, seed: int) -> pd.DataFrame:
-    """Simula una réplica completa (un partido) con la semilla ``seed``.
+    """Simula llegada -> entrada -> asiento con la semilla ``seed`` (Inc1).
+
+    Termina al sentarse el último espectador o al alcanzar ``max_sim_hours``
+    desde la apertura. Si se alcanza ese límite, conserva todos los espectadores
+    y deja en NaN los sucesos pendientes. La permanencia y salida se integran
+    en T3.3; las incidencias y emergencias activadas se rechazan explícitamente
+    hasta implementar esas fases. Esta versión admite solo colas FIFO.
 
     Args:
         config: escenario ya validado (``config.load_config`` / ``load_experiment``).
@@ -65,4 +80,32 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
         ``"incidents"`` (DataFrame con ``entities.INCIDENT_COLUMNS``),
         ``"seed"`` y ``"scenario"`` (``config.name``).
     """
-    raise NotImplementedError("T1.4-C: run_replica")
+    if any(getattr(config.incidents, f.name).enabled for f in fields(config.incidents)):
+        raise NotImplementedError("Inc1 solo admite incidencias desactivadas (pendientes de Inc2)")
+    if config.emergency.enabled:
+        raise NotImplementedError("Evacuación pendiente de Inc4; desactiva emergency.enabled")
+    if config.queue_discipline != "fifo":
+        raise NotImplementedError(
+            "Prioridad en tornos pendiente de T2.4; usa queue_discipline='fifo'"
+        )
+
+    env = simpy.Environment(initial_time=min_to_s(config.t_open_min))
+    ctx = SimContext(env=env, config=config, rngs=RngStreams(seed))
+    ctx.entry = build_entry_resources(ctx)
+    ctx.stadium = build_stadium_resources(ctx)
+    ctx.spectators = generate_spectators(config, ctx.rngs)
+
+    # D16/D18: la lista viene ordenada por llegada e id. Cada proceso espera
+    # por sí mismo hasta la llegada y usa los tiempos aleatorios de su espectador.
+    journeys = [env.process(_entry_and_seating(sp, ctx)) for sp in ctx.spectators]
+    finished = env.all_of(journeys)
+    time_limit = env.timeout(min_to_s(config.max_sim_hours * 60))
+    env.run(until=finished | time_limit)
+
+    df = pd.DataFrame([asdict(sp) for sp in ctx.spectators], columns=SPECTATOR_COLUMNS)
+    df.attrs["incidents"] = pd.DataFrame(
+        [asdict(incident) for incident in ctx.incidents], columns=INCIDENT_COLUMNS
+    )
+    df.attrs["seed"] = seed
+    df.attrs["scenario"] = config.name
+    return df
