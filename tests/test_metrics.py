@@ -73,6 +73,20 @@ def test_queue_rejects_negative_duration() -> None:
         queue_length_max(pd.Series([2.0]), pd.Series([1.0]))
 
 
+@pytest.mark.parametrize("roundoff", [-1e-14, 1e-14])
+def test_queue_ignores_roundoff_in_zero_wait(roundoff: float) -> None:
+    assert queue_length_max(pd.Series([-20.0]), pd.Series([-20.0 + roundoff])) == 0
+
+
+def test_zero_wait_metrics_despite_roundoff(entry_df: pd.DataFrame, metrics_config: Config) -> None:
+    entry_df["t_start_control"] = entry_df["t_arrival"] - 1e-14
+    entry_df["t_end_control"] = entry_df["t_arrival"] + 1
+    entry_df["t_seated"] = entry_df["t_arrival"] + 2
+    kpis = compute_kpis(entry_df, metrics_config)
+    assert kpis["queue_max_gate"] == 0
+    assert kpis["wait_mean_min"] == kpis["wait_p95_min"] == 0
+
+
 def test_queue_rejects_different_lengths() -> None:
     with pytest.raises(ValueError):
         queue_length_max(pd.Series([0.0, 1.0]), pd.Series([2.0]))
