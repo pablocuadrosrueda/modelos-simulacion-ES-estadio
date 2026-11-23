@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · `main` contiene Inc0 y T1.1/T1.2/T1.3;
+_Última actualización: 2026-11-23 · `main` contiene Inc0 y T1.1/T1.2/T1.3/T1.5;
 T1.4 revisada por Chema, preparada para PR desde `feat/chema-T1.4-runner`._
 
 ## Hecho
@@ -64,11 +64,12 @@ máximo. Permanencia, salida, incidencias y emergencia siguen pendientes.
   de un espectador, FIFO, fin al sentarse el último, límite con sucesos pendientes,
   varias zonas y rechazo de opciones todavía pendientes. Se retiran los `xfail`
   que T1.4 hace pasar; el orden temporal admite tolerancia de 1e-9 min (aviso B).
-* T1.5 (C, en revisión): métricas en el
+* T1.5 (C, hecho): métricas fusionadas en el
   [PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3),
-  todavía independiente de esta rama y sin fusionar. No se ha mezclado su código
-  en T1.4; ambas ramas parten de `main` y sus cambios de documentación deberán
-  reconciliarse al fusionar.
+  incorporadas a esta rama al actualizar con `main`. Calcula recuentos,
+  esperas media/P95, porcentaje de espera menor de 10 min, cola máxima por
+  puerta, utilización nominal (D12), acceso medio y entrada tardía. Los demás
+  indicadores quedan en NaN; 23 pruebas sintéticas en `tests/test_metrics.py`.
 
 ## Siguiente paso
 
@@ -76,8 +77,8 @@ máximo. Permanencia, salida, incidencias y emergencia siguen pendientes.
 incidencias, CSV y KPIs de espera. En paralelo:
 
 * A y B: T1.1/T1.2/T1.3 ya fusionadas; continuar sus tareas según dependencias.
-* C: revisión local de T1.4 con Chema antes del commit y revisión del equipo de
-  T1.5 (PR #3). T1.6 necesita ambos módulos: runner y métricas. T1.7 necesita
+* C: publicar T1.4 para revisión del equipo. T1.5 ya fusionada (PR #3).
+  T1.6 necesita ambos módulos: runner y métricas. T1.7 necesita
   T1.4; las pruebas existentes ya activadas no sustituyen su caso límite de
   muchos tornos ni el refuerzo de conservación. No hay que esperar otro módulo
   de A/B para completar Inc1 una vez se integren T1.4 y T1.5.
