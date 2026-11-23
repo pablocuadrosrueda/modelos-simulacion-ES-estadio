@@ -188,7 +188,7 @@
       "enabled": false,
       "zone": "A",
       "gate": 1,
-      "start_min": 20,
+      "start_min": -30,
       "duration_min": 10
     }
   },

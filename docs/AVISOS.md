@@ -14,6 +14,21 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · A → C · Cierre de puerta de X6 movido a −30 min (D31, decidida)
+**Estado:** decidida; el cambio va en la rama `feat/cuadros-X6-study` y estará en
+`main` al fusionarse su PR. Hasta entonces, para un piloto, usa el override
+`{"incidents": {"gate_closure": {"start_min": -30}}}`.
+
+* **C (T5.1):** `configs/base.json` pasa a `gate_closure.start_min = -30`
+  (10 min, puerta A-1). Los `X6_*.json` lo heredan. Con +20, X6 no respondía a P7;
+  con −30, sin redirección cuesta ≈ 5 min de espera media a los asignados a la
+  puerta cerrada y +0,7 p. p. de entrada tardía; con redirección el impacto
+  desaparece. No hace falta cambiar nada más en el runner.
+* **C (T5.1, KPIs de P7):** el p95 global apenas cambia con el cierre (1 de 24
+  puertas). Para P7 son más informativos `queue_max_gate`, `late_pct` y la espera
+  de los asignados a la puerta cerrada (`gate == 1`, zona A); ver
+  `docs/ESTUDIO_X6.md`.
+
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
 **Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
 

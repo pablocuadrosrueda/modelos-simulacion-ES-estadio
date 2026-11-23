@@ -46,6 +46,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
+**Inc2 · completado.**
 **Inc2: completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
@@ -98,6 +99,13 @@ la protección de `main` exigiendo esos checks.
   utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
   `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
   comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
+* Estudio X6 (A, en revisión; rama `feat/cuadros-X6-study`; no es tarea del
+  tablero): sensibilidad del instante del cierre I4 (`start_min` de −45 a +20,
+  10 y 20 min, con y sin redirección, 5 réplicas con semillas comunes) en
+  `scripts/study_gate_closure.py` y `docs/ESTUDIO_X6.md`. Con redirección el cierre
+  se absorbe siempre; sin ella el efecto es máximo a −30 (+292 ± 24 s de espera
+  media en A-1, +0,67 p. p. de entrada tardía) y nulo a +20 (+4 s). **Decidido (D31):
+  `start_min = −30`**, ya aplicado en `configs/base.json` con un test de regresión.
 
 **Inc3: completado.**
 
@@ -134,6 +142,27 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
+El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
+T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
+T5.2 está fusionada en PR #17 con salida y conservación completas.
+
+C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
+estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
+incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
+Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
+variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
+en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
+5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
+aislar la capacidad, no como resultados definitivos del escenario real.
+
+Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
+T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
+calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
+T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
+oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
+I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
+* A: estudio X6 y D31 (`start_min = −30`) en revisión, en el mismo PR.
+* C: el piloto T5.1 puede lanzarse con la base; con −30, X6 responde a P7.
 * C: T5.1, piloto de X0 a X7 con 10 réplicas y semillas comunes; después T5.3,
   T6.1 y T6.2. T5.2 ya permite calcular intervalos y el número de réplicas.
 * A y B: revisar los resultados del piloto de su parte y preparar T6.2 y T6.3.
@@ -197,12 +226,11 @@ de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
 * T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
   mientras dura. Alternativa: parar también los tornos de esa puerta y/o
   redirigir su cola; ver D23.
-* T2.7 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
-  cuando solo llega el 2 % del público. En una macrozona realista (N/4, 6
-  puertas, semilla 11) afecta a 26 personas frente a 330 si empieza en −25. Con 2
-  tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
-  redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
-  P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
+* X6 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
+  cuando solo llega el 2 % del público, y X6 no responde a nada (diferencia sin −
+  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`. Decidido (D31):
+  `start_min = −30` (10 min), aplicado en `configs/base.json`. La memoria dice +20:
+  corregir el texto de la Parte 2.
 * T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
   franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
   corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de
