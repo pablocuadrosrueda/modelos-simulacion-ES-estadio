@@ -1,8 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-22 · `main` contiene Inc0 y T1.1/T1.2;
-T1.5 publicada y en revisión en el PR #3, rama `feat/chema-T1.5-metrics`._
-_Última actualización: 2026-11-23 · `main` contiene Inc0; Inc1 en curso._
+_Última actualización: 2026-11-23 · `main` contiene Inc0, T1.1, T1.2, T1.3 y T1.5; Inc1 en curso._
 
 ## Hecho
 
@@ -24,6 +22,12 @@ _Última actualización: 2026-11-23 · `main` contiene Inc0; Inc1 en curso._
 Hay generación de espectadores y entrada sin incidencias. Aún no se puede
 ejecutar una réplica completa: `run_replica` y los procesos de asiento, salida
 y emergencia siguen pendientes.
+
+**Automatización (T0.5) — hecha.** CI de GitHub Actions (`ruff` + `pytest` en Python
+3.10 y 3.12, y un job que exige actualizar `ESTADO`/`TAREAS` con código y
+`AVISOS`/`DECISIONES` con contratos: `scripts/check_pr_docs.py`), plantilla de PR,
+`make check`, `make hooks` (pre-push) y `make docs-check`. Pendiente fuera del
+repo: activar la protección de `main` exigiendo esos checks.
 
 **Inc1 · en curso.**
 
