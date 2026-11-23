@@ -1,0 +1,73 @@
+{
+  "experiment": "i4_mini",
+  "label": "Evacuación con todas las incidencias y semillas comunes",
+  "question": "Integración de alarma y salida bloqueada",
+  "variants": [
+    {
+      "name": "i4_open",
+      "overrides": {
+        "n_spectators": 600,
+        "zones": [
+          "A"
+        ],
+        "zone_share": [
+          1.0
+        ],
+        "gates_per_zone": 2,
+        "queue_discipline": "priority",
+        "incidents": {
+          "seat_conflict": {
+            "enabled": true
+          },
+          "read_failure": {
+            "enabled": true
+          },
+          "turnstile_failure": {
+            "enabled": true
+          },
+          "gate_closure": {
+            "enabled": true,
+            "start_min": -30
+          }
+        },
+        "emergency": {
+          "enabled": true,
+          "blocked_exit": false
+        }
+      }
+    },
+    {
+      "name": "i4_blocked",
+      "overrides": {
+        "n_spectators": 600,
+        "zones": [
+          "A"
+        ],
+        "zone_share": [
+          1.0
+        ],
+        "gates_per_zone": 2,
+        "queue_discipline": "priority",
+        "incidents": {
+          "seat_conflict": {
+            "enabled": true
+          },
+          "read_failure": {
+            "enabled": true
+          },
+          "turnstile_failure": {
+            "enabled": true
+          },
+          "gate_closure": {
+            "enabled": true,
+            "start_min": -30
+          }
+        },
+        "emergency": {
+          "enabled": true,
+          "blocked_exit": true
+        }
+      }
+    }
+  ]
+}

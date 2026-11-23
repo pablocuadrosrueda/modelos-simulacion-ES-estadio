@@ -69,14 +69,14 @@ de creación (D22). Uso actual: un generador por torno,
 Una fila por espectador (`len(df) == config.n_spectators`), columnas en el orden
 de `entities.SPECTATOR_COLUMNS`:
 
-**Alcance actual (T3.3, D27):** entrada → asiento → permanencia → salida
-ordinaria, simultánea o escalonada. Termina al salir el último espectador o al
-alcanzar `max_sim_hours` desde apertura. Conserva todas las filas y deja NaN en
-sucesos pendientes. En E0 crea también `ctx.exits`; cada recorrido encadena
-`entry_process`, `seating_process` y `exit_process` (este espera la liberación).
-Admite prioridad e incidencias I1/I3/I4 (T2.8, D25); lanza averías y cierre en E0.
-I2 y emergencia siguen rechazadas hasta su integración. No espera a que terminen
-los bucles infinitos de averías.
+**Alcance actual (T3.3/T4.3, D27/D30):** recorrido completo hasta salida
+ordinaria o evacuación. Admite FIFO/prioridad e I1–I4. Se crean recursos en E0,
+se lanzan cierre/averías y un recorrido por espectador. Tras crearlos se lanza
+`alarm_process(ctx, journeys)`; cada recorrido captura `simpy.Interrupt` y llama
+a `evacuation_process`. Quien sigue fuera abandona o no llega (D28).
+Termina cuando todos los recorridos terminan o alcanza `max_sim_hours` desde
+apertura. Conserva todas las filas y deja NaN en sucesos pendientes. No espera
+a los bucles infinitos de avería. La salida aplica la política configurada.
 
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
@@ -111,6 +111,8 @@ los bucles infinitos de averías.
   (-1 si no aplica). Fallo de lectura (I2): `t_end - t_start` = tiempo extra.
 * `"seed"`: semilla de la réplica.
 * `"scenario"`: `config.name`.
+* `"stop_time_min"`: instante real de fin (min).
+* `"alarm_triggered"`: si llegó a dispararse la alarma (bool).
 
 Invariantes (tests de verificación):
 
@@ -188,3 +190,16 @@ filas tienen `t_exit` y hay espectadores; si la réplica queda incompleta, NaN.
 `exit_queue_max` agrupa por `(zone, exit_id)` y reconstruye `[t_exit_queue, t_exit)`;
 incluye a la persona atravesando la salida (D24), las esperas pendientes y excluye
 ids -1. Sin llegadas a salidas, cero. No cambian columnas ni firmas.
+
+## Emergencia integrada (T4.3, D28/D30)
+
+`evac_time_min` exige que todos los que estaban dentro al sonar la alarma tengan
+`t_safe`: máximo menos `alarm_min`; evacuación incompleta o vacía, NaN.
+`evac_pct_ref` usa como denominador controles terminados a la alarma sin salida
+ordinaria previa y cuenta seguros hasta `alarm_min + reference_min` (inclusive,
+tolerancia numérica 1e-9 min). Si la réplica acaba antes de ese horizonte y
+quedan evacuables pendientes, NaN; no se omiten del denominador. Si no se disparó
+la alarma o no había evacuables, NaN. `n_abandoned` cuenta los marcados si la
+emergencia está activa; sin emergencia, NaN. Si sonó la alarma, P5
+(`exit_time_min`, `exit_queue_max`) no aplica. No cambian columnas ni firmas.
+La decisión de B antes llamada D25 sobre evacuación es D28; D25 queda para Inc2.

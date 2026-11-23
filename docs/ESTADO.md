@@ -118,56 +118,25 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-C ha publicado T5.2 (estadística, PR #17) y T2.8 (incidencias/KPIs, PR #18).
-T3.1/T3.2 de B están fusionadas (PR #15). T3.3 conecta ahora la salida ordinaria,
-incluida política escalonada y KPIs de vaciado/cola. Dos xfail activados.
-Caso analítico completo: 12.195 personas, seis salidas, unos 7,7 min sin marcha.
-Caso de desarrollo: `configs/dev/i3_mini.json` (dos variantes, semillas comunes).
+El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
+T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
+T5.2 sigue publicada en PR #17, actualizada con salida y conservación completas.
 
-T3.4 añade conservación individual en todos los sucesos y puntos intermedios:
-12 combinaciones de semillas/políticas/con incidencias, además de límites durante
-cola exterior, partido, salida y antes de la llegada. Distingue conflictos con
-su registro I1 y la salida a pie mediante liberación calculada de la política.
-Validación conjunta T2.8/T3.3/T3.4: 295 tests correctos, cero xfail, lint limpio.
-T5.2 tiene sus 41 tests propios en PR #17 (rama independiente).
+C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
+estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
+incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
+Validación: 327 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
+variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
+en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
+5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
+aislar la capacidad, no como resultados definitivos del escenario real.
 
-Orden de revisión: PR #18 (T2.8) → PR #20 (T3.3) → PR de T3.4; PR #17
-(estadística) independiente. T3.4 se publica desde la rama T3.3 aún no fusionada
-para poder verificar la cadena completa, con dependencia explícita en el PR.
-Después T4.3 depende de T4.1/T4.2 de B. A tiene pendientes T2.1/T2.2. Los
-experimentos oficiales de T5.1 esperan a Inc4; no se desactivan incidencias del
-modelo para presentar resultados definitivos.
-Avance C, T2.8: prioridad e incidencias I1/I3/I4 integradas en el runner;
-indicadores por grupos, conflictos y recuentos implementados. Colas por puerta
-real y exclusión de quienes no han llegado. Caso `configs/dev/i2_mini.json`.
-Pruebas sintéticas y observación de capacidades en la simulación completa de
-entrada. Pendiente de revisión por PR desde `feat/chema-T2.8-metrics`.
-T5.2 publicada en PR #17. T3.1/T3.2 terminadas por B en PR #15, todavía abierto;
-la integración de salida se prepara después, sin editar los módulos de B.
-
-Validación T2.8 (Python 3.12): 256 tests correctos, 2 xfail de salida, lint y
-diff limpios. Tres réplicas de i2_mini: 600 entradas cada una, con I1/I3 registradas
-y KPIs por grupos. La salida de B (PR #15) ya figura fusionada y se recogerá
-para T3.3. Los xfail se retirarán al conectar esa fase.
-
-* C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
-  (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
-  lanzar en E0 `gate_closure_process` (I4, T2.6) y
-  `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
-  (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
-  `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
-* A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
-  y T2.2 (I2, ya tiene `log_incident`).
-* B: T4.1 y T4.2 en revisión; después T5.4 (rendimiento) y T6.2 (verificación).
-* C: T3.3 (encadenar la salida en el runner; T3.1 ya en `main`) y luego T4.3.
-* A: revisión de T2.2; después T2.1 (cuatro macrozonas y medida de tiempo, D15).
-* C: con T2.2 todas las incidencias de entrada están implementadas; el runner
-  debe admitir también I2 (el PR de T2.8 la sigue rechazando). Ver AVISOS.
-* B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
-* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
-* Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
-  instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
-  Dudas abiertas).
+Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
+T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
+calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
+T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
+oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
+I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
 
 ## Reparto
 
@@ -184,7 +153,7 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar T5.2, T2.8, T3.3 y T3.4
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4 y T4.3)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación

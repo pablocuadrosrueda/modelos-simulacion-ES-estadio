@@ -14,6 +14,19 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
+**Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
+
+* Aplicadas T2.2, T4.1 y T4.2: I2 ya se admite; la alarma interrumpe el proceso
+  único de cada espectador y E8 espera a todos los recorridos, no a las averías.
+* Metadatos nuevos: `stop_time_min` y `alarm_triggered`. KPIs de evacuación con
+  denominador de todos los evacuables; vaciado incompleto o porcentaje aún no
+  observable, NaN. Casos/definiciones en CONTRATOS y D30.
+* La doble D25 de trabajo paralelo se desambigua: Inc2 conserva D25, evacuación
+  de B pasa a D28; estadística usa D29 (PR #17). Solo referencias en módulos de B.
+* `make run EXP=configs/dev/i4_mini.json REPS=3`: dos variantes, todas las
+  incidencias activadas, una salida bloqueada frente a todas abiertas.
+
 ### 2026-11-23 · C → A, B · Runner hasta salida ordinaria (T3.3, D27)
 **Estado:** en revisión desde `feat/chema-T3.3-runner-exit`; depende del PR #18.
 
@@ -25,7 +38,7 @@ Reglas:
 
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
-### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D25)
+### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D28)
 **Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
 
 * **C (T4.3):** cada espectador va en un único proceso con `try` y
@@ -76,7 +89,7 @@ Reglas:
 * **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
 
 ### 2026-11-23 · C → A, B · Inc2 conectado e indicadores (T2.8, D25)
-**Estado:** preparado para PR desde `feat/chema-T2.8-metrics`.
+**Estado:** fusionada en `main` (PR #18).
 
 * Aplicados los avisos de prioridad, I1, I3 e I4. El runner ya lanza averías y
   cierre en E0; mantiene I2/emergencia pendientes. La cola usa `gate_used`.

@@ -225,7 +225,7 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
 
-### D25. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
+### D28. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
 * **Quién hace qué.** `emergency.alarm_process(ctx, journeys)` cambia el estado
   al sonar la alarma y llama a `interrupt()` en los procesos vivos de
   `journeys` (`journeys[i]` es el del espectador `id == i`). El proceso de cada
@@ -289,3 +289,21 @@ El tiempo de vaciado de una réplica incompleta es NaN: el último paso observad
 no es el vaciado total. La cola por salida incluye a quien está atravesándola,
 según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
 D25, incluida la duda documentada sobre averías posteriores a la entrada.
+
+### D30 · Integración completa de alarma y KPIs (T4.3) — 2026-11-23
+El proceso único por espectador captura la interrupción y continúa con la
+clasificación/evacuación de B (D28). Se lanza la alarma tras crear todos los
+recorridos. El fin sigue siendo todos los recorridos terminados o el límite;
+no se espera a los bucles de avería. I2 se admite usando el módulo de A (D26).
+Se añaden metadatos `stop_time_min` y `alarm_triggered` para distinguir una
+réplica truncada antes de la alarma o durante la evacuación.
+`evac_time_min` solo se conoce si todos los de dentro al sonar la alarma tienen
+`t_safe`. El denominador de `evac_pct_ref` son todos los de dentro al sonar la
+alarma (control terminado y sin salida ordinaria previa), no solo los que ya
+están seguros. Se calcula si la evacuación terminó o se observó el horizonte de
+referencia; antes, NaN. Sin evacuables, ambos KPIs son NaN. `n_abandoned` cuenta
+los marcados, cero si no hay; sin emergencia permanece NaN. Si sonó la alarma,
+los KPIs P5 ordinarios no aplican y quedan NaN.
+La doble D25 surgida de trabajo paralelo se desambigua: D25 = Inc2 (T2.8),
+D28 = evacuación de B. Las referencias de documentación en sus módulos se
+actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).
