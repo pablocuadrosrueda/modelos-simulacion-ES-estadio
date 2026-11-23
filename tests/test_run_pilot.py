@@ -92,3 +92,46 @@ def test_invalid_execution_arguments(pilot, tmp_path, reps, seed):
     with pytest.raises(ValueError):
         pilot.run_pilot(tmp_path / "pilot", reps, seed)
     assert not (tmp_path / "pilot").exists()
+
+
+def test_group_comparison_uses_same_cohort_under_fifo_and_priority(pilot, tmp_path):
+    cfg = load_config(overrides={**MINI_OVERRIDES, "n_spectators": 2})
+    df = pd.DataFrame(
+        {"group": ["elderly", "standard"], "t_arrival": [0, 0], "t_start_control": [2, 6]}
+    ).reindex(columns=SPECTATOR_COLUMNS)
+    base = pilot.group_kpis(df, cfg, ("elderly",))
+    assert base["wait_mean_priority_min"] == 2
+    assert base["wait_mean_rest_min"] == 6
+    assert cfg.priority_groups == ()
+    rows = []
+    groups = []
+    for scenario, experiment, priority, rest in [
+        ("X0_base", "X0", 2, 6),
+        ("X3_prioridad", "X3", 1, 7),
+    ]:
+        for seed in [1, 2]:
+            rows.append(
+                {
+                    "scenario": scenario,
+                    "experiment": experiment,
+                    "seed": seed,
+                    "wait_mean_min": 4,
+                    "wait_mean_rest_min": 999,
+                }
+            )
+            groups.append(
+                {
+                    "scenario": scenario,
+                    "seed": seed,
+                    "wait_mean_priority_min": priority,
+                    "wait_mean_rest_min": rest,
+                    "group_wait_diff_min": priority - rest,
+                }
+            )
+    pd.DataFrame(groups).to_csv(tmp_path / "groups.csv", index=False)
+    pilot.write_analysis(pd.DataFrame(rows), tmp_path)
+    comparison = pd.read_csv(tmp_path / "comparisons.csv").iloc[0]
+    assert comparison.wait_mean_priority_min_mean == -1
+    assert comparison.wait_mean_rest_min_mean == 1
+    assert comparison.group_wait_diff_min_mean == -2
+    assert comparison.wait_mean_priority_min_n == 2

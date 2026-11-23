@@ -227,3 +227,15 @@ la alarma o no había evacuables, NaN. `n_abandoned` cuenta los marcados si la
 emergencia está activa; sin emergencia, NaN. Si sonó la alarma, P5
 (`exit_time_min`, `exit_queue_max`) no aplica. No cambian columnas ni firmas.
 La decisión de B antes llamada D25 sobre evacuación es D28; D25 queda para Inc2.
+
+## Artefactos del piloto (T5.1, D31)
+
+`results/pilot/kpis.csv` conserva ID_COLUMNS + KPI_COLUMNS. `summary.csv` y
+`comparisons.csv` usan los formatos de análisis, añadiendo `experiment` en los
+contrastes por pregunta. Para P4, las tres métricas de grupos del contraste
+usan `groups.csv` con los colectivos comunes fijados por X3 (D31); las filas
+originales de KPIs no se alteran. `precision.csv` estima n total para la espera
+media con IC del 95 % y semianchura relativa del 5 %. `audit.csv` verifica
+identidad y terminación, `zones.csv` registra el reparto observado, y
+`manifest.json` fija versiones, código y configs resueltas. No son réplicas
+independientes los recálculos con la misma semilla para recuperar cohortes.

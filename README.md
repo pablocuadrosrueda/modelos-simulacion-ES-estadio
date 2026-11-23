@@ -153,9 +153,14 @@ Piloto T5.1 (X0–X7 completos, diez réplicas por escenario):
 ```
 
 Guarda `kpis.csv`, `audit.csv`, `zones.csv`, `summary.csv`, `comparisons.csv`,
-`precision.csv` y `manifest.json`. Se registra el código, las configuraciones,
+`precision.csv`, `groups.csv` y `manifest.json`. Se registra el código, las configuraciones,
 las versiones y las semillas. No sobrescribe una carpeta con resultados;
 para repetir el lote, usa `--output results/pilot_repetido`. Los contrastes
 usan X0 para X1–X4, seis acomodadores para X5, sin redirección para X6 y todas
 las salidas para X7. La estimación de réplicas es provisional, calculada con
 la precisión relativa del 5 % sobre la espera media, como pide la memoria.
+
+Para P4, `groups.csv` mide los mismos colectivos de X3 también en X0 FIFO, sin
+cambiar la simulación ni sus KPIs originales. Sus diferencias emparejadas se
+incorporan a `comparisons.csv`; con ello «resto» representa a las mismas personas
+en ambos escenarios, aunque `priority_groups` esté vacío en la config base.

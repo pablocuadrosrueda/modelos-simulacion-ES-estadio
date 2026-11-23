@@ -10,7 +10,7 @@ import hashlib
 import json
 import platform
 import subprocess
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
@@ -25,6 +25,13 @@ from sanmames.metrics import ID_COLUMNS, KPI_COLUMNS, compute_kpis
 from sanmames.runner import run_replica
 
 ROOT = Path(__file__).resolve().parents[1]
+GROUP_KPIS = ["wait_mean_priority_min", "wait_mean_rest_min", "group_wait_diff_min"]
+
+
+def group_kpis(df: pd.DataFrame, config: Config, groups: tuple[str, ...]) -> dict:
+    """Mismos colectivos para P4; solo reclasifica métricas, no cambia el recorrido."""
+    indicators = compute_kpis(df, replace(config, priority_groups=groups))
+    return {name: indicators[name] for name in GROUP_KPIS}
 
 
 def audit_replica(df: pd.DataFrame, config: Config) -> tuple[dict, list[dict]]:
@@ -82,6 +89,13 @@ def write_analysis(kpis: pd.DataFrame, output: Path) -> None:
         selected = kpis.loc[kpis.experiment.eq(experiment) | kpis.scenario.eq(reference)]
         if reference in set(selected.scenario) and selected.scenario.nunique() > 1:
             table = compare_with_baseline(selected, baseline=reference)
+            if experiment == "X3" and (output / "groups.csv").exists():
+                groups = pd.read_csv(output / "groups.csv")
+                paired = compare_with_baseline(groups, baseline=reference).set_index("scenario")
+                for name in GROUP_KPIS:
+                    for suffix in ["mean", "halfwidth", "n"]:
+                        column = f"{name}_{suffix}"
+                        table[column] = table.scenario.map(paired[column])
             table.insert(0, "experiment", experiment)
             comparisons.append(table)
     if comparisons:
@@ -156,7 +170,9 @@ def run_pilot(
     }
     manifest_path = output / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
-    rows, audits, zone_rows = [], [], []
+    p4_groups = next((cfg.priority_groups for _, exp, cfg in configs if exp == "X3"), ())
+    manifest["analysis_group_cohort"] = list(p4_groups)
+    rows, audits, zone_rows, group_rows = [], [], [], []
     for _, experiment, cfg in configs:
         for replica in range(n_reps):
             seed = replica_seed(base_seed, replica)
@@ -170,6 +186,9 @@ def run_pilot(
                 "seed": seed,
             }
             rows.append({**identifiers, **compute_kpis(df, cfg)})
+            if p4_groups and experiment in ("X0", "X3"):
+                group_rows.append({**identifiers, **group_kpis(df, cfg, p4_groups)})
+                pd.DataFrame(group_rows).to_csv(output / "groups.csv", index=False)
             audits.append({**identifiers, **audit, "elapsed_s": perf_counter() - start})
             zone_rows.extend({**identifiers, **zone} for zone in zones)
             kpis = pd.DataFrame(rows, columns=ID_COLUMNS + KPI_COLUMNS)

@@ -14,6 +14,18 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Piloto T5.1 y cohortes de P4 (D31)
+**Estado:** en curso desde `feat/chema-T5.1-pilot`.
+
+* 120 réplicas de X0–X7 terminadas completas, con semillas comunes. El criterio
+  del 5 % estima hasta 181 réplicas totales, no 30 por defecto; se verificará
+  la precisión al ampliar. Se conservan parámetros e hipótesis de la memoria.
+* P4: el X0 tiene `priority_groups=[]`; «resto» no era el mismo colectivo que
+  en X3. Se añade análisis con cohortes comunes de X3, sin cambiar simulación,
+  configs ni KPIs originales. Formato en CONTRATOS/D31.
+* A conserva T2.1 pendiente. Se aporta reparto y tiempo por réplica; siguen
+  pendientes de decisión del grupo el cierre X6 en +20 y el recuento I3.
+
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
 **Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
 

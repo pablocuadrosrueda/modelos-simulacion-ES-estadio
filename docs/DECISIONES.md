@@ -323,3 +323,12 @@ los KPIs P5 ordinarios no aplican y quedan NaN.
 La doble D25 surgida de trabajo paralelo se desambigua: D25 = Inc2 (T2.8),
 D28 = evacuación de B. Las referencias de documentación en sus módulos se
 actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).
+
+### D31 · Cohortes comparables para P4 en el piloto (T5.1) — 2026-11-23
+X0 tiene `priority_groups=[]` y X3 identifica mayores/PMR. Restar directamente
+sus `wait_mean_rest_min` compararía toda la población de X0 con solo el resto
+de X3; el KPI de priorizados en X0 es NaN por contrato. El análisis adicional
+usa los colectivos ya fijados por X3 para calcular métricas en ambas poblaciones
+(`groups.csv`), sin alterar recorridos ni configs. Sus IC emparejados sustituyen
+solo las tres columnas de grupos en `comparisons.csv`; `kpis.csv` conserva el
+contrato y los valores originales. No es una nueva variante del modelo.
