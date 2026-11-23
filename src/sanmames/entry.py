@@ -73,12 +73,20 @@ def build_entry_resources(ctx: SimContext) -> EntryResources:
 def priority_of(spectator: Spectator, ctx: SimContext) -> int:
     """Prioridad SimPy del espectador en el torno según la disciplina de cola.
 
-    FIFO: todos ``PRIORITY_NORMAL``; a igual prioridad, SimPy atiende por orden
-    de petición. La disciplina ``"priority"`` (X3) llega en T2.4.
+    * ``"fifo"``: todos ``PRIORITY_NORMAL``; a igual prioridad SimPy atiende por
+      orden de petición.
+    * ``"priority"`` (X3): los grupos de ``config.priority_groups`` piden con
+      ``PRIORITY_HIGH`` y pasan por delante de los ``PRIORITY_NORMAL`` que esperan.
+      Es **no expulsiva**: ``entry_process`` pide siempre con ``preempt=False``, así
+      que un control ya iniciado nunca se interrumpe. Dentro de cada nivel sigue
+      siendo FIFO.
     """
-    if ctx.config.queue_discipline == "fifo":
+    cfg = ctx.config
+    if cfg.queue_discipline == "fifo":
         return PRIORITY_NORMAL
-    raise NotImplementedError("T2.4-A: priority_of con queue_discipline='priority'")
+    if cfg.queue_discipline == "priority":
+        return PRIORITY_HIGH if spectator.group in cfg.priority_groups else PRIORITY_NORMAL
+    raise ValueError(f"queue_discipline desconocida: {cfg.queue_discipline!r}")
 
 
 def choose_gate(spectator: Spectator, ctx: SimContext) -> int:

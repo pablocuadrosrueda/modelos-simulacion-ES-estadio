@@ -32,12 +32,22 @@ Aún **no hay lógica de simulación**: `run_replica` y los procesos lanzan
   Tests en `tests/test_arrivals.py` (chi-cuadrado α = 0,001).
 * T1.2 (A, en revisión; rama sobre la de T1.1): `entry.py` con
   `build_entry_resources` (un `PriorityResource` por puerta), `priority_of`
-  (FIFO; `"priority"` lanza `NotImplementedError` hasta T2.4) y `entry_process`
+  (FIFO o prioridad, ver T2.4) y `entry_process`
   sin incidencias por `spectator.gate`. `entry_process` espera hasta `t_arrival`
   (D16). El servicio en torno es un atributo del espectador (`service_s`,
   D17: números aleatorios comunes). Tests en `tests/test_entry.py`: orden FIFO,
   capacidad de tornos, independencia de puertas, determinismo y servicio
   idéntico con 2 y 4 tornos.
+
+**Inc2 · en curso.**
+
+* T2.4 (A, en revisión; rama `feat/cuadros-T2.4-priority`, apilada sobre T1.2):
+  `priority_of` con `queue_discipline == "priority"`: los grupos de
+  `priority_groups` piden con `PRIORITY_HIGH` y adelantan a los normales en cola;
+  no expulsiva (`preempt=False`, un control iniciado no se interrumpe) y FIFO dentro
+  de cada nivel (D18). Tests en `tests/test_entry.py`, incluido un escenario exacto
+  a mano y la comprobación, con la misma semilla, de que X3 baja la espera de
+  mayores y PMR y no la del resto.
 
 ## Siguiente paso
 

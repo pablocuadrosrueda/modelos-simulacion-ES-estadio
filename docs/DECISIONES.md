@@ -112,3 +112,14 @@ los números aleatorios comunes que exige la memoria (§5.3).
   (`read_failure_u`, `read_extra_s`); y en T2.5 (I1): ocurrencia del conflicto y
   su duración. I3 e I4 son procesos por recurso, no por espectador: cada uno usa
   su propio flujo.
+
+### D18 · Semántica de la prioridad en el torno (X3) — 2026-11-23
+* Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
+  se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
+* Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`
+  (0, grupos priorizados) < `PRIORITY_NORMAL` (1). Dentro de un nivel, FIFO.
+* No expulsiva: `entry_process` siempre pide con `preempt=False`.
+* Consecuencia para los KPIs (C, T2.8): `wait_mean_priority_min` y
+  `group_wait_diff_min` se calculan con `config.priority_groups`, no con la
+  disciplina.
+

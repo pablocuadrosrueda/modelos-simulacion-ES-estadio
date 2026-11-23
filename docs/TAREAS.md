@@ -44,7 +44,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min; medir tiempo de una réplica (D15) | A | pendiente | Inc1 |
 | T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.5 (log_incident) |
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
-| T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | pendiente | Inc1 |
+| T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | en revisión | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | pendiente | Inc1 |
 | T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | pendiente | T1.2 |
 | T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | pendiente | T2.6 |

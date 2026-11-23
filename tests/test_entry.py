@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 
+import numpy as np
 import pytest
 import simpy
 
@@ -12,6 +13,7 @@ from sanmames.arrivals import generate_spectators
 from sanmames.config import Config, load_config
 from sanmames.entities import Spectator, min_to_s
 from sanmames.entry import (
+    PRIORITY_HIGH,
     PRIORITY_NORMAL,
     build_entry_resources,
     entry_process,
@@ -29,9 +31,14 @@ def make_ctx(config: Config, seed: int = 1) -> SimContext:
 
 
 def make_spectator(
-    i: int, t_arrival: float, zone: str = "A", gate: int = 1, service_s: float = 4.0
+    i: int,
+    t_arrival: float,
+    zone: str = "A",
+    gate: int = 1,
+    service_s: float = 4.0,
+    group: str = "standard",
 ) -> Spectator:
-    return Spectator(i, zone, gate, 1, "lower", "standard", 1.4, 100.0, t_arrival, service_s)
+    return Spectator(i, zone, gate, 1, "lower", group, 1.4, 100.0, t_arrival, service_s)
 
 
 def run_entry(ctx: SimContext, sps: list[Spectator]) -> None:
@@ -169,29 +176,110 @@ def test_entry_deterministic(mini_config: Config) -> None:
     assert run(5) != run(6)
 
 
-def test_priority_discipline_pending() -> None:
-    cfg = load_config(
-        overrides={**MINI_OVERRIDES, "queue_discipline": "priority", "priority_groups": ["elderly"]}
-    )
-    with pytest.raises(NotImplementedError, match="T2.4"):
-        priority_of(make_spectator(0, -1.0), make_ctx(cfg))
+# -- prioridad no expulsiva (X3, T2.4) -------------------------------------
+
+PRIORITY_OVERRIDES = {
+    **MINI_OVERRIDES,
+    "queue_discipline": "priority",
+    "priority_groups": ["elderly", "reduced_mobility"],
+}
 
 
-def test_service_time_belongs_to_spectator() -> None:
-    """D17: el servicio lo fija el espectador, no el orden en que lo atienden los tornos."""
+def priority_config(**extra: object) -> Config:
+    return load_config(overrides={**PRIORITY_OVERRIDES, **extra})
 
-    def run(turnstiles: int) -> list[Spectator]:
-        cfg = load_config(overrides={**MINI_OVERRIDES, "turnstiles_per_gate": turnstiles})
-        ctx = make_ctx(cfg, seed=11)
+
+def test_priority_of_by_group() -> None:
+    ctx = make_ctx(priority_config())
+    for group, expected in [
+        ("standard", PRIORITY_NORMAL),
+        ("elderly", PRIORITY_HIGH),
+        ("reduced_mobility", PRIORITY_HIGH),
+    ]:
+        assert priority_of(make_spectator(0, -1.0, group=group), ctx) == expected
+
+
+def test_priority_groups_ignored_under_fifo() -> None:
+    cfg = load_config(overrides={**MINI_OVERRIDES, "priority_groups": ["elderly"]})
+    ctx = make_ctx(cfg)  # queue_discipline sigue siendo "fifo"
+    assert priority_of(make_spectator(0, -1.0, group="elderly"), ctx) == PRIORITY_NORMAL
+
+
+def test_priority_with_no_groups_is_fifo() -> None:
+    ctx = make_ctx(priority_config(priority_groups=[]))
+    assert priority_of(make_spectator(0, -1.0, group="elderly"), ctx) == PRIORITY_NORMAL
+
+
+def _queue_scenario(cfg: Config) -> dict[str, Spectator]:
+    """3 tornos ocupados (4 s) y cola: 4 normales a 1 s, 2 mayores a 2 s y 3 s."""
+    ctx = make_ctx(cfg)
+    t0 = -10.0
+    s = 1 / 60  # 1 s en minutos
+    sps = {
+        **{f"busy{i}": make_spectator(i, t0) for i in range(3)},
+        **{f"n{i}": make_spectator(3 + i, t0 + s) for i in range(4)},
+        "e1": make_spectator(7, t0 + 2 * s, group="elderly"),
+        "e2": make_spectator(8, t0 + 3 * s, group="elderly"),
+    }
+    run_entry(ctx, list(sps.values()))
+    return sps
+
+
+def test_priority_jumps_the_queue_but_never_preempts() -> None:
+    sps = _queue_scenario(priority_config())
+    t0, s = -10.0, 1 / 60
+    # No expulsiva: los 3 controles en curso terminan a los 4 s, sin interrumpirse.
+    for k in ("busy0", "busy1", "busy2"):
+        assert sps[k].t_start_control == pytest.approx(t0)
+        assert sps[k].t_end_control == pytest.approx(t0 + 4 * s)
+    # A los 4 s quedan 3 tornos libres: los dos mayores (en su orden de llegada) y
+    # el primer normal de la cola. Los otros 3 normales esperan al siguiente hueco.
+    assert sps["e1"].t_start_control == pytest.approx(t0 + 4 * s)
+    assert sps["e2"].t_start_control == pytest.approx(t0 + 4 * s)
+    assert sps["n0"].t_start_control == pytest.approx(t0 + 4 * s)
+    for k in ("n1", "n2", "n3"):
+        assert sps[k].t_start_control == pytest.approx(t0 + 8 * s)
+
+
+def test_priority_keeps_fifo_within_each_level() -> None:
+    sps = _queue_scenario(priority_config(turnstiles_per_gate=1))
+    # Un solo torno: tras el control en curso (busy0), los mayores adelantan a todos los
+    # normales que esperan, y dentro de cada nivel se respeta el orden de llegada.
+    order = sorted(sps, key=lambda k: sps[k].t_start_control)
+    assert order == ["busy0", "e1", "e2", "busy1", "busy2", "n0", "n1", "n2", "n3"]
+
+
+def test_same_scenario_under_fifo_serves_elderly_last() -> None:
+    sps = _queue_scenario(load_config(overrides=MINI_OVERRIDES))
+    t0, s = -10.0, 1 / 60
+    # FIFO: a los 4 s entran n0, n1, n2; a los 8 s, n3, e1 y e2.
+    assert sps["e1"].t_start_control == pytest.approx(t0 + 8 * s)
+    assert sps["e2"].t_start_control == pytest.approx(t0 + 8 * s)
+
+
+def test_priority_helps_priority_groups_and_hurts_the_rest() -> None:
+    """Misma semilla (números aleatorios comunes), 1 torno por puerta para saturar."""
+
+    def mean_waits(cfg: Config) -> tuple[float, float]:
+        ctx = make_ctx(cfg, seed=3)
         sps = generate_spectators(cfg, ctx.rngs)
         run_entry(ctx, sps)
-        return sps
+        pri = [sp.t_start_control - sp.t_arrival for sp in sps if sp.group != "standard"]
+        rest = [sp.t_start_control - sp.t_arrival for sp in sps if sp.group == "standard"]
+        assert pri and rest
+        return float(np.mean(pri)), float(np.mean(rest))
 
-    few, many = run(2), run(4)
-    assert [s.service_s for s in few] == [s.service_s for s in many]
-    for s in few + many:
-        assert s.t_end_control - s.t_start_control == pytest.approx(s.service_s / 60)
-    # con menos tornos la espera total es mayor: los escenarios sí difieren
-    assert sum(s.t_start_control - s.t_arrival for s in few) > sum(
-        s.t_start_control - s.t_arrival for s in many
+    base = {**MINI_OVERRIDES, "turnstiles_per_gate": 1, "n_spectators": 1200}
+    fifo_pri, fifo_rest = mean_waits(load_config(overrides=base))
+    prio_pri, prio_rest = mean_waits(
+        load_config(
+            overrides={
+                **base,
+                "queue_discipline": "priority",
+                "priority_groups": ["elderly", "reduced_mobility"],
+            }
+        )
     )
+    assert fifo_rest > 0  # había cola
+    assert prio_pri < fifo_pri
+    assert prio_rest >= fifo_rest
