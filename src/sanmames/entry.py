@@ -26,8 +26,10 @@ from collections.abc import Generator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
 import simpy
 
+from .config import ReadFailureParams
 from .entities import Incident, Spectator, gate_label, min_to_s, s_to_min
 from .incidents import log_incident
 
@@ -50,6 +52,10 @@ class EntryResources:
     """Evento que se dispara al reabrir la puerta (para quien espera sin redirección)."""
     failed_turnstiles: dict[tuple[str, int], int] = field(default_factory=dict)
     """``tornos_averiados[p]``."""
+    read_failure_u: np.ndarray = field(default_factory=lambda: np.empty(0))
+    """Uniforme(0, 1) del espectador ``id``: hay relectura si ``< prob`` (I2, D26)."""
+    read_failure_extra_s: np.ndarray = field(default_factory=lambda: np.empty(0))
+    """Tiempo extra (s) de la relectura del espectador ``id`` (I2, D26)."""
 
 
 def build_entry_resources(ctx: SimContext) -> EntryResources:
@@ -57,7 +63,9 @@ def build_entry_resources(ctx: SimContext) -> EntryResources:
 
     Por cada puerta ``(zone, gate)`` (``gate`` 1-indexada): un
     ``PriorityResource`` con ``turnstiles_per_gate`` plazas, la puerta abierta,
-    un evento de reapertura sin disparar y 0 tornos averiados.
+    un evento de reapertura sin disparar y 0 tornos averiados. Sortea además,
+    para los ``n_spectators``, la ocurrencia y el tiempo extra de la relectura
+    I2 (``sample_read_failures``, D26).
     """
     cfg = ctx.config
     res = EntryResources()
@@ -68,7 +76,37 @@ def build_entry_resources(ctx: SimContext) -> EntryResources:
             res.gate_open[key] = True
             res.reopen_event[key] = ctx.env.event()
             res.failed_turnstiles[key] = 0
+    res.read_failure_u, res.read_failure_extra_s = sample_read_failures(
+        cfg.incidents.read_failure, cfg.n_spectators, ctx.rngs["read_failure"]
+    )
     return res
+
+
+def sample_read_failures(
+    params: ReadFailureParams, n: int, rng: np.random.Generator
+) -> tuple[np.ndarray, np.ndarray]:
+    """Sorteo de I2 para ``n`` espectadores (D26), del flujo ``"read_failure"``.
+
+    Devuelve ``(u, extra_s)``: ``u`` ~ Uniforme(0, 1), de modo que hay relectura
+    si ``u < prob``, y el tiempo extra en segundos ~ Uniforme(``extra_s``).
+    Siempre consume ``2n`` números, esté o no activa la incidencia.
+    """
+    u = rng.random(n)
+    extra_s = rng.uniform(params.extra_s.low, params.extra_s.high, n)
+    return u, extra_s
+
+
+def has_read_failure(spectator: Spectator, ctx: SimContext) -> bool:
+    """¿Necesita el espectador una relectura en el torno (I2)?
+
+    No sortea: compara su número ``u`` de E0 con ``read_failure.prob`` (D26).
+    Con la incidencia desactivada, siempre ``False``.
+    """
+    params = ctx.config.incidents.read_failure
+    if not params.enabled:
+        return False
+    assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
+    return bool(ctx.entry.read_failure_u[spectator.id] < params.prob)
 
 
 def priority_of(spectator: Spectator, ctx: SimContext) -> int:
@@ -134,8 +172,10 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
     ``gate_closure_process`` lo sustituye al dispararlo, y se une después a la
     cola de su puerta conservando el orden de llegada (D13). El cierre solo
     afecta a quien llega mientras dura: quien ya está en cola o en control sigue
-    (hipótesis D23). No aplica I2 (T2.2), así que ``read_failure`` queda en
-    ``False``.
+    (hipótesis D23). Si el espectador tiene fallo de lectura (I2,
+    ``has_read_failure``), la relectura añade ``read_failure_extra_s[id]`` al
+    servicio sin liberar el torno: ``read_failure = True``, ``t_end_control``
+    incluye el extra y se registra una incidencia ``I2`` de la puerta usada.
     """
     env = ctx.env
     assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
@@ -161,6 +201,20 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
         else:
             spectator.t_start_control = s_to_min(env.now)
         yield env.timeout(spectator.service_s)
+        if has_read_failure(spectator, ctx):
+            spectator.read_failure = True
+            incident = log_incident(
+                ctx,
+                Incident(
+                    "I2",
+                    spectator.zone,
+                    gate_label(spectator.zone, gate),
+                    t_start=s_to_min(env.now),
+                    spectator_id=spectator.id,
+                ),
+            )
+            yield env.timeout(float(ctx.entry.read_failure_extra_s[spectator.id]))
+            incident.t_end = s_to_min(env.now)
         spectator.t_end_control = s_to_min(env.now)
 
 

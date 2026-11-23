@@ -59,7 +59,7 @@ de creación (D22). Uso actual: un generador por torno,
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución; N + N en E0 por `id`, D21) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
 | 10 | `exit_choice` | desempates de salida (N en `build_exit_resources`, por `id`; D24) | exit, emergency |
-| 11 | `reaction` | reacción a la alarma | emergency |
+| 11 | `reaction` | reacción a la alarma (N al sonar la alarma, por `id`; D25) | emergency |
 | 12 | `gate_choice` | desempates al redirigir (I4) | entry |
 
 **Solo se añaden flujos al final.** Reordenar cambia todos los resultados.
@@ -97,7 +97,7 @@ siguen rechazadas mientras no estén integradas.
 | `gate_used` | int | entry | Puerta por la que entra (≠ `gate` si se redirige; -1 si no entra) |
 | `t_start_control` | float | entry | Inicio del control (E2) |
 | `t_end_control` | float | entry | Fin del control (E3) |
-| `read_failure` | bool | entry | Hubo relectura (I2) |
+| `read_failure` | bool | entry | Hubo relectura (I2): `u < prob` con `u` sorteado en E0 por `id` y guardado en `EntryResources.read_failure_u`, extra en `read_failure_extra_s` (D26) |
 | `t_vomitory` | float | stadium | Llegada a la cola del vomitorio |
 | `t_seated` | float | stadium | Sentado (E4) |
 | `conflict` | bool | stadium/incidents | Tuvo conflicto por asiento (I1) |
@@ -173,11 +173,11 @@ todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `sample_read_failures`, `has_read_failure` (I2, D26). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |
-| emergency | `alarm_process(ctx)`, `evacuation_process(sp, ctx)` | E7, E8 |
+| emergency | `alarm_process(ctx, journeys=None)`, `evacuation_process(sp, ctx)`, `status_at_alarm(sp, t_alarm_min)` | E7, E8. `journeys[i]` es el proceso del espectador `id == i` (D25) |
 | runner | `SimContext`, `run_replica(config, seed)` | E0, E9 |
 | metrics | `compute_kpis(df, config)`, `queue_length_max` | KPIs |
 | experiments | `run_experiment(name, n_reps, base_seed)`, `find_experiment_file`, `replica_seed` | réplicas |
@@ -187,7 +187,7 @@ todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 entry, stadium, exits, phase). Los procesos SimPy son generadores que reciben
 `(spectator, ctx)` y mutan el `Spectator`.
 
-## Análisis entre réplicas (T5.2, D26)
+## Análisis entre réplicas (T5.2, D29)
 
 * `confidence_interval(values, level=0.95)` devuelve `(media, semianchura)` del
   IC t-Student, con desviación muestral y n−1 grados de libertad. Ignora NaN;

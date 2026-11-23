@@ -1,7 +1,8 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria)._
+Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
+Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria) y T2.2 (I2)._
 
 ## Hecho
 
@@ -46,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3 a T2.7 hechas).
+**Inc2 · en curso** (T2.3 a T2.7 hechas; T2.2 en revisión).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -83,15 +84,36 @@ la protección de `main` exigiendo esos checks.
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
+* T2.2 (A, en revisión; rama `feat/cuadros-T2.2-read-failure`): I2 en `entry.py`.
+  `build_entry_resources` sortea en E0, del flujo `read_failure`, un `u` y un
+  extra Uniforme(`extra_s`) por `id` (`sample_read_failures`) y los guarda en
+  `EntryResources`; hay relectura si `u < prob` (`has_read_failure`, D26). La
+  relectura sigue al servicio sin liberar el torno: `read_failure = True`,
+  `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
+  fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
+  conjunto crece. Tests en `tests/test_read_failure.py`.
+
 **Inc3: en curso.**
 
-* T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
+* T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea, o la grada
   superior `exit_stagger_min` después), `choose_exit` (menos cola, sin bloqueadas,
   desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
+
+**Inc4: en curso.**
+
+* T4.1 y T4.2 (B, en revisión; rama `feat/perez-T4.1-evacuation`): `emergency.py`
+  con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
+  `alarm_process` (fase de evacuación, accesos cerrados, reacción sorteada por
+  `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
+  interrupción de los procesos de los espectadores) y `evacuation_process`
+  (abandono o reacción, marcha más rápida, salida con menos cola y `t_safe`).
+  Decisión D25. Tests en `tests/test_emergency.py`, incluida la validación del
+  apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
+  una salida bloqueada. Falta que el runner lo integre (T4.3, C).
 
 ## Siguiente paso
 
@@ -116,6 +138,11 @@ para T3.3. Los xfail se retirarán al conectar esa fase.
   `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
 * A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
   y T2.2 (I2, ya tiene `log_incident`).
+* B: T4.1 y T4.2 en revisión; después T5.4 (rendimiento) y T6.2 (verificación).
+* C: T3.3 (encadenar la salida en el runner; T3.1 ya en `main`) y luego T4.3.
+* A: revisión de T2.2; después T2.1 (cuatro macrozonas y medida de tiempo, D15).
+* C: con T2.2 todas las incidencias de entrada están implementadas; el runner
+  debe admitir también I2 (el PR de T2.8 la sigue rechazando). Ver AVISOS.
 * B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
 * C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
 * Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
@@ -140,9 +167,9 @@ Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
-`main` tras los PR #13 y #14 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 239 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
-Rama T2.7: 253 correctos y los mismos 2 xfail; lint y `check_pr_docs` limpios.
+Python 3.13.2, `make lint` limpio; los 2 xfail son los de salida (T3.3/T3.4).
+`main` tras los PR #15 y #16: 268 correctos y 2 xfail. Rama T2.2: 279 correctos
+y los mismos 2 xfail; lint y `check_pr_docs` limpios.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
@@ -184,7 +211,7 @@ la fusión paralela se renumeró; D19 es el alcance del runner y D20 la priorida
 Análisis estadístico revisado por Chema y preparado para PR desde
 `feat/chema-T5.2-analysis`: IC t-Student, réplicas estimadas con el piloto,
 resúmenes por escenario y diferencias emparejadas por seed. 41 pruebas de
-análisis. Salidas documentadas en D26/CONTRATOS (D20 pertenece a prioridad).
+análisis. Salidas documentadas en D29/CONTRATOS (D20 pertenece a prioridad).
 Los dos xfail de salida son esperados y se activarán con T3.3/T3.4.
 
 Autorización de esta sesión: implementar y publicar T5.2, T2.8 y la integración
