@@ -14,7 +14,21 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · A → C · Prioridad no expulsiva en el torno (T2.4, D20)
+**Estado:** **en `main`** (PR #8). Pendiente de aplicar por C.
+
+* **C (runner):** `run_replica` todavía lanza `NotImplementedError` si
+  `queue_discipline != "fifo"` («pendiente de T2.4»). Ya se puede quitar esa
+  guarda: `entry_process` aplica la prioridad por sí solo (`priority_of`,
+  `preempt=False`) y no hace falta nada más en E0. Sin esto, X3 no se puede ejecutar.
+* **C (T2.8):** `wait_mean_priority_min` y `group_wait_diff_min` se calculan con
+  `config.priority_groups`, no con la disciplina (D20).
+* **Numeración:** la semántica de la prioridad entró en `main` como un segundo
+  D19; se renumera a **D20**. D19 es el alcance provisional del runner (T1.4).
+
 ### 2026-11-23 · B → A, C · I4 cierre de puerta y `log_incident` (T2.6)
+**Estado:** **en `main`** (PR #5). Pendiente de aplicar: C (lanzarlo en el runner)
+y A (T2.2, T2.7).
 **Estado actualizado:** fusionada en main mediante PR #5; integración en runner pendiente de Inc2.
 
 * **C (runner):** lanza `incidents.gate_closure_process(ctx)` en E0, después de
@@ -28,6 +42,9 @@ Reglas:
   Los que esperan se reanudan en orden de registro (D13; hay un test en
   `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
 
+### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
+**Estado:** **en `main`** (PR #6). Vigente mientras el runner rechace
+incidencias, emergencia o prioridad.
 ### 2026-11-23 · C → A, B · Réplicas y CSV de Inc1 (T1.6)
 **Estado:** publicada en el PR #9, rama `feat/chema-T1.6-experiments`.
 
@@ -48,23 +65,6 @@ Reglas:
 * Las configuraciones deben ser FIFO y desactivar incidencias y emergencia;
   otras opciones lanzan `NotImplementedError` (D19). Para probar, cargar
   `configs/dev/i1_mini.json` con `load_experiment`; la CLI llega en T1.6.
-* Aplicado el aviso de B sobre D18 y tolerancia numérica en orden temporal.
-
-### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
-**Estado actualizado:** fusionado en `main` mediante PR #4 (2026-11-23).
-Aplicado por C en la rama de T1.4; se conserva el aviso para el seguimiento con A.
-
-* **C (T1.4):** `run_replica` crea `ctx.stadium = build_stadium_resources(ctx)`
-  en E0 (después de `ctx.entry`) y encadena
-  `yield from entry_process(sp, ctx)` → `yield from seating_process(sp, ctx)`.
-  `seating_process` también espera solo hasta `t_end_control` si se lanza antes.
-  Rellena `t_vomitory`, `t_seated` y `late`; `conflict` queda en `False` hasta T2.5.
-* **C (T1.4, D18):** `build_stadium_resources` usa `config.n_spectators` y el `id`
-  como índice: los `id` deben ir de 0 a N−1 (ya lo garantiza `generate_spectators`).
-* **A y C · coma flotante:** al convertir s ↔ min (`s_to_min(min_to_s(x))`)
-  `t_start_control` puede quedar ~1e-14 min por debajo de `t_arrival` cuando no
-  hay espera. Los tests de invariantes (T1.7, `test_orden_temporal`) deben comparar
-  con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
 
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
 **Estado actualizado:** T1.1 y T1.2 fusionadas en `main` (PR #1 y #2).
@@ -87,8 +87,22 @@ Sigue vigente la aplicación de D17 a las futuras incidencias de Inc2.
 * **`entry.service_time_s` ya no existe.** No lo uses.
 * **B (T1.3):** `seating_process` parte de `sp.t_end_control` y escribe
   `t_vomitory` y `t_seated`.
-* **C (T1.4):** T1.2 y T1.3 ya están en `main`; el runner se prepara en su rama.
+* **C (T1.4):** aplicado en el runner (PR #6).
 
 ## Archivo
 
-_(vacío)_
+### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
+**Estado:** fusionado en `main` (PR #4) y aplicado por C en T1.4 (PR #6),
+incluida la tolerancia numérica en el orden temporal.
+
+* **C (T1.4):** `run_replica` crea `ctx.stadium = build_stadium_resources(ctx)`
+  en E0 (después de `ctx.entry`) y encadena
+  `yield from entry_process(sp, ctx)` → `yield from seating_process(sp, ctx)`.
+  `seating_process` también espera solo hasta `t_end_control` si se lanza antes.
+  Rellena `t_vomitory`, `t_seated` y `late`; `conflict` queda en `False` hasta T2.5.
+* **C (T1.4, D18):** `build_stadium_resources` usa `config.n_spectators` y el `id`
+  como índice: los `id` deben ir de 0 a N−1 (ya lo garantiza `generate_spectators`).
+* **A y C · coma flotante:** al convertir s ↔ min (`s_to_min(min_to_s(x))`)
+  `t_start_control` puede quedar ~1e-14 min por debajo de `t_arrival` cuando no
+  hay espera. Los tests de invariantes (T1.7, `test_orden_temporal`) deben comparar
+  con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
