@@ -28,7 +28,8 @@ from typing import TYPE_CHECKING, Any
 
 import simpy
 
-from .entities import Spectator, min_to_s, s_to_min
+from .entities import Incident, Spectator, gate_label, min_to_s, s_to_min
+from .incidents import log_incident
 
 if TYPE_CHECKING:
     from .runner import SimContext
@@ -123,5 +124,72 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
 
 
 def turnstile_failure_process(zone: str, gate: int, ctx: SimContext) -> Generator[Any, Any, None]:
-    """Proceso SimPy de averías (I3) de los tornos de una puerta."""
-    raise NotImplementedError("T2.3-A: turnstile_failure_process")
+    """Proceso SimPy de averías (I3) de los tornos de una puerta.
+
+    Lanza un sub-proceso por torno ``k = 1..turnstiles_per_gate`` (ver
+    ``_turnstile_failure_loop``) y espera a todos; como los bucles no terminan,
+    la réplica acaba por la condición del runner (``finished | time_limit``).
+    Si ``incidents.turnstile_failure.enabled`` es falso termina al instante.
+    """
+    cfg = ctx.config
+    if not cfg.incidents.turnstile_failure.enabled:
+        return
+    loops = [
+        ctx.env.process(_turnstile_failure_loop(zone, gate, k, ctx))
+        for k in range(1, cfg.turnstiles_per_gate + 1)
+    ]
+    yield ctx.env.all_of(loops)
+
+
+def _turnstile_failure_loop(
+    zone: str, gate: int, k: int, ctx: SimContext
+) -> Generator[Any, Any, None]:
+    """Ciclo de fallo y reparación del torno ``k`` de la puerta ``(zone, gate)`` (I3).
+
+    1. Funciona Exponencial(``mtbf_min``) (el reloj cuenta solo en funcionamiento,
+       D21).
+    2. Pide una plaza del recurso de la puerta con ``PRIORITY_FAILURE`` y
+       ``preempt=False``: adelanta a todos los que esperan, también a
+       ``PRIORITY_HIGH``, pero nunca corta un servicio en curso.
+    3. Al conseguirla, el torno queda parado Uniforme(``repair_min``) min: suma
+       en ``failed_turnstiles`` y registra una incidencia ``I3`` con ``t_end``
+       al terminar la reparación.
+
+    Usa un generador propio derivado de ``(zone, gate, k)`` (D21), así que el
+    calendario de sorteos de un torno es el mismo en todos los escenarios.
+    """
+    env = ctx.env
+    params = ctx.config.incidents.turnstile_failure
+    assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
+    key = (zone, gate)
+    turnstiles = ctx.entry.turnstiles[key]
+    rng = ctx.rngs.substream("turnstile_failure", zone, gate, k)
+    label = f"{gate_label(zone, gate)}-T{k}"
+    while True:
+        yield env.timeout(min_to_s(rng.exponential(params.mtbf_min)))
+        repair_s = min_to_s(rng.uniform(params.repair_min.low, params.repair_min.high))
+        with turnstiles.request(priority=PRIORITY_FAILURE, preempt=False) as req:
+            yield req
+            ctx.entry.failed_turnstiles[key] += 1
+            incident = log_incident(ctx, Incident("I3", zone, label, t_start=s_to_min(env.now)))
+            yield env.timeout(repair_s)
+            ctx.entry.failed_turnstiles[key] -= 1
+            incident.t_end = s_to_min(env.now)
+
+
+def start_turnstile_failure_processes(ctx: SimContext) -> list[simpy.Process]:
+    """Lanza ``turnstile_failure_process`` en todas las puertas (I3, E0).
+
+    Orden fijo: ``config.zones`` y, dentro de cada una, puertas 1..``gates_per_zone``.
+    Debe llamarse después de ``build_entry_resources``. Si
+    ``incidents.turnstile_failure.enabled`` es falso no crea ningún proceso y
+    devuelve una lista vacía.
+    """
+    cfg = ctx.config
+    if not cfg.incidents.turnstile_failure.enabled:
+        return []
+    return [
+        ctx.env.process(turnstile_failure_process(zone, gate, ctx))
+        for zone in cfg.zones
+        for gate in range(1, cfg.gates_per_zone + 1)
+    ]
