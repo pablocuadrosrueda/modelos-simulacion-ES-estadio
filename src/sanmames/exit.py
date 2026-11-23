@@ -45,6 +45,9 @@ class ExitResources:
     """Salidas inutilizadas (variante X7 con bloqueo)."""
     tie_u: np.ndarray = field(default_factory=lambda: np.empty(0))
     """Uniforme(0, 1) del espectador ``id`` para desempatar salidas (D24)."""
+    reaction_s: np.ndarray = field(default_factory=lambda: np.empty(0))
+    """Tiempo de reacción a la alarma (s) del espectador ``id``; lo rellena
+    ``emergency.alarm_process`` al sonar la alarma (D25)."""
 
 
 def exit_pass_time_s(width_m: float, rate_per_m_min: float) -> float:
