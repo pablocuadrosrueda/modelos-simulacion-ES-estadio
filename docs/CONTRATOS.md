@@ -59,7 +59,7 @@ de creación (D22). Uso actual: un generador por torno,
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución; N + N en E0 por `id`, D21) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
 | 10 | `exit_choice` | desempates de salida (N en `build_exit_resources`, por `id`; D24) | exit, emergency |
-| 11 | `reaction` | reacción a la alarma | emergency |
+| 11 | `reaction` | reacción a la alarma (N al sonar la alarma, por `id`; D25) | emergency |
 | 12 | `gate_choice` | desempates al redirigir (I4) | entry |
 
 **Solo se añaden flujos al final.** Reordenar cambia todos los resultados.
@@ -69,18 +69,14 @@ de creación (D22). Uso actual: un generador por torno,
 Una fila por espectador (`len(df) == config.n_spectators`), columnas en el orden
 de `entities.SPECTATOR_COLUMNS`:
 
-**Alcance provisional de Inc1 (T1.4, D19):** la réplica termina al sentarse el
-último espectador, o al alcanzar `max_sim_hours` de tiempo simulado desde la
-apertura. Se conservan todas las filas aunque el límite deje sucesos pendientes.
-Salida y evacuación permanecen en NaN (ids en -1). Las incidencias y la
-emergencia deben estar desactivadas y la cola debe ser FIFO; configuraciones
-fuera de este alcance lanzan `NotImplementedError`, sin ignorar opciones activas.
-La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
-
-**Ampliación de Inc2 (T2.8, D25):** se admiten prioridad, I1, I3 e I4. El runner
-lanza en E0 los auxiliares de avería y cierre, y conserva su condición de fin
-por espectadores/límite (los bucles de avería no terminan). I2 y emergencia
-siguen rechazadas mientras no estén integradas.
+**Alcance actual (T3.3, D27):** entrada → asiento → permanencia → salida
+ordinaria, simultánea o escalonada. Termina al salir el último espectador o al
+alcanzar `max_sim_hours` desde apertura. Conserva todas las filas y deja NaN en
+sucesos pendientes. En E0 crea también `ctx.exits`; cada recorrido encadena
+`entry_process`, `seating_process` y `exit_process` (este espera la liberación).
+Admite prioridad e incidencias I1/I3/I4 (T2.8, D25); lanza averías y cierre en E0.
+I2 y emergencia siguen rechazadas hasta su integración. No espera a que terminen
+los bucles infinitos de averías.
 
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
@@ -97,7 +93,7 @@ siguen rechazadas mientras no estén integradas.
 | `gate_used` | int | entry | Puerta por la que entra (≠ `gate` si se redirige; -1 si no entra) |
 | `t_start_control` | float | entry | Inicio del control (E2) |
 | `t_end_control` | float | entry | Fin del control (E3) |
-| `read_failure` | bool | entry | Hubo relectura (I2) |
+| `read_failure` | bool | entry | Hubo relectura (I2): `u < prob` con `u` sorteado en E0 por `id` y guardado en `EntryResources.read_failure_u`, extra en `read_failure_extra_s` (D26) |
 | `t_vomitory` | float | stadium | Llegada a la cola del vomitorio |
 | `t_seated` | float | stadium | Sentado (E4) |
 | `conflict` | bool | stadium/incidents | Tuvo conflicto por asiento (I1) |
@@ -173,11 +169,11 @@ todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `sample_read_failures`, `has_read_failure` (I2, D26). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |
-| emergency | `alarm_process(ctx)`, `evacuation_process(sp, ctx)` | E7, E8 |
+| emergency | `alarm_process(ctx, journeys=None)`, `evacuation_process(sp, ctx)`, `status_at_alarm(sp, t_alarm_min)` | E7, E8. `journeys[i]` es el proceso del espectador `id == i` (D25) |
 | runner | `SimContext`, `run_replica(config, seed)` | E0, E9 |
 | metrics | `compute_kpis(df, config)`, `queue_length_max` | KPIs |
 | experiments | `run_experiment(name, n_reps, base_seed)`, `find_experiment_file`, `replica_seed` | réplicas |
@@ -211,3 +207,8 @@ entry, stadium, exits, phase). Los procesos SimPy son generadores que reciben
   base. Si se aporta `seed`, cada par `(scenario, seed)` debe ser único, sin
   identificadores ausentes. `0 < level < 1`. No se alteran las tablas de entrada
   ni las columnas del CSV de KPIs por réplica.
+Precisión de salida (T3.3, D27): `exit_time_min` solo se calcula si todas las
+filas tienen `t_exit` y hay espectadores; si la réplica queda incompleta, NaN.
+`exit_queue_max` agrupa por `(zone, exit_id)` y reconstruye `[t_exit_queue, t_exit)`;
+incluye a la persona atravesando la salida (D24), las esperas pendientes y excluye
+ids -1. Sin llegadas a salidas, cero. No cambian columnas ni firmas.

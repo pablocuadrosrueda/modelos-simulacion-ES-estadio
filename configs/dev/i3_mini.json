@@ -1,0 +1,71 @@
+{
+  "experiment": "i3_mini",
+  "label": "Salida ordinaria simultánea frente a escalonada",
+  "question": "Verificación de permanencia, salida y números comunes",
+  "variants": [
+    {
+      "name": "i3_simultaneous",
+      "overrides": {
+        "n_spectators": 600,
+        "zones": [
+          "A"
+        ],
+        "zone_share": [
+          1.0
+        ],
+        "gates_per_zone": 2,
+        "queue_discipline": "fifo",
+        "incidents": {
+          "seat_conflict": {
+            "enabled": false
+          },
+          "read_failure": {
+            "enabled": false
+          },
+          "turnstile_failure": {
+            "enabled": false
+          },
+          "gate_closure": {
+            "enabled": false
+          }
+        },
+        "emergency": {
+          "enabled": false
+        },
+        "exit_policy": "simultaneous"
+      }
+    },
+    {
+      "name": "i3_staggered",
+      "overrides": {
+        "n_spectators": 600,
+        "zones": [
+          "A"
+        ],
+        "zone_share": [
+          1.0
+        ],
+        "gates_per_zone": 2,
+        "queue_discipline": "fifo",
+        "incidents": {
+          "seat_conflict": {
+            "enabled": false
+          },
+          "read_failure": {
+            "enabled": false
+          },
+          "turnstile_failure": {
+            "enabled": false
+          },
+          "gate_closure": {
+            "enabled": false
+          }
+        },
+        "emergency": {
+          "enabled": false
+        },
+        "exit_policy": "staggered"
+      }
+    }
+  ]
+}

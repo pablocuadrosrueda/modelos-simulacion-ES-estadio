@@ -101,7 +101,8 @@ def test_experiment_rows_seeds_and_real_metrics(paired_experiment: Path) -> None
         df.loc[df.scenario == "one", "wait_mean_min"].mean()
         > df.loc[df.scenario == "four", "wait_mean_min"].mean()
     )
-    assert df[["exit_time_min", "evac_time_min"]].isna().all().all()
+    assert df["exit_time_min"].notna().all()
+    assert df["evac_time_min"].isna().all()
 
 
 def test_experiment_reproducible(paired_experiment: Path) -> None:

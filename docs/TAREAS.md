@@ -46,7 +46,7 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
 | T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min; medir tiempo de una réplica (D15) | A | pendiente | Inc1 |
-| T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.6 (log_incident, ya en `main`) |
+| T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | en revisión | T2.6 (log_incident, ya en `main`) |
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | hecho | Inc1 |
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | hecho | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | hecho | Inc1 |
@@ -60,15 +60,15 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 |---|---|---|---|---|
 | T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | hecho | Inc1 |
 | T3.2 | Salida escalonada (`release_time_min`, X4) | B | hecho | T3.1 |
-| T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | pendiente | T3.1 |
-| T3.4 | `test_conservacion` completo sin `xfail` | C | pendiente | T3.3 |
+| T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | en revisión | T3.1 |
+| T3.4 | `test_conservacion` completo sin `xfail` | C | en revisión | T3.3 |
 
 ## Inc4 · Evacuación de emergencia
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | pendiente | Inc3 |
-| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | pendiente | T4.1 |
+| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | en revisión | Inc3 |
+| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | en revisión | T4.1 |
 | T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | pendiente | T4.1 |
 
 ## Inc5 · Experimentos y estadística

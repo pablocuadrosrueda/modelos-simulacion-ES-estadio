@@ -225,6 +225,49 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
 
+### D25. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
+* **Quién hace qué.** `emergency.alarm_process(ctx, journeys)` cambia el estado
+  al sonar la alarma y llama a `interrupt()` en los procesos vivos de
+  `journeys` (`journeys[i]` es el del espectador `id == i`). El proceso de cada
+  espectador (runner, T4.3) captura `simpy.Interrupt` y sigue con
+  `yield from evacuation_process(sp, ctx)`. Al interrumpir dentro de un `with
+  recurso.request()`, SimPy libera el torno, el vomitorio o el acomodador.
+* **Qué le toca a cada uno** (`status_at_alarm`, desarrolla D14): si aún no ha
+  llegado, nada (ya no llega). Si ha llegado y no ha terminado el control (en
+  cola, esperando reapertura o pasando el torno), abandona (`abandoned = True`).
+  Si ya pasó el torno (caminando, en el vomitorio, en un conflicto o sentado),
+  evacúa: reacción, la distancia `distance_m` completa a `speed_mps` por
+  `speed_factor`, la salida no bloqueada con menos cola y el paso de evacuación.
+* **Reacción con números comunes.** Al sonar la alarma se sortean de una vez
+  los `n_spectators` tiempos de reacción del flujo `"reaction"` y se guardan en
+  `ExitResources.reaction_s` por `id`, como en D18.
+* **Salidas.** El paso de todas las salidas pasa a ser el de una anchura
+  `exit_width_m` por `exit_width_factor` (unos 0,17 s por persona). Con
+  `blocked_exit` se inutiliza la salida 1 de `blocked_exit_zone`: la memoria dice
+  "una salida de la macrozona A" sin decir cuál, y con salidas iguales da lo mismo.
+* Al sonar la alarma se cierran todas las puertas de acceso y `ctx.phase` pasa
+  a `"evacuation"`. Un conflicto I1 en curso se da por terminado en `alarm_min`.
+* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
+  tardan 5,9 min en atravesar las 6 salidas ensanchadas y 7,1 min con una
+  bloqueada (`tests/test_emergency.py`).
+### D26 · I2 con números comunes, sorteado en E0 en `entry` — 2026-11-23
+Igual que D18 y D21. `entry.build_entry_resources` llama a
+`entry.sample_read_failures`, que sortea del flujo `"read_failure"`, para los
+`n_spectators`, un `u` ~ Uniforme(0, 1) y un extra Uniforme(`extra_s`) en
+segundos. Se guardan en `EntryResources` (`read_failure_u`,
+`read_failure_extra_s`) por `id`, aunque la incidencia esté desactivada. Hay
+relectura si está activa y `u < prob`: al pasar de 3 % a 6 % el conjunto crece y
+conserva a los anteriores, y cada espectador tiene el mismo extra en todos los
+escenarios (también con 2/3/4 tornos y con otro perfil de llegadas).
+* La relectura va **justo después del servicio** y **no libera el torno**:
+  ocupa `service_s + extra`; ni interrumpe ni se interrumpe.
+* Incidencia `I2`: `resource` = puerta usada (`"A-G1"`), `spectator_id`,
+  `t_start` al empezar la relectura (`t_start_control + service_s`) y `t_end` =
+  `t_end_control`.
+* Sustituye, para I2, la indicación de D17 de sortearlo en
+  `generate_spectators`. **No cambia el contrato de `Spectator`** ni `arrivals`.
+* Numeración: `main` llegaba a D24 y las ramas abiertas reclaman D24 (T5.2) y
+  D25 (T2.8 y T4.1); esta toma D26 para no chocar con ninguna.
 ### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
 El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
 emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o
@@ -252,3 +295,11 @@ Se debe comprobar el IC de nuevo al añadir réplicas. Una media cero con
 variabilidad exige un objetivo absoluto, no se inventa una precisión relativa.
 Son convenciones de salida de T5.2; no cambia ningún parámetro de la simulación.
 
+### D27 · Réplica completa y KPIs de salida ordinaria (T3.3) — 2026-11-23
+Se sustituye el fin provisional de D19 por el último espectador fuera. Se crean
+los recursos de salida en E0 y se encadenan los procesos de B sin alterar sus
+módulos. El límite sigue midiéndose desde apertura y conserva todas las filas.
+El tiempo de vaciado de una réplica incompleta es NaN: el último paso observado
+no es el vaciado total. La cola por salida incluye a quien está atravesándola,
+según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
+D25, incluida la duda documentada sobre averías posteriores a la entrada.
