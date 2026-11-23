@@ -30,6 +30,22 @@ Reglas:
 
 ### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
 **Estado:** **en `main`** (PR #4). Pendiente de aplicar por C en T1.4 y T1.7.
+### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
+**Estado:** publicado en el PR #6, rama `feat/chema-T1.4-runner`;
+todavía no fusionado en `main`.
+
+* Conecta entrada y asiento con las interfaces de T1.2/T1.3. Devuelve una fila
+  por espectador, las columnas acordadas y los metadatos de la réplica.
+* Por ahora termina al sentarse el último o al alcanzar `max_sim_hours` desde
+  apertura. Las fases posteriores siguen pendientes; sucesos no ocurridos, NaN.
+* Las configuraciones deben ser FIFO y desactivar incidencias y emergencia;
+  otras opciones lanzan `NotImplementedError` (D19). Para probar, cargar
+  `configs/dev/i1_mini.json` con `load_experiment`; la CLI llega en T1.6.
+* Aplicado el aviso de B sobre D18 y tolerancia numérica en orden temporal.
+
+### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
+**Estado actualizado:** fusionado en `main` mediante PR #4 (2026-11-23).
+Aplicado por C en la rama de T1.4; se conserva el aviso para el seguimiento con A.
 
 * **C (T1.4):** `run_replica` crea `ctx.stadium = build_stadium_resources(ctx)`
   en E0 (después de `ctx.entry`) y encadena
@@ -44,10 +60,8 @@ Reglas:
   con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
 
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
-**Estado actualizado el 2026-11-22:** T1.1 y T1.2 ya están en `main`
-(PR #1 y #2 fusionados el 2026-11-20). Se puede partir de `main` actualizado.
-El aviso sigue vigente para las obligaciones de D17 en las futuras incidencias
-de Inc2 y hasta que los afectados hayan aplicado sus consecuencias.
+**Estado actualizado:** T1.1 y T1.2 fusionadas en `main` (PR #1 y #2).
+Sigue vigente la aplicación de D17 a las futuras incidencias de Inc2.
 
 * **`Spectator` tiene un argumento obligatorio más:** `service_s` (tiempo de
   servicio en torno, s), justo después de `t_arrival`. Si construyes
@@ -66,8 +80,7 @@ de Inc2 y hasta que los afectados hayan aplicado sus consecuencias.
 * **`entry.service_time_s` ya no existe.** No lo uses.
 * **B (T1.3):** `seating_process` parte de `sp.t_end_control` y escribe
   `t_vomitory` y `t_seated`.
-* **C (T1.4):** T1.2 ya está en `main`; queda T1.3 para verificar la cadena
-  completa de entrada y asiento. T1.5 se puede implementar con datos sintéticos.
+* **C (T1.4):** T1.2 y T1.3 ya están en `main`; el runner se prepara en su rama.
 
 ## Archivo
 
