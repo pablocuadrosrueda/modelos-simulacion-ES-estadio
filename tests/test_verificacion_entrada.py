@@ -34,7 +34,7 @@ def test_one_state_per_spectator_at_every_transition(seed: int) -> None:
     assert (states.sum(axis=0) == 1).all()
     assert (states.sum(axis=(0, 2)) == cfg.n_spectators).all()
     assert df["t_seated"].notna().all()
-    assert df["t_exit"].isna().all()  # Inc1 termina en el asiento.
+    assert df["t_exit"].notna().all()  # Proyección de entrada del recorrido completo.
 
 
 @pytest.mark.parametrize("seed", [1, 7, 42])

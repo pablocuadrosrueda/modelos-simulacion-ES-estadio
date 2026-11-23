@@ -280,3 +280,12 @@ comparación, NaN. Los contadores siguen la definición literal de filas registr
 no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
 se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
 con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.
+
+### D27 · Réplica completa y KPIs de salida ordinaria (T3.3) — 2026-11-23
+Se sustituye el fin provisional de D19 por el último espectador fuera. Se crean
+los recursos de salida en E0 y se encadenan los procesos de B sin alterar sus
+módulos. El límite sigue midiéndose desde apertura y conserva todas las filas.
+El tiempo de vaciado de una réplica incompleta es NaN: el último paso observado
+no es el vaciado total. La cola por salida incluye a quien está atravesándola,
+según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
+D25, incluida la duda documentada sobre averías posteriores a la entrada.

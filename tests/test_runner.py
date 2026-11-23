@@ -40,8 +40,9 @@ def test_replica_metadata(mini_config: Config) -> None:
 
 def test_future_phases_have_no_events(mini_config: Config) -> None:
     df = runner.run_replica(mini_config, seed=7)
-    assert df[["t_exit_queue", "t_exit", "t_safe"]].isna().all().all()
-    assert (df["exit_id"] == -1).all()
+    assert df["t_safe"].isna().all()
+    assert df[["t_exit_queue", "t_exit"]].notna().all().all()
+    assert df["exit_id"].between(1, mini_config.exits_per_zone).all()
     assert not df[["read_failure", "conflict", "abandoned"]].any().any()
 
 
@@ -77,7 +78,7 @@ def test_simultaneous_arrivals_keep_fifo(monkeypatch: pytest.MonkeyPatch) -> Non
     np.testing.assert_allclose(df["t_start_control"], [-20, -20 + 4 / 60, -20 + 8 / 60])
 
 
-def test_stops_when_last_spectator_sits(
+def test_stops_when_last_spectator_exits(
     mini_config: Config, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     contexts = []
@@ -89,7 +90,7 @@ def test_stops_when_last_spectator_sits(
 
     monkeypatch.setattr(runner, "build_entry_resources", capture_context)
     df = runner.run_replica(mini_config, seed=7)
-    assert contexts[0].env.now == pytest.approx(min_to_s(df["t_seated"].max()))
+    assert contexts[0].env.now == pytest.approx(min_to_s(df["t_exit"].max()))
     assert contexts[0].env.now < min_to_s(mini_config.t_open_min + mini_config.max_sim_hours * 60)
 
 
