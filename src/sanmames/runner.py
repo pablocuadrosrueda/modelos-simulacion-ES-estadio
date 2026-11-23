@@ -10,7 +10,7 @@ Responsable: C.
 2. lanza un proceso por espectador que encadena entrada -> asiento ->
    (permanencia) -> salida, y los procesos auxiliares (averías, cierre de
    puerta, alarma) según la configuración;
-3. E9: en Inc1 corre hasta que todos se sientan o hasta ``max_sim_hours``;
+3. E9: corre hasta que todos salgan o hasta ``max_sim_hours``;
 4. devuelve el DataFrame de espectadores.
 """
 
@@ -27,6 +27,7 @@ from .arrivals import generate_spectators
 from .config import Config
 from .entities import INCIDENT_COLUMNS, SPECTATOR_COLUMNS, Incident, Spectator, min_to_s
 from .entry import build_entry_resources, entry_process, start_turnstile_failure_processes
+from .exit import build_exit_resources, exit_process
 from .incidents import gate_closure_process
 from .rng import RngStreams
 from .stadium import build_stadium_resources, seating_process
@@ -55,20 +56,21 @@ class SimContext:
     """Fase actual (``PHASES``)."""
 
 
-def _entry_and_seating(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, None]:
-    """Un único proceso conserva al espectador durante entrada y ubicación."""
+def _spectator_journey(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, None]:
+    """Un único proceso conserva al espectador hasta atravesar la salida."""
     yield from entry_process(spectator, ctx)
     yield from seating_process(spectator, ctx)
+    yield from exit_process(spectator, ctx)
 
 
 def run_replica(config: Config, seed: int) -> pd.DataFrame:
-    """Simula llegada -> entrada -> asiento con la semilla ``seed`` (Inc1).
+    """Simula entrada, permanencia y salida ordinaria con la semilla ``seed``.
 
-    Termina al sentarse el último espectador o al alcanzar ``max_sim_hours``
+    Termina al salir el último espectador o al alcanzar ``max_sim_hours``
     desde la apertura. Si se alcanza ese límite, conserva todos los espectadores
     y deja en NaN los sucesos pendientes. Admite FIFO/prioridad, conflictos I1,
     averías I3 y cierre I4. I2 y emergencia siguen pendientes y se rechazan
-    explícitamente. La permanencia y salida se integran en T3.3.
+    explícitamente. La salida aplica la política simultánea o escalonada.
 
     Args:
         config: escenario ya validado (``config.load_config`` / ``load_experiment``).
@@ -91,11 +93,12 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
     start_turnstile_failure_processes(ctx)
     env.process(gate_closure_process(ctx))
     ctx.stadium = build_stadium_resources(ctx)
+    ctx.exits = build_exit_resources(ctx)
     ctx.spectators = generate_spectators(config, ctx.rngs)
 
     # D16/D18: la lista viene ordenada por llegada e id. Cada proceso espera
     # por sí mismo hasta la llegada y usa los tiempos aleatorios de su espectador.
-    journeys = [env.process(_entry_and_seating(sp, ctx)) for sp in ctx.spectators]
+    journeys = [env.process(_spectator_journey(sp, ctx)) for sp in ctx.spectators]
     finished = env.all_of(journeys)
     time_limit = env.timeout(min_to_s(config.max_sim_hours * 60))
     env.run(until=finished | time_limit)

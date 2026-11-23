@@ -131,7 +131,7 @@ def test_queue_max_separates_zones_and_gates(base_config: Config) -> None:
 
 def test_future_kpis_remain_nan(entry_df: pd.DataFrame, metrics_config: Config) -> None:
     kpis = compute_kpis(entry_df, metrics_config)
-    future = ["exit_time_min", "exit_queue_max", "evac_time_min", "evac_pct_ref", "n_abandoned"]
+    future = ["exit_time_min", "evac_time_min", "evac_pct_ref", "n_abandoned"]
     assert all(math.isnan(kpis[name]) for name in future)
 
 
@@ -141,6 +141,7 @@ def test_empty_replica(metrics_config: Config) -> None:
         "n_spectators",
         "n_entered",
         "queue_max_gate",
+        "exit_queue_max",
         "n_conflicts",
         "n_read_failures",
         "n_turnstile_failures",

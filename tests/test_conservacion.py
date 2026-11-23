@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from sanmames.config import Config
 from sanmames.entities import SPECTATOR_COLUMNS
@@ -41,7 +40,6 @@ def test_conservation_over_time(mini_config: Config) -> None:
         assert sum(_state_counts(df, t).values()) == mini_config.n_spectators, t
 
 
-@pytest.mark.xfail(raises=AssertionError, strict=True, reason="salida pendiente de T3.3 / T3.4")
 def test_everybody_ends_out(mini_config: Config) -> None:
     df = run_replica(mini_config, seed=2)
     assert df["t_exit"].notna().all()

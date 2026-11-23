@@ -7,8 +7,6 @@ Entrada y reproducibilidad activas con T1.4; salida pendiente de T3.3.
 
 from __future__ import annotations
 
-import pytest
-
 from sanmames.config import Config
 from sanmames.runner import run_replica
 
@@ -23,7 +21,6 @@ def test_entry_times_are_ordered(mini_config: Config) -> None:
         assert (df[earlier] <= df[later] + 1e-9).all(), (earlier, later)
 
 
-@pytest.mark.xfail(raises=AssertionError, strict=True, reason="salida pendiente de T3.3")
 def test_exit_after_seated(mini_config: Config) -> None:
     df = run_replica(mini_config, seed=3)
     assert df["t_exit"].notna().all()

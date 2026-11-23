@@ -14,8 +14,17 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Runner hasta salida ordinaria (T3.3, D27)
+**Estado:** en revisión desde `feat/chema-T3.3-runner-exit`; depende del PR #18.
+
+* Aplicado el contrato de T3.1/T3.2: recursos en E0 y asiento → salida. Ya no
+  termina al sentarse el último. Las políticas simultánea y escalonada funcionan.
+* Los dos xfail de salida se activan. KPI de vaciado NaN si la réplica se trunca;
+  cola máxima por salida incluye paso en servicio. Evacuación e I2 pendientes.
+* Caso reproducible: `make run EXP=configs/dev/i3_mini.json REPS=3`.
+
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
+**Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
   `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después

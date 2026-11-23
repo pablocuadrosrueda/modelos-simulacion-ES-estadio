@@ -95,32 +95,16 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-Avance C, T2.8: prioridad e incidencias I1/I3/I4 integradas en el runner;
-indicadores por grupos, conflictos y recuentos implementados. Colas por puerta
-real y exclusión de quienes no han llegado. Caso `configs/dev/i2_mini.json`.
-Pruebas sintéticas y observación de capacidades en la simulación completa de
-entrada. Pendiente de revisión por PR desde `feat/chema-T2.8-metrics`.
-T5.2 publicada en PR #17. T3.1/T3.2 terminadas por B en PR #15, todavía abierto;
-la integración de salida se prepara después, sin editar los módulos de B.
+C ha publicado T5.2 (estadística, PR #17) y T2.8 (incidencias/KPIs, PR #18).
+T3.1/T3.2 de B están fusionadas (PR #15). T3.3 conecta ahora la salida ordinaria,
+incluida política escalonada y KPIs de vaciado/cola. Dos xfail activados.
+Caso analítico completo: 12.195 personas, seis salidas, unos 7,7 min sin marcha.
+Caso de desarrollo: `configs/dev/i3_mini.json` (dos variantes, semillas comunes).
 
-Validación T2.8 (Python 3.12): 256 tests correctos, 2 xfail de salida, lint y
-diff limpios. Tres réplicas de i2_mini: 600 entradas cada una, con I1/I3 registradas
-y KPIs por grupos. La salida de B (PR #15) ya figura fusionada y se recogerá
-para T3.3. Los xfail se retirarán al conectar esa fase.
-
-* C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
-  (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
-  lanzar en E0 `gate_closure_process` (I4, T2.6) y
-  `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
-  (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
-  `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
-* A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
-  y T2.2 (I2, ya tiene `log_incident`).
-* B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
-* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
-* Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
-  instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
-  Dudas abiertas).
+Próximo C: T3.4, conservación exhaustiva durante entrada, permanencia y salida,
+con incidencias y límite de tiempo. Después T4.3 depende de T4.1/T4.2 de B.
+A tiene pendientes T2.1/T2.2. Los experimentos oficiales de T5.1 esperan a Inc4;
+no se desactivan incidencias del modelo para presentar resultados definitivos.
 
 ## Reparto
 
@@ -137,6 +121,8 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
+Autorización vigente (2026-11-23): implementar y publicar T5.2, T2.8, T3.3 y T3.4
+por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 

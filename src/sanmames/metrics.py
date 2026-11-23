@@ -109,9 +109,9 @@ def _conflict_delay_s(df: pd.DataFrame, incidents: pd.DataFrame) -> float:
 
 
 def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
-    """Calcula los KPIs de entrada, grupos e incidencias (T1.5/T2.8).
+    """Calcula los KPIs de entrada, incidencias y salida ordinaria.
 
-    Los indicadores de salida y evacuación quedan en NaN hasta sus tareas.
+    Los indicadores de evacuación quedan en NaN hasta Inc4.
     Las medias de espera y acceso usan
     los tiempos observados, sin convertir los sucesos pendientes en ceros.
     Sin observaciones, las medias y porcentajes son NaN; los recuentos y la
@@ -176,4 +176,16 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
     ):
         kpis[name] = int(incidents["kind"].eq(kind).sum())
     kpis["conflict_delay_s"] = _conflict_delay_s(df, incidents)
+    # El tiempo de vaciado solo se conoce si todos han salido. El máximo de
+    # una réplica truncada sería un límite inferior, no el tiempo total.
+    if not df.empty and df["t_exit"].notna().all():
+        kpis["exit_time_min"] = float(df["t_exit"].max() - config.t_end_min)
+    exiting = df.loc[df["exit_id"] >= 1]
+    kpis["exit_queue_max"] = max(
+        (
+            queue_length_max(exit_["t_exit_queue"], exit_["t_exit"])
+            for _, exit_ in exiting.groupby(["zone", "exit_id"])
+        ),
+        default=0,
+    )
     return kpis

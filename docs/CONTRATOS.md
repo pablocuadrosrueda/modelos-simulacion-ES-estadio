@@ -69,18 +69,14 @@ de creación (D22). Uso actual: un generador por torno,
 Una fila por espectador (`len(df) == config.n_spectators`), columnas en el orden
 de `entities.SPECTATOR_COLUMNS`:
 
-**Alcance provisional de Inc1 (T1.4, D19):** la réplica termina al sentarse el
-último espectador, o al alcanzar `max_sim_hours` de tiempo simulado desde la
-apertura. Se conservan todas las filas aunque el límite deje sucesos pendientes.
-Salida y evacuación permanecen en NaN (ids en -1). Las incidencias y la
-emergencia deben estar desactivadas y la cola debe ser FIFO; configuraciones
-fuera de este alcance lanzan `NotImplementedError`, sin ignorar opciones activas.
-La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
-
-**Ampliación de Inc2 (T2.8, D25):** se admiten prioridad, I1, I3 e I4. El runner
-lanza en E0 los auxiliares de avería y cierre, y conserva su condición de fin
-por espectadores/límite (los bucles de avería no terminan). I2 y emergencia
-siguen rechazadas mientras no estén integradas.
+**Alcance actual (T3.3, D27):** entrada → asiento → permanencia → salida
+ordinaria, simultánea o escalonada. Termina al salir el último espectador o al
+alcanzar `max_sim_hours` desde apertura. Conserva todas las filas y deja NaN en
+sucesos pendientes. En E0 crea también `ctx.exits`; cada recorrido encadena
+`entry_process`, `seating_process` y `exit_process` (este espera la liberación).
+Admite prioridad e incidencias I1/I3/I4 (T2.8, D25); lanza averías y cierre en E0.
+I2 y emergencia siguen rechazadas hasta su integración. No espera a que terminen
+los bucles infinitos de averías.
 
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
@@ -186,3 +182,9 @@ todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 `ctx` es un `runner.SimContext` (env, config, rngs, spectators, incidents,
 entry, stadium, exits, phase). Los procesos SimPy son generadores que reciben
 `(spectator, ctx)` y mutan el `Spectator`.
+
+Precisión de salida (T3.3, D27): `exit_time_min` solo se calcula si todas las
+filas tienen `t_exit` y hay espectadores; si la réplica queda incompleta, NaN.
+`exit_queue_max` agrupa por `(zone, exit_id)` y reconstruye `[t_exit_queue, t_exit)`;
+incluye a la persona atravesando la salida (D24), las esperas pendientes y excluye
+ids -1. Sin llegadas a salidas, cero. No cambian columnas ni firmas.

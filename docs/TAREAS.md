@@ -60,7 +60,7 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 |---|---|---|---|---|
 | T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | hecho | Inc1 |
 | T3.2 | Salida escalonada (`release_time_min`, X4) | B | hecho | T3.1 |
-| T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | pendiente | T3.1 |
+| T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | en revisión | T3.1 |
 | T3.4 | `test_conservacion` completo sin `xfail` | C | pendiente | T3.3 |
 
 ## Inc4 · Evacuación de emergencia
