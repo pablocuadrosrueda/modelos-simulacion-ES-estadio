@@ -2,6 +2,7 @@
 
 _Última actualización: 2026-11-23 · main verificado en `2c8740e`.
 T1.7 publicada en el PR #10 en `feat/chema-T1.7-verificacion`._
+T1.6 publicada en el PR #9 en `feat/chema-T1.6-experiments`._
 
 ## Hecho
 
@@ -73,6 +74,8 @@ T1.4 integrada con T1.5: 157 tests correctos, 2 xfail esperados. Antes de la úl
 actualización de main: T1.6, 179 correctos; T1.7, 164 correctos; lint limpio.
 Con main `2c8740e`, esta rama pasa `make check`: 182 tests correctos y 2
 xfail esperados; lint y diff limpios. Publicada en el PR #10; pendiente de revisión del equipo.
+Con main `2c8740e`, esta rama pasa `make check`: 197 tests correctos y 2
+xfail esperados; lint y diff limpios. Publicada en el PR #9; pendiente de revisión del equipo.
 
 T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
 `results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas

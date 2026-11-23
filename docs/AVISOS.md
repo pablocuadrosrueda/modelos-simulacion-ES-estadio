@@ -28,6 +28,16 @@ Reglas:
   Los que esperan se reanudan en orden de registro (D13; hay un test en
   `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
 
+### 2026-11-23 · C → A, B · Réplicas y CSV de Inc1 (T1.6)
+**Estado:** publicada en el PR #9, rama `feat/chema-T1.6-experiments`.
+
+* `make run EXP=configs/dev/i1_mini.json REPS=3` ejecuta tres réplicas y guarda
+  los indicadores en `results/i1_mini_kpis.csv`. La API devuelve la tabla sin
+  escribir ficheros. Las semillas son comunes entre variantes.
+* Se corrige en métricas el redondeo s/min señalado por B: esperas de magnitud
+  <= 1e-9 min se consideran cero, sin contar colas ficticias ni fallar por una
+  diferencia numérica negativa. No cambian columnas, firmas ni parámetros.
+
 ### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
 **Estado actualizado:** fusionado en main mediante PR #6.
 
