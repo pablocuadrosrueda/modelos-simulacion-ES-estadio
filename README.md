@@ -187,3 +187,14 @@ Los checkpoints de la campaña son locales y no se versionan; `--resume` se usa
 en el mismo directorio local. Los agregados y la procedencia sí se comparten en
 Git para revisión. Con el entorno activado, `python scripts/run_campaign.py`
 funciona también en Windows; la CI verifica rutas portables y procesos spawn.
+
+Cuando la campaña haya terminado y verificado la precisión, generar su informe:
+
+```bash
+.venv/bin/python scripts/report_campaign.py
+```
+
+El informe comprueba conteos, semillas, terminación y precisión; rechaza una
+campaña aún incompleta. Distingue duración total de conflicto, espera de otros
+espectadores, espera del colectivo afectado por el cierre y cumplimiento del
+vaciado de emergencia por réplica.

@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import runpy
 import subprocess
 import sys
 from pathlib import Path
@@ -91,6 +92,9 @@ def test_spawn_resume_and_reject_changed_config(tmp_path):
     assert pilot.returncode == 0, pilot.stderr
     original = {p.name: p.read_bytes() for p in (output / "checkpoints").glob("*.json")}
     assert len(original) == 4
+    reporter = runpy.run_path(str(ROOT / "scripts/report_campaign.py"))["build_report"]
+    with pytest.raises(ValueError, match="no está completa"):
+        reporter(output)
     completed = subprocess.run(cmd + ["--resume"], capture_output=True, text=True, env=env)
     assert completed.returncode == 0, completed.stderr
     result = pd.read_csv(output / "kpis.csv")
@@ -102,6 +106,15 @@ def test_spawn_resume_and_reject_changed_config(tmp_path):
     )
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["completed"] is True
+    report = reporter(output)
+    assert "X0_base" in report and "6 réplicas" in report
+    precision = pd.read_csv(output / "precision.csv")
+    precision.loc[0, "precision_met"] = False
+    precision.to_csv(output / "precision.csv", index=False)
+    with pytest.raises(ValueError, match="no están verificados"):
+        reporter(output)
+    precision.loc[0, "precision_met"] = True
+    precision.to_csv(output / "precision.csv", index=False)
     assert pd.read_csv(output / "precision.csv").precision_met.all()
     path = configs / "X0_base.json"
     changed = json.loads(path.read_text(encoding="utf-8"))
