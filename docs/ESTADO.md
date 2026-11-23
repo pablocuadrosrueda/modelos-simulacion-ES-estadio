@@ -114,4 +114,4 @@ Base del clon verificada el 2026-11-22 con Python 3.12.14: 99 tests pasan,
 (23 nuevos de métricas) y 5 xfail esperados; `make lint` y `git diff --check`
 limpios. Para revisar solo esta tarea: `.venv/bin/python -m pytest
 tests/test_metrics.py -v` desde la raíz del clon.
-Probado con Python 3.13.2 (rama T2.6, con T1.5 integrada): 145 passed pasan, 5 xfail esperados, ruff limpio.
+Probado con Python 3.13.2 (rama T2.6, con T1.5 integrada): 145 tests pasan, 5 xfail esperados, ruff limpio.
