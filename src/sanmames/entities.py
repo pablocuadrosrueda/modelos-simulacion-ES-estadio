@@ -46,6 +46,9 @@ class Spectator:
     """Distancia puerta -> asiento; se reutiliza para salir."""
     t_arrival: float
     """Llegada a la cola de su puerta (E1)."""
+    service_s: float
+    """Tiempo de servicio en torno (s), ya sorteado: Triangular(``service_time_s``).
+    Se fija al generarlo para que sea el mismo en todos los escenarios (D17)."""
 
     # -- rellenados durante la simulación ---------------------------------
     gate_used: int = -1

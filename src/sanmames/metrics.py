@@ -14,6 +14,7 @@ DataFrame es autosuficiente.
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import pandas as pd
@@ -53,13 +54,38 @@ def queue_length_max(start: pd.Series, end: pd.Series) -> int:
     """Máximo de elementos simultáneamente en ``[start, end)`` (cola reconstruida).
 
     Útil para la cola de una puerta (``t_arrival``, ``t_start_control``) o de
-    una salida (``t_exit_queue``, ``t_exit``). Ignora filas con NaN en ``start``.
+    una salida (``t_exit_queue``, ``t_exit``). Empareja las series por posición.
+    Ignora filas con NaN en ``start``. Si ``end`` es NaN, el elemento sigue
+    esperando. Una espera de duración cero no ocupa cola; en un empate de
+    tiempos, las salidas se procesan antes que las llegadas.
     """
-    raise NotImplementedError("T1.5-C: queue_length_max")
+    events: list[tuple[float, int]] = []
+    for arrival, departure in zip(start, end, strict=True):
+        if pd.isna(arrival):
+            continue
+        if pd.notna(departure):
+            if departure < arrival:
+                raise ValueError("El fin de una espera no puede preceder a su inicio")
+            if departure == arrival:
+                continue
+            events.append((departure, -1))
+        events.append((arrival, 1))
+
+    queued = peak = 0
+    for _, change in sorted(events):
+        queued += change
+        peak = max(peak, queued)
+    return peak
 
 
 def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
-    """Calcula los KPIs de una réplica.
+    """Calcula los KPIs de entrada de una réplica (T1.5).
+
+    Los indicadores de grupos, incidencias, salida y evacuación quedan en
+    NaN hasta sus tareas correspondientes. Las medias de espera y acceso usan
+    los tiempos observados, sin convertir los sucesos pendientes en ceros.
+    Sin observaciones, las medias y porcentajes son NaN; los recuentos y la
+    cola máxima son cero. La utilización requiere algún control terminado.
 
     Args:
         df: resultado de ``runner.run_replica`` (columnas ``SPECTATOR_COLUMNS``;
@@ -69,4 +95,39 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
     Returns:
         dict con exactamente las claves de :data:`KPI_COLUMNS`.
     """
-    raise NotImplementedError("T1.5-C: compute_kpis")
+    kpis: dict[str, Any] = dict.fromkeys(KPI_COLUMNS, math.nan)
+    kpis["n_spectators"] = len(df)
+    kpis["n_entered"] = int(df["t_end_control"].notna().sum())
+
+    # Los tiempos del DataFrame ya están en minutos (no son el reloj SimPy).
+    waits = (df["t_start_control"] - df["t_arrival"]).dropna()
+    if not waits.empty:
+        kpis["wait_mean_min"] = float(waits.mean())
+        kpis["wait_p95_min"] = float(waits.quantile(0.95))
+        kpis["pct_wait_lt_10"] = float((waits < 10).mean() * 100)
+
+    # Las puertas se numeran dentro de cada macrozona: A-G1 y B-G1 son distintas.
+    kpis["queue_max_gate"] = max(
+        (
+            queue_length_max(gate["t_arrival"], gate["t_start_control"])
+            for _, gate in df.groupby(["zone", "gate"])
+        ),
+        default=0,
+    )
+
+    service = df["t_end_control"] - df["t_start_control"]
+    control_window = df["t_end_control"].max() - config.t_open_min
+    if service.notna().any() and control_window > 0:
+        # D12: todos los tornos nominales, desde apertura hasta el último control.
+        kpis["turnstile_util"] = float(service.sum() / (config.n_turnstiles * control_window))
+
+    access = (df["t_seated"] - df["t_arrival"]).dropna()
+    if not access.empty:
+        kpis["access_mean_min"] = float(access.mean())
+
+    before_kickoff = df["t_arrival"] < config.t_start_min
+    if before_kickoff.any():
+        kpis["late_pct"] = float(
+            (df.loc[before_kickoff, "t_seated"] > config.t_start_min).mean() * 100
+        )
+    return kpis
