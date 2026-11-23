@@ -154,7 +154,14 @@ def evacuation_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, 
 
 
 def _close_open_conflict(spectator: Spectator, ctx: SimContext) -> None:
-    """Un conflicto I1 en curso al sonar la alarma se da por terminado entonces."""
+    """Un conflicto I1 en curso al sonar la alarma se da por terminado entonces.
+
+    Solo puede tener uno abierto quien tuvo conflicto y aún no se ha sentado; para
+    el resto no se recorre la lista de incidencias (T5.4: con N = 48.775 y unas
+    1.750 incidencias, recorrerla para todos costaba unos 2 s por réplica).
+    """
+    if not spectator.conflict or not math.isnan(spectator.t_seated):
+        return
     t_alarm = ctx.config.emergency.alarm_min
     for inc in ctx.incidents:
         if inc.kind == "I1" and inc.spectator_id == spectator.id and math.isnan(inc.t_end):

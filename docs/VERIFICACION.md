@@ -93,6 +93,29 @@ Con todo activado y la salida encadenada, una réplica pasa de ≈ 2,2 a ≈ 3,0
 (+35 %); I2 apenas cuenta (+0,1 s). Con 13 escenarios y unas 30 réplicas, la
 campaña completa son ≈ 20 min en un núcleo.
 
-## Pendiente
+## Tiempo de réplica por escenario (T5.4)
 
-* Evacuación (emergencia) con simulación: depende de T4.1–T4.3.
+Medido el 2026-11-23 en un portátil Intel con Python 3.13.2: 3 réplicas
+completas de cada escenario (N = 48.775, todas las incidencias del escenario),
+semillas 20261105 a 20261107. Tiempo medio de pared por réplica.
+
+| Escenario | Antes de T5.4 (s) | Después de T5.4 (s) |
+|---|---|---|
+| X0 base | 3,4 | 3,4 |
+| X1 con 2 y con 4 tornos | 4,3 y 3,7 | sin cambio |
+| X2 a X6 | 3,4 a 3,8 | sin cambio |
+| X7 con todas las salidas | 6,9 | 4,7 |
+| X7 con una salida bloqueada | 6,9 | 4,8 |
+
+En X7 el mayor coste propio era `emergency._close_open_conflict`: se llamaba
+para los 48.775 espectadores y cada vez recorría todas las incidencias (unas
+1.750), unos 2 s por réplica. Ahora solo busca en quien tiene un conflicto
+abierto. Los resultados son idénticos antes y después (misma huella de las
+tablas de espectadores e incidencias en X0, X5 con 3 acomodadores y las dos
+variantes de X7).
+
+Tras el cambio, el perfil de una réplica de X0 o X7 no muestra ningún cuello de
+botella en los módulos de B: el tiempo se reparte entre el motor de SimPy y los
+procesos de entrada, asiento, salida y evacuación, en torno a 0,3 s de tiempo
+propio cada uno con el perfilador activado. Con 13 escenarios y unas 30
+réplicas, la campaña completa son unos 25 min en un núcleo.
