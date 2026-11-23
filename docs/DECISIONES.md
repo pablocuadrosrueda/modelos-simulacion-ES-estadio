@@ -159,5 +159,5 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
 * Quien se sienta después de su liberación (E5) sale en cuanto se lanza
   `exit_process`. La política escalonada (`release_time_min`, T3.2) se implementa
   a la vez porque es una línea: grada superior `exit_stagger_min` después.
-* Validación (§4.3): 12.195 personas de una macrozona tardan 7,7 min en
+* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona tardan 7,7 min en
   atravesar las 6 salidas (`tests/test_exit.py`).

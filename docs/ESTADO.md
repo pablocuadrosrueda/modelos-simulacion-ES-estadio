@@ -65,7 +65,7 @@ la protección de `main` exigiendo esos checks.
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea o grada
   superior +`exit_stagger_min`), `choose_exit` (menos cola, sin bloqueadas,
   desempate con números comunes, D22) y `exit_process` (liberación → marcha →
-  cola → paso). Tests en `tests/test_exit.py`, incluida la validación de §4.3:
+  cola → paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de la memoria:
   12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
 
 ## Siguiente paso
