@@ -18,7 +18,7 @@ El script evita sobrescribir resultados. Los CSV revisables están en [results/p
 - Python 3.12.14; versiones, hashes de fuentes y configs resueltas en [manifest.json](../results/pilot/manifest.json).
 - Para recuperar cohortes de P4 se repitieron X0 y X3 con las mismas diez semillas: 20 recálculos, cuyos KPIs originales se verificaron iguales con tolerancia 1e-12. No cuentan como réplicas nuevas.
 - Cero espectadores pendientes en las 120 réplicas. Tiempo acumulado del lote y KPIs: 298.91 s (2.49 s/réplica; rango 1.95–3.85 s), sin incluir la recuperación posterior de P4.
-- Reparto observado por zona entre 24.484 % y 25.406 % por réplica. Esto aporta datos a T2.1; no sustituye su validación del ritmo por torno.
+- Reparto observado por zona entre 24.484 % y 25.406 % por réplica. La validación del ritmo por torno de A está en [VERIFICACION.md](VERIFICACION.md), T2.1 fusionada en PR #25.
 
 ## Acceso · medias entre réplicas
 
@@ -104,7 +104,7 @@ La estimación máxima es **181 réplicas totales**, frente a las ≈30 prevista
 - P7: la redirección reduce la espera global media unos 0,0031 min. El cierre sigue en +20 min (poca llegada), como en las configs; esto no demuestra el comportamiento de un cierre en hora punta. Confirmar con el grupo la intención antes de cambiar el instante.
 - P8: con todas las salidas, vaciado completo ≤8 min en 9/10 réplicas; con una bloqueada, 0/10. La media de vaciado es 7,39 frente a 8,45 min; una media menor que ocho no implica cumplir en todos los partidos (máximo observado sin bloqueo: 8,208 min).
 - El recuento I3 incluye averías posteriores a la entrada, según D25; no interpretar ese contador como número de averías que perjudicaron a espectadores.
-- A mantiene T2.1 pendiente (reparto/capacidad/rendimiento) y A/B llevan T5.4. El lote no modifica sus módulos ni marca esas tareas como terminadas.
+- A ha completado T2.1 (PR #25, [verificación de capacidad](VERIFICACION.md)); A/B llevan T5.4. El piloto no modifica sus módulos.
 
 ## Qué sigue
 

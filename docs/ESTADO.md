@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
+_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 completo,
 Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
 T4.3 está fusionada en PR #24. T5.1 (piloto X0–X7) está en revisión en esta rama._
 
@@ -47,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · completado salvo T2.1 (reparto/rendimiento).**
+**Inc2 · completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -92,6 +92,13 @@ la protección de `main` exigiendo esos checks.
   `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
   fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
   conjunto crece. Tests en `tests/test_read_failure.py`.
+* T2.1 (A, hecho; PR #25; rama `feat/cuadros-T2.1-capacity`): comprobación de
+  capacidad de la memoria (§4.3) en `src/sanmames/capacity.py` (E[S], disponibilidad,
+  capacidad, ρ en la franja pico real, vomitorios, vaciado y evacuación) y con
+  simulación (reparto, ritmo por torno con cola ≈ teórico, 2/3/4/10 tornos,
+  utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
+  `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
+  comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
 
 **Inc3: en curso.**
 
@@ -129,7 +136,8 @@ recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
 en todos los KPIs originales y no se cuentan como nuevas réplicas. El script
 ya guarda estas cohortes directamente al repetir el lote.
 
-Validación: 375 tests correctos, sin xfail, lint y docs limpios. X0 espera media
+Validación con T2.1: 393 tests correctos y una prueba lenta opcional omitida
+(RUN_SLOW=1), sin xfail; lint y docs limpios. X0 espera media
 0,186 min; dos tornos: 3,986 min y 89,18 % bajo 10 min. Evacuación media 7,39 min
 sin bloqueo y 8,45 con bloqueo; el vaciado total <=8 se cumple en 9/10 y 0/10.
 Son resultados piloto, no conclusiones definitivas de la entrega.
@@ -137,8 +145,8 @@ Son resultados piloto, no conclusiones definitivas de la entrega.
 Próximo C: T5.3, réplicas definitivas y S1. La precisión relativa del 5 % estima
 hasta 181 réplicas totales (no 30 por defecto); recalcular IC al ampliar. Un n
 común de 181 supondría 2.052 réplicas adicionales, unos 85 min al ritmo observado,
-sin S1. T2.1 sigue pendiente de A; se aporta reparto y duración, sin darla por
-hecha. A/B: T5.4. Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
+sin S1. T2.1 ya fusionada por A (PR #25), con capacidad/rendimiento en
+`docs/VERIFICACION.md`; no bloquea la ampliación. A/B: T5.4. Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
 Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
 
 ## Reparto
@@ -194,6 +202,10 @@ B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
   tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
   redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
   P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
+* T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
+  franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
+  corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de
+  capacidad pura (incluye marcha y cola): coherente.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin

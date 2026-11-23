@@ -23,8 +23,8 @@ Reglas:
 * P4: el X0 tiene `priority_groups=[]`; «resto» no era el mismo colectivo que
   en X3. Se añade análisis con cohortes comunes de X3, sin cambiar simulación,
   configs ni KPIs originales. Formato en CONTRATOS/D31.
-* A conserva T2.1 pendiente. Se aporta reparto y tiempo por réplica; siguen
-  pendientes de decisión del grupo el cierre X6 en +20 y el recuento I3.
+* T2.1 de A ya está fusionada (PR #25); capacidad/rendimiento en VERIFICACION.
+  Siguen pendientes de decisión del grupo el cierre X6 en +20 y el recuento I3.
 
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
 **Estado:** fusionada en `main` (PR #24).
