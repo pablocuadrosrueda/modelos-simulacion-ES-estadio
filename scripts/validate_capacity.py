@@ -183,9 +183,10 @@ def simulation_rows(reps: int) -> tuple[list[Row], dict[str, float]]:
         )
     )
 
-    for name, inc, failures in (("con I3", NO_I2, True), ("sin incidencias", NO_INCIDENTS, False)):
+    with_i2: dict[str, Any] = {} if x0_ok else NO_I2
+    for name, inc in (("todas las incidencias", with_i2), ("sin incidencias", NO_INCIDENTS)):
         c2 = cfg(inc, {"turnstiles_per_gate": 2})
-        theory = cap.capacity_per_turnstile_min(c2, with_failures=failures)
+        theory = cap.capacity_per_turnstile_min(c2)
         rate = float(np.mean([busy_rate_per_turnstile(run_replica(c2, s), c2) for s in seeds[:2]]))
         rows.append(
             row(f"Ritmo por torno con cola, 2 tornos {name}", theory, rate, 0.03 * theory, ".2f")
@@ -193,7 +194,7 @@ def simulation_rows(reps: int) -> tuple[list[Row], dict[str, float]]:
 
     p95: dict[int, float] = {}
     for t in (2, 3, 4, 10):
-        ct = cfg(NO_INCIDENTS if t == 10 else NO_I2, {"turnstiles_per_gate": t})
+        ct = cfg(NO_INCIDENTS if t == 10 else with_i2, {"turnstiles_per_gate": t})
         p95[t] = float(
             np.mean([compute_kpis(run_replica(ct, s), ct)["wait_p95_min"] for s in seeds[:2]])
         )
@@ -205,13 +206,8 @@ def simulation_rows(reps: int) -> tuple[list[Row], dict[str, float]]:
             p95[10] < 0.01,
         ),
         cond("4 tornos: esperas pequeñas", "p95 < 0,2 min", f"{p95[4]:.3f}", p95[4] < 0.2),
-        cond("3 tornos (X0 sin I2)", "p95 < 2 min", f"{p95[3]:.3f}", p95[3] < 2),
-        cond(
-            "2 tornos (ρ > 1): p95 espera",
-            "> 10 min (con I2)",
-            f"{p95[2]:.2f} (sin I2)",
-            p95[2] > 10,
-        ),
+        cond(f"3 tornos ({label}): p95 espera", "< 2 min", f"{p95[3]:.3f}", p95[3] < 2),
+        cond(f"2 tornos ({label}, ρ > 1): p95 espera", "> 10 min", f"{p95[2]:.2f}", p95[2] > 10),
     ]
     timing["1 réplica (s, media)"] = timing[f"{reps} réplicas {label} (s)"] / reps
     timing["memoria pico del proceso (MB)"] = _max_rss_mb()

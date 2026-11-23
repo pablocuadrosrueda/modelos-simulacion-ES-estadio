@@ -96,10 +96,9 @@ la protección de `main` exigiendo esos checks.
   capacidad de la memoria (§4.3) en `src/sanmames/capacity.py` (E[S], disponibilidad,
   capacidad, ρ en la franja pico real, vomitorios, vaciado y evacuación) y con
   simulación (reparto, ritmo por torno con cola ≈ teórico, 2/3/4/10 tornos,
-  utilización). Tests en `tests/test_capacity.py`, script
-  `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`. Réplica
-  completa X0 sin I2: 2,9 s (10 réplicas: 28,8 s). Repone además el `import pytest`
-  que faltaba en `tests/test_conservacion.py` (igual que `chore/perez-docs-fix`).
+  utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
+  `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
+  comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
 
 **Inc3: en curso.**
 
@@ -200,13 +199,6 @@ B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
   tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
   redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
   P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
-* T2.1 (A → C): el runner sigue rechazando I2 (`NotImplementedError`), así que
-  X0 tal cual no se ejecuta y la verificación se hizo sin I2. Un xfail estricto
-  en `tests/test_capacity.py` saltará cuando se quite la guarda.
-* T2.1 (A → grupo): con 2 tornos (ρ = 1,30 sin I2) el p95 de la espera es 8,6 min,
-  no > 10 como se esperaba en §5.3. Hipótesis: con I2 (ρ = 1,40) una aproximación
-  de fluido da ≈ 12 min de espera máxima, así que el p95 pasaría de 10. Pendiente
-  de medir con I2.
 * T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
   franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
   corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de

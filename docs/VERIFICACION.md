@@ -9,9 +9,9 @@ pytest tests/test_capacity.py                # versión rápida (una macrozona)
 RUN_SLOW=1 pytest tests/test_capacity.py     # incluye la réplica completa
 ```
 
-**Ejecución:** 2026-11-23 · Python 3.13.2 · macOS (x86_64) · `main` en `88408d0`
-más la rama `feat/cuadros-T2.1-capacity` (código en `36ff40f`). Semillas
-20261105 + i (D11). Los resultados son deterministas.
+**Ejecución:** 2026-11-23 · Python 3.13.2 · macOS (x86_64) · `main` en `5a17685`
+(con T4.3, el runner ya admite I2) más la rama `feat/cuadros-T2.1-capacity`.
+Semillas 20261105 + i (D11). Los resultados son deterministas.
 
 ## Parte A · comprobación analítica (memoria §4.3)
 
@@ -46,58 +46,53 @@ pasar los tornos (≈ 245), así que no son un cuello de botella en la entrada.
 
 ## Parte B · comprobación con simulación
 
-El runner aún rechaza I2 con `NotImplementedError`, así que **X0 con todas las
-incidencias no se puede ejecutar**. Las comprobaciones usan X0 sin I2 (I1 e I3
-activas, salida ordinaria encadenada) y el teórico correspondiente sin I2
-(E[S] = 4,0 s; 14,6 pers/min por torno con averías).
+X0 tal cual (I1, I2 e I3 activas, salida ordinaria encadenada), 10 réplicas;
+los casos de 2/3/4/10 tornos y el ritmo, con 2 réplicas en el estadio completo.
 
 | Comprobación | Esperado | Obtenido | ok |
 |---|---|---|---|
-| X0 con todas las incidencias se ejecuta | sí | no (I2 rechazada por el runner) | ✗ |
+| X0 con todas las incidencias se ejecuta | sí | sí | ✓ |
 | Reparto por macrozona: máxima desviación del 25 % | ≈ 0 | 0,0036 | ✓ |
 | Grupos 88/10/2 %: máxima desviación | ≈ 0 | 0,0006 | ✓ |
-| Utilización de tornos (D12) frente a trabajo ofrecido | 0,376 | 0,376 | ✓ |
+| Utilización de tornos (D12) frente a trabajo ofrecido | 0,404 | 0,404 | ✓ |
 | Tiempo de vaciado (min) frente a la capacidad pura | 7,70 | 8,34 | ✓ (tol. 1 min) |
-| Ritmo por torno con cola, 2 tornos, con I3 (pers/min) | 14,60 | 14,60 | ✓ |
+| Ritmo por torno con cola, 2 tornos, todas las incidencias (pers/min) | 13,59 | 13,58 | ✓ |
 | Ritmo por torno con cola, 2 tornos, sin incidencias | 15,00 | 14,98 | ✓ |
 | 10 tornos sin incidencias: p95 de la espera (min) | < 0,01 | 0,000 | ✓ |
-| 4 tornos: p95 de la espera (min) | < 0,2 | 0,043 | ✓ |
-| 3 tornos (X0 sin I2): p95 de la espera (min) | < 2 | 0,316 | ✓ |
-| 2 tornos (ρ > 1): p95 de la espera (min) | > 10 (con I2) | 8,62 (sin I2) | ✗ |
+| 4 tornos: p95 de la espera (min) | < 0,2 | 0,067 | ✓ |
+| 3 tornos (X0): p95 de la espera (min) | < 2 | 0,793 | ✓ |
+| 2 tornos (ρ = 1,40): p95 de la espera (min) | > 10 | 11,34 | ✓ |
 
 Notas:
 
 * **Ritmo por torno:** servicios por torno y minuto en periodos de cola de 5 min o
-  más (con 2 tornos la cola es sostenida). En periodos cortos domina el efecto de
-  borde: en X0, con 5.358 periodos de ≈ 5 s, la medida sale entre 11,9 y 15,7
-  según se cuente o no el fin que cierra cada periodo.
-* **Utilización:** es baja (0,38) aunque ρ en punta sea 0,87–0,93 porque D12
-  promedia desde la apertura hasta el último fin de control (≈ 2 h), con una punta
-  de solo 30 min.
+  más (con 2 tornos la cola es sostenida). Confirma a la vez el servicio medio con
+  relectura (4,3 s) y la disponibilidad por averías (97,4 %). En periodos cortos
+  domina el efecto de borde: en X0, con miles de periodos de ≈ 5 s, la medida sale
+  entre 11,9 y 15,7 según se cuente o no el fin que cierra cada periodo.
+* **Utilización:** es baja (0,40) aunque ρ en punta sea 0,93 porque D12 promedia
+  desde la apertura hasta el último fin de control (≈ 2 h), con una punta de solo
+  30 min. X0: espera media 0,15 min y p95 0,83 min; cola máxima en una puerta 111.
 * **Vaciado:** 8,3 min frente a 7,7. La cifra de la memoria es solo la capacidad de
   las salidas; la simulación añade la marcha hasta la salida y la cola. Es lo
   esperado.
-* **2 tornos, p95 = 8,6 min y no > 10:** se mide sin I2 (ρ = 1,30). Con I2, ρ = 1,40
-  y una aproximación de fluido da una espera máxima de ≈ 12 min, así que el p95
-  probablemente superaría los 10 min. Queda pendiente de que el runner admita I2.
+* **2 tornos:** sin I2 (ρ = 1,30) el p95 era 8,6 min; con I2 (ρ = 1,40) pasa de 10,
+  como anticipa la memoria (§5.3).
 
 ## Tiempo de réplica (D15)
 
 | Caso | Tiempo de pared |
 |---|---|
-| 1 réplica completa X0 sin I2 (N = 48.775, entrada + asiento + salida, I1 e I3) | 2,9 s |
-| 10 réplicas seguidas | 28,8 s |
+| 1 réplica completa de X0 (N = 48.775; entrada, asiento y salida; I1, I2 e I3) | 3,0 s |
+| 10 réplicas seguidas | 30,2 s |
+| Igual, sin I2 | 2,9 s |
 | Referencia previa: solo entrada + asiento, sin incidencias | ≈ 2,2 s |
 | Memoria pico del proceso (10 DataFrames en memoria) | ≈ 690 MB |
 
-Activar I1 e I3 y encadenar la salida sube el tiempo de ≈ 2,2 a ≈ 2,9 s por réplica
-(+30 %). Con 13 escenarios y unas 30 réplicas, la campaña completa son ≈ 20 min en
-un núcleo. El coste de I2 aún no se puede medir; debería ser pequeño, porque solo
-añade un `timeout` al 3 % de los espectadores.
+Con todo activado y la salida encadenada, una réplica pasa de ≈ 2,2 a ≈ 3,0 s
+(+35 %); I2 apenas cuenta (+0,1 s). Con 13 escenarios y unas 30 réplicas, la
+campaña completa son ≈ 20 min en un núcleo.
 
 ## Pendiente
 
-* Repetir la parte B con X0 completo (I2 activa) cuando el runner deje de
-  rechazarla. `tests/test_capacity.py::test_full_x0_with_all_incidents_runs` es un
-  xfail estricto que falla en cuanto eso ocurra, para recordarlo.
 * Evacuación (emergencia) con simulación: depende de T4.1–T4.3.

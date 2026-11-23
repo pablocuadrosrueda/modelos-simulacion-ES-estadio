@@ -1,11 +1,9 @@
 """T2.1 · Comprobación de capacidad (memoria §4.3) y casos límite (§5.3).
 
 Parte A: analítica, sin simulación (``sanmames.capacity``).
-Parte B: con ``run_replica`` y ``compute_kpis``, en una macrozona (N/4) para que
-sea rápida; la réplica completa (N = 48.775) solo con ``RUN_SLOW=1``.
-
-Hasta que el runner admita I2 (hoy lanza ``NotImplementedError``), la parte B
-desactiva el fallo de lectura y compara con el teórico sin I2.
+Parte B: con ``run_replica`` y ``compute_kpis`` y todas las incidencias de X0, en
+una macrozona (N/4) para que sea rápida; la réplica completa (N = 48.775) solo
+con ``RUN_SLOW=1``.
 """
 
 from __future__ import annotations
@@ -89,7 +87,7 @@ def test_zone_exit_time(base_config: Config, kw: dict[str, bool], minutes: float
 # =============================================================================
 
 ONE_ZONE = {"zones": ["A"], "zone_share": [1.0], "n_spectators": 12194}
-NO_I2 = {"incidents": {"read_failure": {"enabled": False}}}
+ALL_X0: dict[str, Any] = {}
 NO_INCIDENTS = {
     "incidents": {
         "read_failure": {"enabled": False},
@@ -99,7 +97,7 @@ NO_INCIDENTS = {
 }
 
 
-def zone_cfg(turnstiles: int, incidents: dict[str, Any] = NO_I2, **extra: Any) -> Config:
+def zone_cfg(turnstiles: int, incidents: dict[str, Any] = ALL_X0, **extra: Any) -> Config:
     return load_config(
         overrides=deep_merge(
             deep_merge(ONE_ZONE, incidents), {"turnstiles_per_gate": turnstiles, **extra}
@@ -135,7 +133,7 @@ def busy_rate_per_turnstile(df: pd.DataFrame, cfg: Config, min_len: float = 5.0)
 
 
 def test_zone_and_group_shares() -> None:
-    cfg = load_config(overrides=deep_merge(NO_I2, {"n_spectators": 4000}))
+    cfg = load_config(overrides={"n_spectators": 4000})
     df = run_replica(cfg, SEEDS[0])
     zones = df.zone.value_counts(normalize=True)
     for z, share in zip(cfg.zones, cfg.zone_share, strict=True):
@@ -145,15 +143,11 @@ def test_zone_and_group_shares() -> None:
         assert groups.get(g, 0.0) == pytest.approx(params.share, abs=0.015)
 
 
-@pytest.mark.parametrize(
-    "incidents, with_failures", [(NO_I2, True), (NO_INCIDENTS, False)], ids=["I3", "sin"]
-)
-def test_service_rate_with_queue_matches_theory(
-    incidents: dict[str, Any], with_failures: bool
-) -> None:
+@pytest.mark.parametrize("incidents", [ALL_X0, NO_INCIDENTS], ids=["I2+I3", "sin"])
+def test_service_rate_with_queue_matches_theory(incidents: dict[str, Any]) -> None:
     """Con 2 tornos (ρ > 1) hay cola sostenida: el ritmo observado ≈ el teórico."""
     cfg = zone_cfg(2, incidents)
-    theory = cap.capacity_per_turnstile_min(cfg, with_failures=with_failures)
+    theory = cap.capacity_per_turnstile_min(cfg)
     rates = [busy_rate_per_turnstile(run_replica(cfg, s), cfg) for s in SEEDS[:2]]
     assert np.mean(rates) == pytest.approx(theory, rel=0.03)
 
@@ -168,7 +162,7 @@ def test_many_turnstiles_no_queue() -> None:
 def test_capacity_ordering_2_3_4_turnstiles() -> None:
     """X1 en una macrozona: con 2 tornos la cola crece; con 4, esperas pequeñas."""
     k = {t: compute_kpis(run_replica(zone_cfg(t), SEEDS[0]), zone_cfg(t)) for t in (2, 3, 4)}
-    assert k[2]["wait_p95_min"] > 5.0  # ρ ≈ 1,30 sin I2; ver ESTADO (p95 > 10 con I2)
+    assert k[2]["wait_p95_min"] > 10.0  # ρ ≈ 1,40: la cola crece en la punta
     assert k[2]["wait_p95_min"] > k[3]["wait_p95_min"] > k[4]["wait_p95_min"]
     assert k[4]["wait_p95_min"] < 0.2
     assert k[2]["turnstile_util"] > k[3]["turnstile_util"] > k[4]["turnstile_util"]
@@ -185,18 +179,16 @@ def test_utilization_matches_offered_load() -> None:
     assert k["turnstile_util"] < cap.traffic_intensity(cfg)
 
 
-@pytest.mark.xfail(
-    strict=True, raises=NotImplementedError, reason="runner aún rechaza I2 (C, ver AVISOS)"
-)
 def test_full_x0_with_all_incidents_runs() -> None:
     cfg = load_config(overrides={"n_spectators": 2000})
-    assert cfg.incidents.read_failure.enabled
-    run_replica(cfg, SEEDS[0])
+    k = compute_kpis(run_replica(cfg, SEEDS[0]), cfg)
+    assert k["n_read_failures"] > 0
+    assert k["n_conflicts"] >= 0 and k["n_turnstile_failures"] >= 0
 
 
 @pytest.mark.skipif(not os.environ.get("RUN_SLOW"), reason="lento: RUN_SLOW=1")
 def test_full_replica_wall_time() -> None:
-    cfg = load_config(overrides=NO_I2)
+    cfg = load_config()
     t0 = time.perf_counter()
     df = run_replica(cfg, SEEDS[0])
     elapsed = time.perf_counter() - t0
