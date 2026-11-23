@@ -211,6 +211,20 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
   puerta aún cerrada según el orden de los sucesos simultáneos de SimPy; con
   llegadas continuas tiene probabilidad nula.
 
+### D24. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
+* El espectador elige salida **al llegar** a la zona de salidas, tras recorrer
+  `distance_m`: la no bloqueada de su macrozona con menos personas (en cola más la
+  que está pasando). `t_exit_queue` es ese instante y `t_exit` el final de su paso.
+* Desempate entre salidas igual de cargadas: como en D18, `build_exit_resources`
+  sortea en E0 `n_spectators` uniformes del flujo `"exit_choice"`
+  (`ExitResources.tie_u`, por `id`); entre las `k` empatadas, en orden de
+  `exit_id`, se toma la de posición `floor(u * k)`.
+* Quien se sienta después de su liberación (E5) sale en cuanto se lanza
+  `exit_process`. La política escalonada (`release_time_min`, T3.2) se implementa
+  a la vez porque es una línea: grada superior `exit_stagger_min` después.
+* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
+  tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
+
 ### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
 El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
 emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o

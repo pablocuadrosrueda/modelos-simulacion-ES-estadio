@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3, T2.4, T2.5 y T2.6. T2.7 en revisión en `feat/cuadros-T2.7-choose-gate`._
+_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria)._
 
 ## Hecho
 
@@ -46,7 +46,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3–T2.6 hechas; T2.7 en revisión).
+**Inc2 · en curso** (T2.3 a T2.7 hechas).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -74,7 +74,7 @@ la protección de `main` exigiendo esos checks.
   puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
   `reopen_event`, que se sustituye por uno nuevo (D13). La elección de puerta
   llega con T2.7; falta lanzarla desde el runner (C).
-* T2.7 (A, en revisión; rama `feat/cuadros-T2.7-choose-gate`): `choose_gate`
+* T2.7 (A, hecho; PR #16): `choose_gate`
   en `entry.py`, evaluado al llegar (E1). Puerta asignada abierta: esa. Cerrada
   con `redirect_on_gate_closure`: la abierta de su macrozona con menos cola por
   `(len(queue), count, nº de puerta)`, sin azar; sin redirección o sin otra
@@ -82,6 +82,16 @@ la protección de `main` exigiendo esos checks.
   su puerta en orden de llegada (D13). `gate_used` es la puerta real. Quien ya
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
+
+**Inc3: en curso.**
+
+* T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
+  `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
+  (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea, o la grada
+  superior `exit_stagger_min` después), `choose_exit` (menos cola, sin bloqueadas,
+  desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
+  paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
+  la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
 
 ## Siguiente paso
 
@@ -104,9 +114,10 @@ para T3.3. Los xfail se retirarán al conectar esa fase.
   `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
   (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
   `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
-* A: revisión de T2.7; después T2.1 (cuatro macrozonas y medida de tiempo, D15)
+* A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
   y T2.2 (I2, ya tiene `log_incident`).
-* B: T3.1 (salida), de la que depende T3.3 de C.
+* B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
+* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
 * Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
   instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
   Dudas abiertas).
