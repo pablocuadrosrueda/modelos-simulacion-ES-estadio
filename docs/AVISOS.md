@@ -15,8 +15,8 @@ Reglas:
 ## Vigentes
 
 ### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
-**Estado:** revisado por Chema, preparado para PR desde `feat/chema-T1.4-runner`;
-no está en `main`.
+**Estado:** publicado en el PR #6, rama `feat/chema-T1.4-runner`;
+todavía no fusionado en `main`.
 
 * Conecta entrada y asiento con las interfaces de T1.2/T1.3. Devuelve una fila
   por espectador, las columnas acordadas y los metadatos de la réplica.

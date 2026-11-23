@@ -39,8 +39,8 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 
 T1.1, T1.2 y T1.3 fusionadas en los PR #1, #2 y #4. T1.5 fusionada en el
 [PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3).
-T1.4: implementación y pruebas revisadas por Chema, preparadas para PR desde
-`feat/chema-T1.4-runner`. Se activan ya los
+T1.4: implementación y pruebas revisadas por Chema, publicadas desde
+`feat/chema-T1.4-runner` en el [PR #6](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/6). Se activan ya los
 tests existentes que pasan con el runner; T1.7 sigue pendiente para su caso
 límite y el refuerzo de verificación. T1.6 necesita que se integren T1.4 y T1.5.
 

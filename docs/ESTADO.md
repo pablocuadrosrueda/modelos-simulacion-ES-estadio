@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23 · `main` contiene Inc0 y T1.1/T1.2/T1.3/T1.5;
-T1.4 revisada por Chema, preparada para PR desde `feat/chema-T1.4-runner`._
+T1.4 publicada y en revisión en el PR #6, rama `feat/chema-T1.4-runner`._
 
 ## Hecho
 
@@ -53,7 +53,7 @@ máximo. Permanencia, salida, incidencias y emergencia siguen pendientes.
   `exit.py` y `emergency.py` ya existían desde Inc0 con docstring y firma; no
   hubo que cambiarlos.
 
-* T1.4 (C, en revisión; rama `feat/chema-T1.4-runner`): `run_replica` crea el entorno
+* T1.4 (C, en revisión; PR #6, rama `feat/chema-T1.4-runner`): `run_replica` crea el entorno
   en la apertura, flujos de azar y recursos de entrada y estadio; genera el
   público y lanza un proceso por espectador, entrada → asiento. Devuelve todas
   las columnas de `SPECTATOR_COLUMNS`, metadatos `seed`, `scenario` e incidencias
@@ -77,7 +77,7 @@ máximo. Permanencia, salida, incidencias y emergencia siguen pendientes.
 incidencias, CSV y KPIs de espera. En paralelo:
 
 * A y B: T1.1/T1.2/T1.3 ya fusionadas; continuar sus tareas según dependencias.
-* C: publicar T1.4 para revisión del equipo. T1.5 ya fusionada (PR #3).
+* C: revisión de T1.4 en el [PR #6](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/6). T1.5 ya fusionada (PR #3).
   T1.6 necesita ambos módulos: runner y métricas. T1.7 necesita
   T1.4; las pruebas existentes ya activadas no sustituyen su caso límite de
   muchos tornos ni el refuerzo de conservación. No hay que esperar otro módulo
@@ -114,3 +114,5 @@ Prueba manual de `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último
 asiento en t = +31,907 min. Para las pruebas de esta tarea, desde la raíz del
 clon: `.venv/bin/python -m pytest tests/test_runner.py tests/test_orden_temporal.py
 tests/test_conservacion.py -v`. `make run` queda pendiente de T1.6.
+
+Tras integrar main con T1.5: 157 tests correctos y 2 xfail esperados, lint limpio.
