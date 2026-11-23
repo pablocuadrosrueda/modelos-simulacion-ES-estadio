@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria)._
+Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
 
 ## Hecho
 
@@ -85,13 +85,25 @@ la protección de `main` exigiendo esos checks.
 
 **Inc3: en curso.**
 
-* T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
+* T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea, o la grada
   superior `exit_stagger_min` después), `choose_exit` (menos cola, sin bloqueadas,
   desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
+
+**Inc4: en curso.**
+
+* T4.1 y T4.2 (B, en revisión; rama `feat/perez-T4.1-evacuation`): `emergency.py`
+  con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
+  `alarm_process` (fase de evacuación, accesos cerrados, reacción sorteada por
+  `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
+  interrupción de los procesos de los espectadores) y `evacuation_process`
+  (abandono o reacción, marcha más rápida, salida con menos cola y `t_safe`).
+  Decisión D25. Tests en `tests/test_emergency.py`, incluida la validación del
+  apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
+  una salida bloqueada. Falta que el runner lo integre (T4.3, C).
 
 ## Siguiente paso
 
@@ -103,8 +115,8 @@ la protección de `main` exigiendo esos checks.
   `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
 * A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
   y T2.2 (I2, ya tiene `log_incident`).
-* B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
-* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
+* B: T4.1 y T4.2 en revisión; después T5.4 (rendimiento) y T6.2 (verificación).
+* C: T3.3 (encadenar la salida en el runner; T3.1 ya en `main`) y luego T4.3.
 * Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
   instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
   Dudas abiertas).

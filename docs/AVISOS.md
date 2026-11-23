@@ -14,8 +14,27 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D25)
+**Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
+
+* **C (T4.3):** cada espectador va en un único proceso con `try` y
+  `except simpy.Interrupt`. Dentro del `try`, el recorrido normal (entrada,
+  asiento, permanencia, salida); en el `except`,
+  `yield from emergency.evacuation_process(sp, ctx)`.
+* **C (T4.3):** en E0, después de crear `ctx.exits` y la lista de procesos,
+  lanzar `env.process(emergency.alarm_process(ctx, journeys))`, con
+  `journeys[i]` el proceso del espectador `id == i`. Con la emergencia
+  desactivada termina al instante, así que se puede lanzar siempre. Hay que dejar
+  de rechazar `emergency.enabled = true`.
+* **C (T4.3):** E8 es cuando terminan todos los procesos de espectadores (los
+  que no habían llegado o abandonan terminan al momento). Los procesos de
+  averías (I3) no terminan nunca: no esperar por ellos.
+* **C (KPIs):** `abandoned` marca a quien estaba en cola exterior; quien no
+  había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
+  quienes tienen `t_safe`.
+
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
+**Estado:** **en `main`** (PR #15). Pendiente de aplicar por C (T3.3).
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
   `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después

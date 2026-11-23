@@ -58,8 +58,8 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | en revisión | Inc1 |
-| T3.2 | Salida escalonada (`release_time_min`, X4) | B | en revisión | T3.1 |
+| T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | hecho | Inc1 |
+| T3.2 | Salida escalonada (`release_time_min`, X4) | B | hecho | T3.1 |
 | T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | pendiente | T3.1 |
 | T3.4 | `test_conservacion` completo sin `xfail` | C | pendiente | T3.3 |
 
@@ -67,8 +67,8 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | pendiente | Inc3 |
-| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | pendiente | T4.1 |
+| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | en revisión | Inc3 |
+| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | en revisión | T4.1 |
 | T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | pendiente | T4.1 |
 
 ## Inc5 · Experimentos y estadística

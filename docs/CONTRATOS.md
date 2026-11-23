@@ -59,7 +59,7 @@ de creación (D22). Uso actual: un generador por torno,
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución; N + N en E0 por `id`, D21) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
 | 10 | `exit_choice` | desempates de salida (N en `build_exit_resources`, por `id`; D24) | exit, emergency |
-| 11 | `reaction` | reacción a la alarma | emergency |
+| 11 | `reaction` | reacción a la alarma (N al sonar la alarma, por `id`; D25) | emergency |
 | 12 | `gate_choice` | desempates al redirigir (I4) | entry |
 
 **Solo se añaden flujos al final.** Reordenar cambia todos los resultados.
@@ -163,7 +163,7 @@ Un KPI que no aplica al escenario vale `NaN`.
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |
-| emergency | `alarm_process(ctx)`, `evacuation_process(sp, ctx)` | E7, E8 |
+| emergency | `alarm_process(ctx, journeys=None)`, `evacuation_process(sp, ctx)`, `status_at_alarm(sp, t_alarm_min)` | E7, E8. `journeys[i]` es el proceso del espectador `id == i` (D25) |
 | runner | `SimContext`, `run_replica(config, seed)` | E0, E9 |
 | metrics | `compute_kpis(df, config)`, `queue_length_max` | KPIs |
 | experiments | `run_experiment(name, n_reps, base_seed)`, `find_experiment_file`, `replica_seed` | réplicas |
