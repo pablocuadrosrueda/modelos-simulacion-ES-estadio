@@ -124,3 +124,15 @@ igual que `service_s`), cada espectador recibe el mismo número en todos los
 escenarios. No es columna del DataFrame. Si se prefiere un atributo
 `Spectator.vomitory_s` como `service_s`, el cambio es local a A y B.
 
+### D19 · Alcance provisional del runner de Inc1 — 2026-11-23
+T1.4 encadena entrada y asiento y termina al sentarse el último espectador,
+como fija el objetivo de Inc1. La duración máxima de corrida `max_sim_hours`
+se mide desde la apertura; al alcanzarla se devuelven todas las filas con NaN
+en los sucesos no ocurridos. Se mantienen firmas, columnas y metadatos.
+Hasta implementar Inc2/Inc4 se rechazan incidencias o emergencia activas; la
+prioridad queda pendiente de T2.4. Así, ejecutar X0 o X7 no produce resultados
+que aparenten incluir fases todavía pendientes. La configuración de desarrollo
+`configs/dev/i1_mini.json` es un experimento diff con una macrozona, 600
+espectadores y todas las incidencias/emergencia desactivadas, compatible con
+`load_experiment` y con la futura CLI de T1.6. No añade parámetros al modelo.
+

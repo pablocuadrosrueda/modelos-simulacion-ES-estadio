@@ -32,21 +32,19 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 |---|---|---|---|---|
 | T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | hecho | — |
 | T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | hecho | T1.1 |
-| T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | pendiente | — (contrato `SimContext`) |
-| T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | en revisión | — |
-| T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | en revisión | T1.1 |
-| T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | en revisión | — (contrato `SimContext`) |
+| T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | pendiente | T1.2, T1.3 |
-| T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | en revisión | contrato (T0.3) |
+| T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | en revisión | T1.2, T1.3 |
+| T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | hecho | contrato (T0.3) |
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | pendiente | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | pendiente | T1.4 |
 
-T1.1 y T1.2 fusionadas en `main` mediante PR #1 y #2 (2026-11-20).
-T1.5: implementación y pruebas revisadas localmente por Chema, con commit y
-publicación autorizados el 2026-11-22. Rama `feat/chema-T1.5-metrics` publicada
-con la cuenta `jmcb0024`, en revisión del equipo en el
+T1.1, T1.2 y T1.3 fusionadas en los PR #1, #2 y #4. T1.5 fusionada en el
 [PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3).
-Todavía no está en `main`. No depende de T1.3.
+T1.4: implementación y pruebas revisadas por Chema, publicadas desde
+`feat/chema-T1.4-runner` en el [PR #6](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/6). Se activan ya los
+tests existentes que pasan con el runner; T1.7 sigue pendiente para su caso
+límite y el refuerzo de verificación. T1.6 necesita que se integren T1.4 y T1.5.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
@@ -57,7 +55,7 @@ Todavía no está en `main`. No depende de T1.3.
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | pendiente | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | pendiente | Inc1 |
-| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | pendiente | T1.2 |
+| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | en revisión | T1.2 |
 | T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | pendiente | T2.6 |
 | T2.8 | KPIs P4/P6 e incidencias (`group_wait_diff_min`, `conflict_delay_s`, `n_conflicts`...); test de capacidad de recursos | C | pendiente | T2.4, T2.5 |
 

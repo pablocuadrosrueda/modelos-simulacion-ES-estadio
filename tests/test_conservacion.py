@@ -4,7 +4,7 @@ En todo instante N = pendientes + en cola + en control + en tránsito +
 en conflicto + sentados + saliendo + fuera. Se reconstruye el estado de cada
 espectador a partir de sus instantes en el DataFrame de resultados.
 
-Esqueleto: se activa al implementar runner.run_replica (T1.7 / T3.4).
+Conservación de entrada activa con T1.4; salida pendiente de T3.3 / T3.4.
 """
 
 from __future__ import annotations
@@ -16,10 +16,6 @@ import pytest
 from sanmames.config import Config
 from sanmames.entities import SPECTATOR_COLUMNS
 from sanmames.runner import run_replica
-
-pytestmark = pytest.mark.xfail(
-    raises=NotImplementedError, strict=True, reason="pendiente de run_replica (T1.4)"
-)
 
 
 def _state_counts(df: pd.DataFrame, t: float) -> dict[str, int]:
@@ -45,6 +41,7 @@ def test_conservation_over_time(mini_config: Config) -> None:
         assert sum(_state_counts(df, t).values()) == mini_config.n_spectators, t
 
 
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason="salida pendiente de T3.3 / T3.4")
 def test_everybody_ends_out(mini_config: Config) -> None:
     df = run_replica(mini_config, seed=2)
     assert df["t_exit"].notna().all()
