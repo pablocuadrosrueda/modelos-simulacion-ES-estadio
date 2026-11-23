@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23 · main verificado en `2c8740e`.
-T1.6 revisada por Chema, preparada para publicar en `feat/chema-T1.6-experiments`._
+T1.6 publicada en el PR #9 en `feat/chema-T1.6-experiments`._
 
 ## Hecho
 
@@ -26,7 +26,7 @@ fusionadas en el PR #7. `make check`, `make hooks` y `make docs-check` disponibl
   y guarda `results/<fichero>_kpis.csv`. En `feat/chema-T1.6-experiments`, carpeta
   `modelos-simulacion-ES-estadio`. Incluye corrección numérica en métricas para
   esperas nulas con errores de redondeo s/min (tolerancia 1e-9 min), con tests.
-* T1.7 (C, en curso; sin commit): siete pruebas nuevas de conservación en cada
+* T1.7 (C, en revisión): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
   puerta saturada con las mismas llegadas/servicios. En
   `feat/chema-T1.7-verificacion`, carpeta `modelos-simulacion-ES-estadio-T1.7`.
@@ -72,7 +72,7 @@ la publicación y el PR se tratan después. T1.4 ya revisada, publicada y fusion
 T1.4 integrada con T1.5: 157 tests correctos, 2 xfail esperados. Antes de la última
 actualización de main: T1.6, 179 correctos; T1.7, 164 correctos; lint limpio.
 Con main `2c8740e`, esta rama pasa `make check`: 197 tests correctos y 2
-xfail esperados; lint y diff limpios. Publicación autorizada por Chema; pendiente de revisión del equipo.
+xfail esperados; lint y diff limpios. Publicada en el PR #9; pendiente de revisión del equipo.
 
 T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
 `results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas
@@ -88,3 +88,5 @@ VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
 La fusión paralela dejó dos entradas D19 en `DECISIONES.md`: prioridad de A y
 alcance provisional del runner de C. Distinguirlas por título hasta acordar la
 renumeración. No cambia el comportamiento del modelo.
+
+PR de cierre de Inc1: T1.6 #9 y T1.7 #10, abiertos para revisión del equipo.

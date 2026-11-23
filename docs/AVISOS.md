@@ -29,7 +29,7 @@ Reglas:
   `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
 
 ### 2026-11-23 · C → A, B · Réplicas y CSV de Inc1 (T1.6)
-**Estado:** revisada por Chema, preparada para PR desde `feat/chema-T1.6-experiments`.
+**Estado:** publicada en el PR #9, rama `feat/chema-T1.6-experiments`.
 
 * `make run EXP=configs/dev/i1_mini.json REPS=3` ejecuta tres réplicas y guarda
   los indicadores en `results/i1_mini_kpis.csv`. La API devuelve la tabla sin
