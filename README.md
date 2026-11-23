@@ -203,3 +203,7 @@ El manifiesto conserva el commit exacto usado para el cálculo. Las mejoras
 posteriores de informe/reanudación no reescriben esa procedencia ni los datos.
 Al reanudar una campaña compatible se conservan como mínimo los tamaños ya
 planificados, aunque un resultado parcial parezca haber alcanzado la precisión.
+
+Resultados definitivos de T5.3: [informe](docs/RESULTADOS_T5.3.md) y
+[tablas/procedencia](results/final). El piloto de X6 en +20 es histórico;
+la campaña actual usa −30 y añade X5 con nueve acomodadores (D31/D33).

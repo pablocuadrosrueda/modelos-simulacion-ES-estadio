@@ -380,3 +380,9 @@ semillas `base_seed + replica`, y los contrastes usan solo parejas completas.
 Guardado de cada réplica para reanudar, comprobando versiones, código y configs;
 una semilla ya calculada nunca cuenta dos veces. No se cambia la definición de
 KPIs, el modelo, los flujos de azar ni los parámetros de incidencias de A/B.
+
+* T5.3 conserva los objetivos ya fijados al reanudar: no se reducen por una
+  fluctuación favorable de una muestra parcial. Cada ampliación añade al menos
+  diez réplicas al escenario que no cumple, o el tamaño mayor estimado por la
+  fórmula. El manifiesto conserva el commit exacto del cálculo, aunque después
+  mejoren las herramientas de informe o reanudación sin alterar los datos.
