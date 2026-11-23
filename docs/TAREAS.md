@@ -21,6 +21,7 @@ tarea en el mensaje del `NotImplementedError`.
 | T0.2 | `config.py` y `rng.py` implementados con tests | — | hecho | T0.1 |
 | T0.3 | Contratos (entities, KPI_COLUMNS, stubs, CONTRATOS.md) | — | hecho | T0.2 |
 | T0.4 | Documentación para agentes y README | — | hecho | T0.3 |
+| T0.5 | Automatización: CI, plantilla de PR, hook pre-push, `check_pr_docs.py` | — | hecho | T0.4 |
 
 ## Inc1 · Rebanada vertical: una macrozona, entrada sin incidencias, CSV y KPIs de espera
 

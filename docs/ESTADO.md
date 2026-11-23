@@ -1,5 +1,6 @@
 # Estado del proyecto
 
+_Última actualización: 2026-11-23 · `main` contiene Inc0, T1.1, T1.2, T1.3 y T1.5; Inc1 en curso._
 _Última actualización: 2026-11-23 · `main` contiene Inc0, T1.1, T1.2, T1.3 y T1.5;
 T2.6 en revisión en la rama `feat/perez-T2.6-gate-closure`._
 _Última actualización: 2026-11-23 · `main` contiene Inc0 y T1.1/T1.2/T1.3/T1.5;
@@ -26,6 +27,12 @@ T1.4 publicada y en revisión en el PR #6, rama `feat/chema-T1.4-runner`._
 En `main` hay llegadas, entrada y ubicación implementadas. En la rama T1.4
 el runner conecta esos módulos hasta sentarse todos o alcanzar el tiempo
 máximo. Permanencia, salida, incidencias y emergencia siguen pendientes.
+
+**Automatización (T0.5) — hecha.** CI de GitHub Actions (`ruff` + `pytest` en Python
+3.10 y 3.12, y un job que exige actualizar `ESTADO`/`TAREAS` con código y
+`AVISOS`/`DECISIONES` con contratos: `scripts/check_pr_docs.py`), plantilla de PR,
+`make check`, `make hooks` (pre-push) y `make docs-check`. Pendiente fuera del
+repo: activar la protección de `main` exigiendo esos checks.
 
 **Inc1 · en curso.**
 
