@@ -167,3 +167,18 @@ en ambos escenarios, aunque `priority_groups` esté vacío en la config base.
 
 Informe del primer lote: [Piloto T5.1](docs/PILOTO_T5.1.md), con resultados,
 IC, estimación de réplicas y cuestiones pendientes antes de la entrega.
+
+Campaña T5.3 (X0–X7 con X5 de 3/6/9, X6 en −30, y sensibilidad S1):
+
+```bash
+.venv/bin/python scripts/run_campaign.py --output results/final --workers 4
+# Si se interrumpe, continuar sin recalcular las semillas ya guardadas:
+.venv/bin/python scripts/run_campaign.py --output results/final --workers 4 --resume
+```
+
+Calcula un piloto actualizado, estima n por escenario y amplía hasta verificar
+IC 95 % con semianchura ≤5 % de la espera media, con al menos treinta réplicas.
+Los índices compartidos usan la misma semilla. `--pilot-only` permite comprobar
+el piloto antes de continuar con `--resume`. Cada réplica deja un checkpoint;
+no se permite mezclar código/configuraciones/versiones al reanudar. Ajustar
+`--workers` cambia solo el número de procesos, no los resultados.

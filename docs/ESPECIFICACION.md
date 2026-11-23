@@ -163,7 +163,7 @@ conflictos), conflictos_en_espera[z], cola_salida[s], dentro, salidos.
 | Variable de decisión | Base | Niveles | Config |
 |---|---|---|---|
 | Tornos por puerta (c) | 3 | 2, 3, 4 (X1) | `turnstiles_per_gate` |
-| Acomodadores por macrozona | 6 | 3, 6 (X5) | `stewards_per_zone` |
+| Acomodadores por macrozona | 6 | 3, 6, 9 (X5; D33) | `stewards_per_zone` |
 | Disciplina de cola en tornos | FIFO | FIFO, prioridad no expulsiva (X3) | `queue_discipline`, `priority_groups` |
 | Política de salida | Simultánea | Simultánea, escalonada 3 min (X4) | `exit_policy`, `exit_stagger_min` |
 | Redirección ante cierre | Activa | Inactiva, activa (X6) | `redirect_on_gate_closure` |
@@ -262,7 +262,7 @@ Se cambia **un solo factor** respecto a X0; mismas semillas en todos.
 | X2 | Llegada anticipada | Perfil de llegadas | P3 | `X2_anticipado` |
 | X3 | Prioridad en torno para mayores y PMR | Regla de cola | P4 | `X3_prioridad` |
 | X4 | Salida escalonada (superior +3 min) | Política de salida | P5 | `X4_escalonada` |
-| X5 | Conflictos al 1 % con 3 y 6 acomodadores | I1 y personal | P6 | `X5_3acomodadores`, `X5_6acomodadores` |
+| X5 | Conflictos al 1 % con 3, 6 y 9 acomodadores (ampliación D33) | I1 y personal | P6 | `X5_3acomodadores`, `X5_6acomodadores`, `X5_9acomodadores` |
 | X6 | Cierre de puerta sin y con redirección | I4 | P7 | `X6_sin_redireccion`, `X6_con_redireccion` |
 | X7 | Alarma en t = +40 con todas las salidas y con una bloqueada | Emergencia | P8 | `X7_todas_salidas`, `X7_salida_bloqueada` |
 | S1 | Sensibilidad sobre X0: N ±10 %, velocidad ±15 %, servicio ±25 % | Parámetros inciertos | P1–P8 (comprobación) | `S1_sensibilidad` (6 variantes) |

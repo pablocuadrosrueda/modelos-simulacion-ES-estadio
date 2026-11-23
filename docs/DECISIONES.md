@@ -359,3 +359,24 @@ solo las tres columnas de grupos en `comparisons.csv`; `kpis.csv` conserva el
 contrato y los valores originales. No es una nueva variante del modelo.
 * Numeración: se escribió como D31 en la rama de T5.1 cuando D31 (cierre de X6,
   PR #28) ya estaba en `main`; renumerada a D32 el 2026-11-23.
+
+### D33 · X5 conserva parámetros y añade nueve acomodadores — 2026-11-23
+Decisión explícita del grupo transmitida por Chema: mantener probabilidad del
+1 % y resolución Triangular(1,3,10) min en X5; un acomodador atiende un conflicto
+a la vez. La saturación con tres se conserva como resultado de P6. Añadir
+`X5_9acomodadores` a las variantes de tres y seis; el contraste usa seis como
+referencia, con los mismos conflictos y semillas. Es una ampliación consciente
+del diseño de la Parte 1, que se justificará en la Parte 2. No se modifican los
+procesos de B ni se ajustan parámetros para reducir los retrasos observados.
+
+### D34 · Campaña definitiva y comprobación de precisión (T5.3) — 2026-11-23
+Piloto actualizado de diez réplicas para X0–X7 (incluye X5 con nueve y X6 en −30)
+y S1. Los datos antiguos de X6 en +20 se conservan como históricos y no se
+mezclan con los nuevos. Por escenario: al menos treinta réplicas y el tamaño
+estimado por el piloto para IC 95 % con semianchura ≤5 % de la espera media.
+Se comprueba la precisión observada y, si falta, se amplía con la misma fórmula.
+Los tamaños pueden diferir; todas las réplicas compartidas usan las mismas
+semillas `base_seed + replica`, y los contrastes usan solo parejas completas.
+Guardado de cada réplica para reanudar, comprobando versiones, código y configs;
+una semilla ya calculada nunca cuenta dos veces. No se cambia la definición de
+KPIs, el modelo, los flujos de azar ni los parámetros de incidencias de A/B.

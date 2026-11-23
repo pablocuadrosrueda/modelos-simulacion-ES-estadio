@@ -37,3 +37,20 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/check_pr_docs.py --base origin/${{ github.base_ref }}
+
+  windows:
+    name: rutas y reanudación (Windows, Python 3.12)
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pytest -q tests/test_run_pilot.py tests/test_run_campaign.py

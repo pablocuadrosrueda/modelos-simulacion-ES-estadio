@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Decisión X5 y campaña T5.3 (D33/D34)
+**Estado:** en curso en `feat/chema-T5.3-final`, por petición de Chema.
+
+* X5 añade nueve acomodadores, conservando tres/seis, probabilidad del 1 %,
+  resolución Triangular(1,3,10) min y atención de un conflicto por acomodador.
+  La saturación se analiza como resultado de P6; no se cambia lógica de B.
+* Se repite el piloto de X6 en −30 (D31) e incluye X5 con nueve y S1. Los datos
+  de X6 en +20 quedan históricos; los de `results/final/pilot` los sustituyen.
+* T5.3: mínimo treinta y estimación del piloto por escenario; se amplía hasta
+  comprobar el IC al 95 % con semianchura ≤5 % de la espera media. Semillas
+  comunes en los índices compartidos; checkpoints para reanudar sin duplicar.
+* Corregidas las rutas portables del manifiesto y añadida CI de Windows para
+  rutas y reanudación con procesos. Formato de resultados en CONTRATOS.
+
 ### 2026-11-23 · C → A, B · Piloto T5.1 y cohortes de P4 (D32)
 **Estado:** en revisión desde `feat/chema-T5.1-pilot`; informe en `docs/PILOTO_T5.1.md`.
 

@@ -239,3 +239,17 @@ media con IC del 95 % y semianchura relativa del 5 %. `audit.csv` verifica
 identidad y terminación, `zones.csv` registra el reparto observado, y
 `manifest.json` fija versiones, código y configs resueltas. No son réplicas
 independientes los recálculos con la misma semilla para recuperar cohortes.
+
+## Campaña definitiva (T5.3, D33/D34)
+
+`results/final/pilot` contiene el piloto actualizado, incluidos X5 con nueve,
+X6 en −30 y las seis variantes S1. `results/final` contiene las tablas finales,
+con los mismos KPIs y los IC de D29/D32. `precision.csv` usa `n_valid` y añade
+`precision_met` (IC 95 %, semianchura ≤5 % de la espera media). Los tamaños por
+escenario pueden diferir y los contrastes usan las semillas comunes válidas.
+`audit.csv` añade duración media/P95/máxima de los conflictos I1, último asiento
+y llegadas/redirecciones/espera de los afectados por el cierre para P6/P7.
+No cambia el contrato de `run_replica` ni las columnas de `kpis.csv`.
+`manifest.json` fija código, configs, versiones, plan y ampliaciones. Los
+checkpoints locales permiten `--resume`; no se mezclan experimentos de distinto
+modelo. Los manifiestos usan `/` en sus claves de ruta también en Windows.

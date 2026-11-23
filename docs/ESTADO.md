@@ -142,35 +142,24 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T5.1 preparada para PR desde `feat/chema-T5.1-pilot`: 12 escenarios X0–X7,
-10 réplicas cada uno, semillas 20261105–20261114 y N=48.775. Las 120 réplicas
-terminan completas; reparto por zona entre 24,484 % y 25,406 %. Datos auditados,
-IC y procedencia en `results/pilot`; explicación en `docs/PILOTO_T5.1.md`.
-Duración original de simulación/KPIs: 298,91 s (~2,49 s/réplica), más recálculo
-posterior de P4 con las mismas semillas para recuperar cohortes (D32).
+T5.1 fusionada en PR #26; piloto anterior histórico en `results/pilot`.
+C implementa T5.3 en `feat/chema-T5.3-final`. Decisiones del grupo: X6 en −30
+(D31 ya en main); X5 conserva parámetros y añade nueve acomodadores (D33).
+Se recalcula el piloto de diez réplicas de X0–X7 y S1 con el código actual;
+se guardará en `results/final/pilot`. Después se ampliará por escenario a un
+mínimo de treinta y al tamaño estimado, verificando la precisión relativa del
+5 % a IC 95 % (D34). Se reutilizan las semillas del piloto sin contarlas dos
+veces. Guardado por réplica y reanudación con controles de procedencia.
 
-P4 compara ahora mayores/PMR y resto iguales en FIFO/prioridad, sin cambiar
-recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
-en todos los KPIs originales y no se cuentan como nuevas réplicas. El script
-ya guarda estas cohortes directamente al repetir el lote.
+Se corrige la escritura de rutas del manifiesto para Windows (`/`) y se añade
+CI específica de rutas/reanudación. No se alteran módulos de A/B ni se reducen
+resoluciones de conflictos para evitar la saturación. El resultado con tres
+acomodadores se mantiene y se contrastará con seis/nueve en P6.
 
-Validación con T2.1: 393 tests correctos y una prueba lenta opcional omitida
-(RUN_SLOW=1), sin xfail; lint y docs limpios. X0 espera media
-0,186 min; dos tornos: 3,986 min y 89,18 % bajo 10 min. Evacuación media 7,39 min
-sin bloqueo y 8,45 con bloqueo; el vaciado total <=8 se cumple en 9/10 y 0/10.
-Son resultados piloto, no conclusiones definitivas de la entrega.
-
-Próximo C: T5.3, réplicas definitivas y S1. La precisión relativa del 5 % estima
-hasta 181 réplicas totales (no 30 por defecto); recalcular IC al ampliar. Un n
-común de 181 supondría 2.052 réplicas adicionales, unos 85 min al ritmo observado,
-sin S1. T2.1 ya fusionada por A (PR #25), con capacidad/rendimiento en
-`docs/VERIFICACION.md`; no bloquea la ampliación. T5.4 (B) ya fusionada (PR #27).
-Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
-Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
-* C: el piloto de X6 se ejecutó con el cierre en t = +20; con D31 (PR #28) el
-  cierre pasa a t = -30, así que hay que repetir X6 antes de usar sus resultados.
-* Grupo: resolver las dudas abiertas de abajo antes de lanzar las réplicas
-  definitivas; no se cambian parámetros en silencio.
+Después: T6.1 gráficas sobre las réplicas verificadas, T6.2 validación con el
+equipo y T6.3 memoria. I3 conserva D25: se cuentan todas las incidencias
+registradas, también posteriores a entrada; no se interpretarán como averías
+que afectaron necesariamente a espectadores.
 
 ## Reparto
 
@@ -187,7 +176,7 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3 y T5.1)
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3, T5.1 y T5.3)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
