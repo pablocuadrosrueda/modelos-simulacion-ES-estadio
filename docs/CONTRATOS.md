@@ -77,6 +77,11 @@ emergencia deben estar desactivadas y la cola debe ser FIFO; configuraciones
 fuera de este alcance lanzan `NotImplementedError`, sin ignorar opciones activas.
 La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
 
+**Ampliación de Inc2 (T2.8, D25):** se admiten prioridad, I1, I3 e I4. El runner
+lanza en E0 los auxiliares de avería y cierre, y conserva su condición de fin
+por espectadores/límite (los bucles de avería no terminan). I2 y emergencia
+siguen rechazadas mientras no estén integradas.
+
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
 | `id` | int | arrivals | 0..N-1 |
@@ -92,7 +97,7 @@ La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
 | `gate_used` | int | entry | Puerta por la que entra (≠ `gate` si se redirige; -1 si no entra) |
 | `t_start_control` | float | entry | Inicio del control (E2) |
 | `t_end_control` | float | entry | Fin del control (E3) |
-| `read_failure` | bool | entry | Hubo relectura (I2) |
+| `read_failure` | bool | entry | Hubo relectura (I2): `u < prob` con `u` sorteado en E0 por `id` y guardado en `EntryResources.read_failure_u`, extra en `read_failure_extra_s` (D26) |
 | `t_vomitory` | float | stadium | Llegada a la cola del vomitorio |
 | `t_seated` | float | stadium | Sentado (E4) |
 | `conflict` | bool | stadium/incidents | Tuvo conflicto por asiento (I1) |
@@ -154,12 +159,21 @@ Un KPI que no aplica al escenario vale `NaN`.
 > `turnstile_util` y `conflict_delay_s` quedan fijadas en `docs/DECISIONES.md`
 > (D12); si se cambia alguna, actualizar esta tabla y esa decisión.
 
+Precisión operativa de T2.8 (D25): `queue_max_gate` agrupa por `(zone, gate_used)`;
+`gate_used = -1` indica que no ha llegado y se excluye de las colas observadas.
+Los grupos de P4 los fija `priority_groups`, también con FIFO. Para P6, se
+excluye a los espectadores con `conflict=True`; se considera expuesto el tránsito
+`[t_vomitory, t_seated)` que solape un I1 activo `[t_start, t_end)` del mismo
+bloque y zona. Se resta la media de duración de los no expuestos y se convierte
+a segundos. Si falta una de las poblaciones, NaN. Los contadores I1/I2/I3 cuentan
+todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
+
 ## Firmas de los procesos (resumen)
 
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `sample_read_failures`, `has_read_failure` (I2, D26). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |

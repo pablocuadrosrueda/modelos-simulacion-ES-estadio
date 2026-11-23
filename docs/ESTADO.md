@@ -2,6 +2,7 @@
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
 Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
+Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria) y T2.2 (I2)._
 
 ## Hecho
 
@@ -46,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3 a T2.7 hechas).
+**Inc2 · en curso** (T2.3 a T2.7 hechas; T2.2 en revisión).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -83,6 +84,15 @@ la protección de `main` exigiendo esos checks.
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
+* T2.2 (A, en revisión; rama `feat/cuadros-T2.2-read-failure`): I2 en `entry.py`.
+  `build_entry_resources` sortea en E0, del flujo `read_failure`, un `u` y un
+  extra Uniforme(`extra_s`) por `id` (`sample_read_failures`) y los guarda en
+  `EntryResources`; hay relectura si `u < prob` (`has_read_failure`, D26). La
+  relectura sigue al servicio sin liberar el torno: `read_failure = True`,
+  `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
+  fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
+  conjunto crece. Tests en `tests/test_read_failure.py`.
+
 **Inc3: en curso.**
 
 * T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
@@ -107,6 +117,19 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
+Avance C, T2.8: prioridad e incidencias I1/I3/I4 integradas en el runner;
+indicadores por grupos, conflictos y recuentos implementados. Colas por puerta
+real y exclusión de quienes no han llegado. Caso `configs/dev/i2_mini.json`.
+Pruebas sintéticas y observación de capacidades en la simulación completa de
+entrada. Pendiente de revisión por PR desde `feat/chema-T2.8-metrics`.
+T5.2 publicada en PR #17. T3.1/T3.2 terminadas por B en PR #15, todavía abierto;
+la integración de salida se prepara después, sin editar los módulos de B.
+
+Validación T2.8 (Python 3.12): 256 tests correctos, 2 xfail de salida, lint y
+diff limpios. Tres réplicas de i2_mini: 600 entradas cada una, con I1/I3 registradas
+y KPIs por grupos. La salida de B (PR #15) ya figura fusionada y se recogerá
+para T3.3. Los xfail se retirarán al conectar esa fase.
+
 * C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
   (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
   lanzar en E0 `gate_closure_process` (I4, T2.6) y
@@ -117,6 +140,11 @@ la protección de `main` exigiendo esos checks.
   y T2.2 (I2, ya tiene `log_incident`).
 * B: T4.1 y T4.2 en revisión; después T5.4 (rendimiento) y T6.2 (verificación).
 * C: T3.3 (encadenar la salida en el runner; T3.1 ya en `main`) y luego T4.3.
+* A: revisión de T2.2; después T2.1 (cuatro macrozonas y medida de tiempo, D15).
+* C: con T2.2 todas las incidencias de entrada están implementadas; el runner
+  debe admitir también I2 (el PR de T2.8 la sigue rechazando). Ver AVISOS.
+* B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
+* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
 * Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
   instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
   Dudas abiertas).
@@ -139,9 +167,9 @@ Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
-`main` tras los PR #13 y #14 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 239 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
-Rama T2.7: 253 correctos y los mismos 2 xfail; lint y `check_pr_docs` limpios.
+Python 3.13.2, `make lint` limpio; los 2 xfail son los de salida (T3.3/T3.4).
+`main` tras los PR #15 y #16: 268 correctos y 2 xfail. Rama T2.2: 279 correctos
+y los mismos 2 xfail; lint y `check_pr_docs` limpios.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.

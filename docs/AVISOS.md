@@ -32,6 +32,24 @@ Reglas:
 * **C (KPIs):** `abandoned` marca a quien estaba en cola exterior; quien no
   había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
   quienes tienen `t_safe`.
+### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
+**Estado:** en la rama `feat/cuadros-T2.2-read-failure`; **aún no en `main`**.
+
+* **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
+  entrada están implementadas. En `main` el runner aún rechaza cualquier
+  incidencia con `NotImplementedError` y no lanza
+  `start_turnstile_failure_processes(ctx)` ni `gate_closure_process(ctx)`: sin
+  eso **X0, que las lleva activadas, no se puede ejecutar**. El PR abierto de
+  T2.8 ya integra I1, I3 e I4 pero sigue rechazando I2 («pendiente de T2.2»);
+  cuando T2.2 esté en `main`, esa guarda se puede quitar. I2 no necesita nada
+  en E0: el sorteo va en `build_entry_resources` y la relectura en
+  `entry_process`.
+* **C (métricas):** `n_read_failures` = filas `kind == "I2"` de
+  `df.attrs["incidents"]` (coincide con `df["read_failure"].sum()`). La
+  relectura ocupa el torno, así que entra en el servicio de `turnstile_util`
+  (`t_end_control - t_start_control`), como pide D12.
+* `build_entry_resources` consume ahora el flujo `read_failure` (no afecta a los
+  demás flujos ni a resultados previos).
 
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** **en `main`** (PR #15). Pendiente de aplicar por C (T3.3).
@@ -45,6 +63,15 @@ Reglas:
   `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (unos 0,23 s), así que
   quien está pasando cuenta en la cola hasta `t_exit`.
 * **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
+
+### 2026-11-23 · C → A, B · Inc2 conectado e indicadores (T2.8, D25)
+**Estado:** preparado para PR desde `feat/chema-T2.8-metrics`.
+
+* Aplicados los avisos de prioridad, I1, I3 e I4. El runner ya lanza averías y
+  cierre en E0; mantiene I2/emergencia pendientes. La cola usa `gate_used`.
+* Calcula P4, contraste P6 por solape temporal y recuentos de incidencias.
+  Definiciones exactas en CONTRATOS/D25. No cambia Spectator ni firmas.
+* Caso de desarrollo: `make run EXP=configs/dev/i2_mini.json REPS=3`.
 
 ### 2026-11-23 · A → C · Redirección ante el cierre de puerta (T2.7, D23)
 **Estado:** **en `main`** (PR #16). Pendiente de aplicar por C (runner y métricas).
