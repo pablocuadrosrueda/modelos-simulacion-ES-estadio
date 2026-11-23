@@ -38,13 +38,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | hecho | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | hecho | T1.4 |
 
-T1.1, T1.2, T1.3, T1.5 y T1.4 fusionadas en los PR #1, #2, #4, #3 y #6.
-Quedan T1.6 (CLI y CSV, ya desbloqueada) y T1.7 (caso límite de muchos tornos
-y refuerzo de conservación).
-T1.1/T1.2/T1.3/T1.4/T1.5 fusionadas en main (PR #1/#2/#4/#6/#3).
-T1.6 publicada en el [PR #9](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/9)
-y T1.7 publicada en el [PR #10](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/10).
-Ambas fusionadas en `main`: **Inc1 completado**.
+T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10: **Inc1 completado**.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
