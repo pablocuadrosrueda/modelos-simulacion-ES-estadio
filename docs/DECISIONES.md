@@ -147,3 +147,18 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
   disciplina.
 * Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
   (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
+
+### D21 · I1 con números comunes, sorteado en E0 — 2026-11-23
+Igual que D18. `stadium.build_stadium_resources` llama a
+`incidents.sample_seat_conflicts`, que sortea del flujo `"seat_conflict"`, para
+los `n_spectators`, un `u` ~ Uniforme(0, 1) y una resolución
+Triangular(`resolution_min`) en segundos. Se guardan en `StadiumResources`
+(`seat_conflict_u`, `seat_conflict_resolution_s`) por `id`. Hay conflicto si
+`u < prob`: al pasar de 0,5 % a 1 % el conjunto crece y conserva a los
+anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
+* El conflicto se detecta **al llegar al asiento**, tras el paso por el
+  vomitorio, y el espectador **retiene la plaza** mientras espera al acomodador
+  de su macrozona (FIFO) y mientras dura la resolución.
+* Incidencia `I1`: `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` al
+  detectarlo y `t_end` al resolverse (incluye la espera al acomodador).
+* Sustituye, para I1, la indicación de D17 de sortearlo en `generate_spectators`.

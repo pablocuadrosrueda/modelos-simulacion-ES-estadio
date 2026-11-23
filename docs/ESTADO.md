@@ -97,6 +97,15 @@ repo: activar la protección de `main` exigiendo esos checks.
   Tests en `tests/test_incidents.py`: apertura y cierre a su hora, solo la puerta
   afectada, incidencia con `t_start`/`t_end`, reanudación en orden (D13), duración
   cero, desactivada y `start_min` ya pasado.
+* T2.5 (B, en revisión; rama `feat/perez-T2.5-seat-conflict`): I1 en
+  `incidents.py` (`sample_seat_conflicts`, `has_seat_conflict`, `seat_conflict`)
+  e integrado en `seating_process`: al llegar al asiento, con `u < prob`, el
+  espectador retiene la plaza del vomitorio, espera a un acomodador de su zona y
+  resuelve en Triangular(1, 3, 10) min. Ocurrencia y duración sorteadas en E0 por
+  `id` (D21, números comunes). Tests en `tests/test_seat_conflict.py`: reparto,
+  números comunes entre escenarios, 0,5 % ⊂ 1 %, plaza retenida, límite de
+  acomodadores por zona e integración entrada + asiento. El runner aún rechaza
+  incidencias activas (D19).
 
 ## Siguiente paso
 
@@ -106,7 +115,7 @@ según dependencias (ver `docs/TAREAS.md`):
 * A: T2.1 (cuatro macrozonas y medida de tiempo, D15), T2.3 (I3). T2.2 (I2)
   necesita `log_incident`, ya en `main`; T2.7 (redirección) necesita T2.6, ya en
   `main`.
-* B: T2.5 (I1, conflicto de asiento); T1.4 ya está en `main`.
+* B: T2.5 en revisión; después T3.1 (salida ordinaria).
 * C: T1.6 (CLI y CSV) → T1.7. Pendiente de C en el runner: admitir
   `queue_discipline = "priority"` (T2.4 ya en `main`) y lanzar
   `gate_closure_process` en E0 (T2.6 ya en `main`); ver `docs/AVISOS.md`.

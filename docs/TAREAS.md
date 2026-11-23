@@ -35,8 +35,8 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | hecho | T1.2, T1.3 |
 | T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | hecho | contrato (T0.3) |
-| T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | en revisión | T1.4, T1.5 |
-| T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | en revisión | T1.4 |
+| T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | hecho | T1.4, T1.5 |
+| T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | hecho | T1.4 |
 
 T1.1, T1.2, T1.3, T1.5 y T1.4 fusionadas en los PR #1, #2, #4, #3 y #6.
 Quedan T1.6 (CLI y CSV, ya desbloqueada) y T1.7 (caso límite de muchos tornos
@@ -44,17 +44,17 @@ y refuerzo de conservación).
 T1.1/T1.2/T1.3/T1.4/T1.5 fusionadas en main (PR #1/#2/#4/#6/#3).
 T1.6 publicada en el [PR #9](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/9)
 y T1.7 publicada en el [PR #10](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/10).
-Ambas revisadas por Chema, pendientes de revisión del equipo y merge por separado.
+Ambas fusionadas en `main`: **Inc1 completado**.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
 | T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min; medir tiempo de una réplica (D15) | A | pendiente | Inc1 |
-| T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.5 (log_incident) |
+| T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.6 (log_incident, ya en `main`) |
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | hecho | Inc1 |
-| T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | pendiente | Inc1 |
+| T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | en revisión | Inc1 |
 | T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | hecho | T1.2 |
 | T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | pendiente | T2.6 |
 | T2.8 | KPIs P4/P6 e incidencias (`group_wait_diff_min`, `conflict_delay_s`, `n_conflicts`...); test de capacidad de recursos | C | pendiente | T2.4, T2.5 |
