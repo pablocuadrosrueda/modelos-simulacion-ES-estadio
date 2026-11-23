@@ -157,9 +157,10 @@ por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
-Python 3.13.2, `make lint` limpio; los 2 xfail son los de salida (T3.3/T3.4).
-`main` tras los PR #15 y #16: 268 correctos y 2 xfail. Rama T2.2: 279 correctos
-y los mismos 2 xfail; lint y `check_pr_docs` limpios.
+Rama T4.3 con todo `main`: Python 3.12, `make check` limpio, 368 tests correctos,
+sin xfail. Restaurado el import pytest necesario en conservación tras la fusión
+de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
+B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
