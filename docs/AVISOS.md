@@ -23,6 +23,8 @@ Reglas:
   cola máxima por salida incluye paso en servicio. Evacuación e I2 pendientes.
 * Caso reproducible: `make run EXP=configs/dev/i3_mini.json REPS=3`.
 
+### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
+**Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
 ### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D25)
 **Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
 
