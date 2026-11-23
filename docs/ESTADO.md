@@ -231,3 +231,15 @@ I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
 redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
 medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
 la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
+
+## Avance de C: T5.2 (2026-11-23)
+
+Análisis estadístico revisado por Chema y preparado para PR desde
+`feat/chema-T5.2-analysis`: IC t-Student, réplicas estimadas con el piloto,
+resúmenes por escenario y diferencias emparejadas por seed. 41 pruebas de
+análisis. Salidas documentadas en D29/CONTRATOS (D20 pertenece a prioridad).
+Los dos xfail de salida son esperados y se activarán con T3.3/T3.4.
+
+Autorización de esta sesión: implementar y publicar T5.2, T2.8 y la integración
+de salida T3.3/T3.4, con comprobaciones y PR separados. Se mantiene la revisión
+del equipo antes del merge. T3.1/T3.2 están terminadas en el PR #15, aún abierto.

@@ -77,7 +77,7 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
 | T5.1 | Ejecutar X0–X7 con 10 réplicas piloto y semillas comunes | C | pendiente | Inc4 |
-| T5.2 | `analysis`: `confidence_interval`, `required_replications`, `summarize`, `compare_with_baseline` (+ tests con datos sintéticos) | C | pendiente | contrato (T0.3) |
+| T5.2 | `analysis`: `confidence_interval`, `required_replications`, `summarize`, `compare_with_baseline` (+ tests con datos sintéticos) | C | en revisión | contrato (T0.3) |
 | T5.3 | Réplicas definitivas (≈ 30) y S1 | C | pendiente | T5.1, T5.2 |
 | T5.4 | Rendimiento: medir tiempo por réplica completa y optimizar los cuellos propios | A, B | pendiente | T5.1 |
 
@@ -148,3 +148,6 @@ Hito de Inc1: `make run EXP=<mini> REPS=3` escribe el CSV de KPIs.
 T1.7 (PR #10): siete pruebas de cierre preparadas y publicadas; verificación con
 T1.6 integrada: 204 tests correctos y dos pendientes esperados de salida. Estado:
 en revisión. TAREAS y ESTADO actualizados en esta rama para la CI documental.
+
+T5.2: revisada por Chema y autorizada su publicación, rama `feat/chema-T5.2-analysis`.
+IC t-Student, estimación de réplicas y comparación por semillas, formato D24.
