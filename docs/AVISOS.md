@@ -15,7 +15,7 @@ Reglas:
 ## Vigentes
 
 ### 2026-11-23 · B → A, C · I4 cierre de puerta y `log_incident` (T2.6)
-**Estado:** en la rama `feat/perez-T2.6-gate-closure`; **aún no en `main`**.
+**Estado actualizado:** fusionada en main mediante PR #5; integración en runner pendiente de Inc2.
 
 * **C (runner):** lanza `incidents.gate_closure_process(ctx)` en E0, después de
   `build_entry_resources`. Con `gate_closure.enabled = false` termina al instante,
@@ -28,11 +28,18 @@ Reglas:
   Los que esperan se reanudan en orden de registro (D13; hay un test en
   `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
 
-### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
-**Estado:** **en `main`** (PR #4). Pendiente de aplicar por C en T1.4 y T1.7.
+### 2026-11-23 · C → A, B · Réplicas y CSV de Inc1 (T1.6)
+**Estado:** publicada en el PR #9, rama `feat/chema-T1.6-experiments`.
+
+* `make run EXP=configs/dev/i1_mini.json REPS=3` ejecuta tres réplicas y guarda
+  los indicadores en `results/i1_mini_kpis.csv`. La API devuelve la tabla sin
+  escribir ficheros. Las semillas son comunes entre variantes.
+* Se corrige en métricas el redondeo s/min señalado por B: esperas de magnitud
+  <= 1e-9 min se consideran cero, sin contar colas ficticias ni fallar por una
+  diferencia numérica negativa. No cambian columnas, firmas ni parámetros.
+
 ### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
-**Estado:** publicado en el PR #6, rama `feat/chema-T1.4-runner`;
-todavía no fusionado en `main`.
+**Estado actualizado:** fusionado en main mediante PR #6.
 
 * Conecta entrada y asiento con las interfaces de T1.2/T1.3. Devuelve una fila
   por espectador, las columnas acordadas y los metadatos de la réplica.

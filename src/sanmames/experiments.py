@@ -14,7 +14,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import EXPERIMENTS_DIR
+from .config import EXPERIMENTS_DIR, load_experiment
+from .metrics import ID_COLUMNS, KPI_COLUMNS, compute_kpis
+from .runner import run_replica
 
 DEFAULT_BASE_SEED = 20261105
 """Semilla base común a todos los escenarios."""
@@ -30,14 +32,20 @@ def list_experiments(directory: Path = EXPERIMENTS_DIR) -> list[str]:
 def find_experiment_file(name: str, directory: Path = EXPERIMENTS_DIR) -> Path:
     """Resuelve ``name`` a un fichero de experimento.
 
-    Acepta el stem exacto (``"X1_2tornos"``) o un prefijo que identifique un
-    único fichero (``"X0"`` -> ``X0_base.json``).
+    Acepta una ruta a un JSON, también fuera de ``configs/experiments``, el
+    stem exacto (``"X1_2tornos"``) o un prefijo que identifique un único fichero
+    (``"X0"`` -> ``X0_base.json``).
 
     Raises:
         FileNotFoundError: si no hay coincidencia.
         ValueError: si el prefijo es ambiguo (p. ej. ``"X1"``).
     """
-    exact = directory / f"{name}.json"
+    candidate = Path(name).expanduser()
+    if candidate.is_file():
+        return candidate
+    if candidate.parent != Path("."):
+        raise FileNotFoundError(f"No existe el fichero de experimento: {candidate}")
+    exact = directory / (candidate.name if candidate.suffix == ".json" else f"{name}.json")
     if exact.is_file():
         return exact
     matches = [s for s in list_experiments(directory) if s.startswith(f"{name}_")]
@@ -58,8 +66,31 @@ def replica_seed(base_seed: int, replica: int) -> int:
 def run_experiment(name: str, n_reps: int, base_seed: int = DEFAULT_BASE_SEED) -> pd.DataFrame:
     """Ejecuta ``n_reps`` réplicas de cada escenario del experimento ``name``.
 
+    Acepta los mismos nombres y rutas que ``find_experiment_file``. No escribe
+    archivos: la CLI guarda la tabla devuelta en ``results/<fichero>_kpis.csv``.
+
     Returns:
         Tabla de KPIs por réplica: una fila por (escenario, réplica) con columnas
         ``metrics.ID_COLUMNS + metrics.KPI_COLUMNS``.
     """
-    raise NotImplementedError("T1.6-C: run_experiment")
+    if isinstance(n_reps, bool) or not isinstance(n_reps, int) or n_reps < 1:
+        raise ValueError("n_reps debe ser un entero >= 1")
+    if isinstance(base_seed, bool) or not isinstance(base_seed, int) or base_seed < 0:
+        raise ValueError("base_seed debe ser un entero >= 0")
+
+    experiment = load_experiment(find_experiment_file(name))
+    rows = []
+    for config in experiment.configs:
+        for replica in range(n_reps):
+            seed = replica_seed(base_seed, replica)
+            df = run_replica(config, seed)
+            rows.append(
+                {
+                    "experiment": experiment.experiment,
+                    "scenario": config.name,
+                    "replica": replica,
+                    "seed": seed,
+                    **compute_kpis(df, config),
+                }
+            )
+    return pd.DataFrame(rows, columns=ID_COLUMNS + KPI_COLUMNS)
