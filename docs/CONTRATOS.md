@@ -64,6 +64,14 @@ Flujo `name` = `default_rng(SeedSequence(entropy=seed, spawn_key=(STREAM_INDEX[n
 Una fila por espectador (`len(df) == config.n_spectators`), columnas en el orden
 de `entities.SPECTATOR_COLUMNS`:
 
+**Alcance provisional de Inc1 (T1.4, D19):** la réplica termina al sentarse el
+último espectador, o al alcanzar `max_sim_hours` de tiempo simulado desde la
+apertura. Se conservan todas las filas aunque el límite deje sucesos pendientes.
+Salida y evacuación permanecen en NaN (ids en -1). Las incidencias y la
+emergencia deben estar desactivadas y la cola debe ser FIFO; configuraciones
+fuera de este alcance lanzan `NotImplementedError`, sin ignorar opciones activas.
+La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
+
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
 | `id` | int | arrivals | 0..N-1 |
