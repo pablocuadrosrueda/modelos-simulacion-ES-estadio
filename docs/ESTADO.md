@@ -2,7 +2,7 @@
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
 Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
-T4.3 está fusionada en PR #24. T5.1 (piloto X0–X7) está en curso en esta rama._
+T4.3 está fusionada en PR #24. T5.1 (piloto X0–X7) está en revisión en esta rama._
 
 ## Hecho
 
@@ -117,19 +117,29 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T4.3 fusionada en PR #24. C inicia T5.1 desde main actualizado: 12 escenarios
-X0–X7, 10 réplicas cada uno, mismas semillas 20261105–20261114. Se mantienen los
-parámetros y las hipótesis documentadas, sin alterar módulos de A/B. El script
-`scripts/run_pilot.py` guarda KPIs tras cada réplica y audita identidad y estado
-terminal; al final calcula IC del 95 %, contrastes emparejados y n estimado para
-semianchura relativa del 5 % de la espera media.
+T5.1 preparada para PR desde `feat/chema-T5.1-pilot`: 12 escenarios X0–X7,
+10 réplicas cada uno, semillas 20261105–20261114 y N=48.775. Las 120 réplicas
+terminan completas; reparto por zona entre 24,484 % y 25,406 %. Datos auditados,
+IC y procedencia en `results/pilot`; explicación en `docs/PILOTO_T5.1.md`.
+Duración original de simulación/KPIs: 298,91 s (~2,49 s/réplica), más recálculo
+posterior de P4 con las mismas semillas para recuperar cohortes (D31).
 
-Resultados de desarrollo anteriores en results; el piloto se guardará en
-`results/pilot` con configs resueltas, hashes del código, versiones y commit.
-T2.1 sigue pendiente de A; se aporta reparto observado por zona y duración por
-réplica, sin dar su tarea por completada. Después T5.3 (réplicas definitivas y
-S1) usará este piloto; T6.1 gráficas depende de T5.3. No se presentan todavía
-conclusiones definitivas para P1–P8. Siguen abiertas las dudas de I3 y X6.
+P4 compara ahora mayores/PMR y resto iguales en FIFO/prioridad, sin cambiar
+recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
+en todos los KPIs originales y no se cuentan como nuevas réplicas. El script
+ya guarda estas cohortes directamente al repetir el lote.
+
+Validación: 375 tests correctos, sin xfail, lint y docs limpios. X0 espera media
+0,186 min; dos tornos: 3,986 min y 89,18 % bajo 10 min. Evacuación media 7,39 min
+sin bloqueo y 8,45 con bloqueo; el vaciado total <=8 se cumple en 9/10 y 0/10.
+Son resultados piloto, no conclusiones definitivas de la entrega.
+
+Próximo C: T5.3, réplicas definitivas y S1. La precisión relativa del 5 % estima
+hasta 181 réplicas totales (no 30 por defecto); recalcular IC al ampliar. Un n
+común de 181 supondría 2.052 réplicas adicionales, unos 85 min al ritmo observado,
+sin S1. T2.1 sigue pendiente de A; se aporta reparto y duración, sin darla por
+hecha. A/B: T5.4. Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
+Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
 
 ## Reparto
 
@@ -146,7 +156,7 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4 y T4.3)
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3 y T5.1)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación

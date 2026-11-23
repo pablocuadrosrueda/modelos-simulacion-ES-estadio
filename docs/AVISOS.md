@@ -15,7 +15,7 @@ Reglas:
 ## Vigentes
 
 ### 2026-11-23 · C → A, B · Piloto T5.1 y cohortes de P4 (D31)
-**Estado:** en curso desde `feat/chema-T5.1-pilot`.
+**Estado:** en revisión desde `feat/chema-T5.1-pilot`; informe en `docs/PILOTO_T5.1.md`.
 
 * 120 réplicas de X0–X7 terminadas completas, con semillas comunes. El criterio
   del 5 % estima hasta 181 réplicas totales, no 30 por defecto; se verificará
@@ -27,7 +27,7 @@ Reglas:
   pendientes de decisión del grupo el cierre X6 en +20 y el recuento I3.
 
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
-**Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
+**Estado:** fusionada en `main` (PR #24).
 
 * Aplicadas T2.2, T4.1 y T4.2: I2 ya se admite; la alarma interrumpe el proceso
   único de cada espectador y E8 espera a todos los recorridos, no a las averías.

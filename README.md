@@ -164,3 +164,6 @@ Para P4, `groups.csv` mide los mismos colectivos de X3 también en X0 FIFO, sin
 cambiar la simulación ni sus KPIs originales. Sus diferencias emparejadas se
 incorporan a `comparisons.csv`; con ello «resto» representa a las mismas personas
 en ambos escenarios, aunque `priority_groups` esté vacío en la config base.
+
+Informe del primer lote: [Piloto T5.1](docs/PILOTO_T5.1.md), con resultados,
+IC, estimación de réplicas y cuestiones pendientes antes de la entrega.
