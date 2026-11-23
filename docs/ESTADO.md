@@ -109,3 +109,24 @@ I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
 redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
 medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
 la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
+Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles A/B/C (arriba), I2/I3 en `entry.py` (D8),
+utilización de tornos (D12), puerta cerrada sin redirección (D13), evacuación de
+quien está en tránsito (D14, hipótesis) y medición temprana de rendimiento (D15).
+Verificación de `main` (2026-11-23, tras los PR #5–#8, Python 3.13.2):
+`make lint` limpio y `make test` con 175 tests correctos y 2 xfail esperados
+(salida, T3.3/T3.4). Prueba manual de T1.4 con `i1_mini`, semilla 20261105:
+600 filas, 600 sentados, último asiento en t = +31,907 min. `make run` queda
+pendiente de T1.6.
+La fusión paralela dejó dos entradas D19 en `DECISIONES.md`: prioridad de A y
+alcance provisional del runner de C. Distinguirlas por título hasta acordar la
+renumeración. No cambia el comportamiento del modelo.
+
+PR de cierre de Inc1: T1.6 #9 y T1.7 #10, abiertos para revisión del equipo.
+
+## Verificación de cierre T1.7 (PR #10)
+
+Rama sincronizada con main y con la actualización remota del equipo. Siete
+pruebas nuevas de conservación por espectador en cada transición, cola pendiente
+al alcanzar el límite y muchos tornos con demanda idéntica. Con T1.6 integrada:
+204 tests correctos, 2 xfail esperados de salida, lint y comprobación documental
+limpios. No cambia código de simulación ni interfaces. Pendiente de revisión y merge.
