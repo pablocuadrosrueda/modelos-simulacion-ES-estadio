@@ -110,15 +110,22 @@ def entry_process(spectator: Spectator, ctx: SimContext) -> Generator[Any, Any, 
     assert ctx.entry is not None, "build_entry_resources debe ejecutarse antes (E0)"
 
     t_arrival_s = min_to_s(spectator.t_arrival)
+    on_time = env.now <= t_arrival_s
     if env.now < t_arrival_s:
         yield env.timeout(t_arrival_s - env.now)
 
     gate = spectator.gate
     spectator.gate_used = gate
     turnstiles = ctx.entry.turnstiles[(spectator.zone, gate)]
+    t_request_s = env.now
     with turnstiles.request(priority=priority_of(spectator, ctx), preempt=False) as req:
         yield req
-        spectator.t_start_control = s_to_min(env.now)
+        if on_time and env.now == t_request_s:
+            # Sin cola: la espera es exactamente 0 (s_to_min(min_to_s(t)) puede
+            # quedar ~1e-14 min por debajo de t_arrival; aviso de B en T1.3).
+            spectator.t_start_control = spectator.t_arrival
+        else:
+            spectator.t_start_control = s_to_min(env.now)
         yield env.timeout(spectator.service_s)
         spectator.t_end_control = s_to_min(env.now)
 
