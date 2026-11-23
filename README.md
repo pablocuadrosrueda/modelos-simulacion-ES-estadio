@@ -145,3 +145,25 @@ El CSV `results/i4_mini_kpis.csv` compara salidas abiertas y una bloqueada con
 los experimentos oficiales X0–X7 se ejecutan en T5.1. La réplica termina al salir
 o evacuar todos, o al alcanzar el límite desde apertura. Los indicadores de
 vaciado incompleto permanecen en NaN; ver `docs/CONTRATOS.md`.
+
+Piloto T5.1 (X0–X7 completos, diez réplicas por escenario):
+
+```bash
+.venv/bin/python scripts/run_pilot.py --reps 10 --output results/pilot
+```
+
+Guarda `kpis.csv`, `audit.csv`, `zones.csv`, `summary.csv`, `comparisons.csv`,
+`precision.csv`, `groups.csv` y `manifest.json`. Se registra el código, las configuraciones,
+las versiones y las semillas. No sobrescribe una carpeta con resultados;
+para repetir el lote, usa `--output results/pilot_repetido`. Los contrastes
+usan X0 para X1–X4, seis acomodadores para X5, sin redirección para X6 y todas
+las salidas para X7. La estimación de réplicas es provisional, calculada con
+la precisión relativa del 5 % sobre la espera media, como pide la memoria.
+
+Para P4, `groups.csv` mide los mismos colectivos de X3 también en X0 FIFO, sin
+cambiar la simulación ni sus KPIs originales. Sus diferencias emparejadas se
+incorporan a `comparisons.csv`; con ello «resto» representa a las mismas personas
+en ambos escenarios, aunque `priority_groups` esté vacío en la config base.
+
+Informe del primer lote: [Piloto T5.1](docs/PILOTO_T5.1.md), con resultados,
+IC, estimación de réplicas y cuestiones pendientes antes de la entrega.

@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0 a Inc4 completos y, de
-Inc5, T5.2. En revisión: T5.4 (rendimiento, rama `feat/perez-T5.4-performance`)._
+Inc5, T5.2 y T5.4. En revisión: T5.1 (piloto de X0 a X7) en esta rama._
 
 ## Hecho
 
@@ -134,7 +134,7 @@ la protección de `main` exigiendo esos checks.
 
 **Inc5: en curso.**
 
-* T5.4 (B, en revisión; rama `feat/perez-T5.4-performance`): tiempo de réplica de
+* T5.4 (B, hecho; PR #27): tiempo de réplica de
   los 13 escenarios en `docs/VERIFICACION.md`, de 3,4 a 4,3 s, y 4,7 s en X7. En
   X7 bajaba de 6,9 s al quitar una búsqueda en todas las incidencias para cada
   espectador al evacuar; resultados idénticos. Sin más cuellos de botella en los
@@ -142,30 +142,33 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
-T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
-T5.2 está fusionada en PR #17 con salida y conservación completas.
+T5.1 preparada para PR desde `feat/chema-T5.1-pilot`: 12 escenarios X0–X7,
+10 réplicas cada uno, semillas 20261105–20261114 y N=48.775. Las 120 réplicas
+terminan completas; reparto por zona entre 24,484 % y 25,406 %. Datos auditados,
+IC y procedencia en `results/pilot`; explicación en `docs/PILOTO_T5.1.md`.
+Duración original de simulación/KPIs: 298,91 s (~2,49 s/réplica), más recálculo
+posterior de P4 con las mismas semillas para recuperar cohortes (D32).
 
-C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
-estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
-incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
-Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
-variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
-en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
-5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
-aislar la capacidad, no como resultados definitivos del escenario real.
+P4 compara ahora mayores/PMR y resto iguales en FIFO/prioridad, sin cambiar
+recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
+en todos los KPIs originales y no se cuentan como nuevas réplicas. El script
+ya guarda estas cohortes directamente al repetir el lote.
 
-Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
-T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
-calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
-T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
-oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
-I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
-* A: estudio X6 y D31 (`start_min = −30`) en revisión, en el mismo PR.
-* C: el piloto T5.1 puede lanzarse con la base; con −30, X6 responde a P7.
-* C: T5.1, piloto de X0 a X7 con 10 réplicas y semillas comunes; después T5.3,
-  T6.1 y T6.2. T5.2 ya permite calcular intervalos y el número de réplicas.
-* A y B: revisar los resultados del piloto de su parte y preparar T6.2 y T6.3.
+Validación con T2.1: 393 tests correctos y una prueba lenta opcional omitida
+(RUN_SLOW=1), sin xfail; lint y docs limpios. X0 espera media
+0,186 min; dos tornos: 3,986 min y 89,18 % bajo 10 min. Evacuación media 7,39 min
+sin bloqueo y 8,45 con bloqueo; el vaciado total <=8 se cumple en 9/10 y 0/10.
+Son resultados piloto, no conclusiones definitivas de la entrega.
+
+Próximo C: T5.3, réplicas definitivas y S1. La precisión relativa del 5 % estima
+hasta 181 réplicas totales (no 30 por defecto); recalcular IC al ampliar. Un n
+común de 181 supondría 2.052 réplicas adicionales, unos 85 min al ritmo observado,
+sin S1. T2.1 ya fusionada por A (PR #25), con capacidad/rendimiento en
+`docs/VERIFICACION.md`; no bloquea la ampliación. T5.4 (B) ya fusionada (PR #27).
+Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
+Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
+* C: el piloto de X6 se ejecutó con el cierre en t = +20; con D31 (PR #28) el
+  cierre pasa a t = -30, así que hay que repetir X6 antes de usar sus resultados.
 * Grupo: resolver las dudas abiertas de abajo antes de lanzar las réplicas
   definitivas; no se cambian parámetros en silencio.
 
@@ -184,7 +187,7 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4 y T4.3)
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3 y T5.1)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación

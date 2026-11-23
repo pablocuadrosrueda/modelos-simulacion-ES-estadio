@@ -14,6 +14,18 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Piloto T5.1 y cohortes de P4 (D32)
+**Estado:** en revisión desde `feat/chema-T5.1-pilot`; informe en `docs/PILOTO_T5.1.md`.
+
+* 120 réplicas de X0–X7 terminadas completas, con semillas comunes. El criterio
+  del 5 % estima hasta 181 réplicas totales, no 30 por defecto; se verificará
+  la precisión al ampliar. Se conservan parámetros e hipótesis de la memoria.
+* P4: el X0 tiene `priority_groups=[]`; «resto» no era el mismo colectivo que
+  en X3. Se añade análisis con cohortes comunes de X3, sin cambiar simulación,
+  configs ni KPIs originales. Formato en CONTRATOS/D32.
+* T2.1 de A ya está fusionada (PR #25); capacidad/rendimiento en VERIFICACION.
+  Siguen pendientes de decisión del grupo el cierre X6 en +20 y el recuento I3.
+
 ### 2026-11-23 · A → C · Cierre de puerta de X6 movido a −30 min (D31, decidida)
 **Estado:** decidida; el cambio va en la rama `feat/cuadros-X6-study` y estará en
 `main` al fusionarse su PR. Hasta entonces, para un piloto, usa el override
@@ -30,7 +42,7 @@ Reglas:
   `docs/ESTUDIO_X6.md`.
 
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
-**Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
+**Estado:** fusionada en `main` (PR #24).
 
 * Aplicadas T2.2, T4.1 y T4.2: I2 ya se admite; la alarma interrumpe el proceso
   único de cada espectador y E8 espera a todos los recorridos, no a las averías.

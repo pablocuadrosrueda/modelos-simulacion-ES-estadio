@@ -7,3 +7,15 @@ __pycache__/
 .DS_Store
 results/*
 !results/.gitkeep
+
+# Piloto T5.1: resultados agregados pequeños y procedencia revisables en el PR.
+!results/pilot/
+results/pilot/*
+!results/pilot/kpis.csv
+!results/pilot/audit.csv
+!results/pilot/zones.csv
+!results/pilot/summary.csv
+!results/pilot/comparisons.csv
+!results/pilot/precision.csv
+!results/pilot/manifest.json
+!results/pilot/groups.csv

@@ -348,3 +348,14 @@ corregirse en la Parte 2; hasta entonces manda esta decisión.
   asignados a A-1.
 * **Reversible:** si el grupo prefiriera otra opción, basta cambiar ese valor y el
   test (una línea cada uno).
+
+### D32 · Cohortes comparables para P4 en el piloto (T5.1) — 2026-11-23
+X0 tiene `priority_groups=[]` y X3 identifica mayores/PMR. Restar directamente
+sus `wait_mean_rest_min` compararía toda la población de X0 con solo el resto
+de X3; el KPI de priorizados en X0 es NaN por contrato. El análisis adicional
+usa los colectivos ya fijados por X3 para calcular métricas en ambas poblaciones
+(`groups.csv`), sin alterar recorridos ni configs. Sus IC emparejados sustituyen
+solo las tres columnas de grupos en `comparisons.csv`; `kpis.csv` conserva el
+contrato y los valores originales. No es una nueva variante del modelo.
+* Numeración: se escribió como D31 en la rama de T5.1 cuando D31 (cierre de X6,
+  PR #28) ya estaba en `main`; renumerada a D32 el 2026-11-23.

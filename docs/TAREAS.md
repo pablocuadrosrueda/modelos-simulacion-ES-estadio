@@ -75,10 +75,10 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T5.1 | Ejecutar X0–X7 con 10 réplicas piloto y semillas comunes | C | pendiente | Inc4 |
+| T5.1 | Ejecutar X0–X7 con 10 réplicas piloto y semillas comunes | C | en revisión | Inc4 |
 | T5.2 | `analysis`: `confidence_interval`, `required_replications`, `summarize`, `compare_with_baseline` (+ tests con datos sintéticos) | C | hecho | contrato (T0.3) |
 | T5.3 | Réplicas definitivas (≈ 30) y S1 | C | pendiente | T5.1, T5.2 |
-| T5.4 | Rendimiento: medir tiempo por réplica completa y optimizar los cuellos propios | A, B | en revisión | T5.1 |
+| T5.4 | Rendimiento: medir tiempo por réplica completa y optimizar los cuellos propios | A, B | hecho | T5.1 |
 
 ## Inc6 · Análisis, verificación y entrega
 

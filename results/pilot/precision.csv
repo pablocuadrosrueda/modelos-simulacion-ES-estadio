@@ -1,0 +1,13 @@
+scenario,n_pilot,wait_mean_min,halfwidth_95_min,relative_halfwidth_pct,estimated_total_reps,note
+X0_base,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
+X1_2tornos,10,3.98563322154029,0.12059718196890977,3.025797289051693,10,estimación con t del piloto; comprobar al ampliar
+X1_4tornos,10,0.015227581606851729,0.002788684604137132,18.31337815902657,135,estimación con t del piloto; comprobar al ampliar
+X2_anticipado,10,0.04781464688342443,0.006745334377040992,14.107255447241101,80,estimación con t del piloto; comprobar al ampliar
+X3_prioridad,10,0.18588217274074198,0.03948418350604235,21.241511718884777,181,estimación con t del piloto; comprobar al ampliar
+X4_escalonada,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
+X5_3acomodadores,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
+X5_6acomodadores,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
+X6_con_redireccion,10,0.18563881950934363,0.03930284595391005,21.171674145413238,180,estimación con t del piloto; comprobar al ampliar
+X6_sin_redireccion,10,0.18874152939349234,0.03935095917655564,20.849125946476747,174,estimación con t del piloto; comprobar al ampliar
+X7_salida_bloqueada,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
+X7_todas_salidas,10,0.18563885564244634,0.0393028874079196,21.17169235497754,180,estimación con t del piloto; comprobar al ampliar
