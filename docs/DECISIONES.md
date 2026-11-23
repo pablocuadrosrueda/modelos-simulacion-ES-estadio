@@ -124,15 +124,6 @@ igual que `service_s`), cada espectador recibe el mismo número en todos los
 escenarios. No es columna del DataFrame. Si se prefiere un atributo
 `Spectator.vomitory_s` como `service_s`, el cambio es local a A y B.
 
-### D19 · Semántica de la prioridad en el torno (X3) — 2026-11-23
-* Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
-  se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
-* Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`
-  (0, grupos priorizados) < `PRIORITY_NORMAL` (1). Dentro de un nivel, FIFO.
-* No expulsiva: `entry_process` siempre pide con `preempt=False`.
-* Consecuencia para los KPIs (C, T2.8): `wait_mean_priority_min` y
-  `group_wait_diff_min` se calculan con `config.priority_groups`, no con la
-  disciplina.
 ### D19 · Alcance provisional del runner de Inc1 — 2026-11-23
 T1.4 encadena entrada y asiento y termina al sentarse el último espectador,
 como fija el objetivo de Inc1. La duración máxima de corrida `max_sim_hours`
@@ -145,3 +136,14 @@ que aparenten incluir fases todavía pendientes. La configuración de desarrollo
 espectadores y todas las incidencias/emergencia desactivadas, compatible con
 `load_experiment` y con la futura CLI de T1.6. No añade parámetros al modelo.
 
+### D20 · Semántica de la prioridad en el torno (X3) — 2026-11-23
+* Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
+  se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
+* Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`
+  (0, grupos priorizados) < `PRIORITY_NORMAL` (1). Dentro de un nivel, FIFO.
+* No expulsiva: `entry_process` siempre pide con `preempt=False`.
+* Consecuencia para los KPIs (C, T2.8): `wait_mean_priority_min` y
+  `group_wait_diff_min` se calculan con `config.priority_groups`, no con la
+  disciplina.
+* Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
+  (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
