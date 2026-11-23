@@ -1,8 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
-Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
-T4.3 (integración de alarma y KPIs) está en revisión en esta rama._
+_Última actualización: 2026-11-23. `main` contiene Inc0 a Inc4 completos y, de
+Inc5, T5.2. En revisión: T5.4 (rendimiento, rama `feat/perez-T5.4-performance`)._
 
 ## Hecho
 
@@ -47,7 +46,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · completado salvo T2.1 (en revisión).**
+**Inc2: completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -92,7 +91,7 @@ la protección de `main` exigiendo esos checks.
   `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
   fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
   conjunto crece. Tests en `tests/test_read_failure.py`.
-* T2.1 (A, en revisión; rama `feat/cuadros-T2.1-capacity`): comprobación de
+* T2.1 (A, hecho; PR #25): comprobación de
   capacidad de la memoria (§4.3) en `src/sanmames/capacity.py` (E[S], disponibilidad,
   capacidad, ρ en la franja pico real, vomitorios, vaciado y evacuación) y con
   simulación (reparto, ritmo por torno con cola ≈ teórico, 2/3/4/10 tornos,
@@ -100,7 +99,7 @@ la protección de `main` exigiendo esos checks.
   `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
   comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
 
-**Inc3: en curso.**
+**Inc3: completado.**
 
 * T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
@@ -110,7 +109,7 @@ la protección de `main` exigiendo esos checks.
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
 
-**Inc4: en curso.**
+**Inc4: completado.**
 
 * T4.1 y T4.2 (B, hecho; PR #19): `emergency.py`
   con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
@@ -118,33 +117,28 @@ la protección de `main` exigiendo esos checks.
   `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
   interrupción de los procesos de los espectadores) y `evacuation_process`
   (abandono o reacción, marcha más rápida, salida con menos cola y `t_safe`).
-  Decisión D25. Tests en `tests/test_emergency.py`, incluida la validación del
+  Decisión D28. Tests en `tests/test_emergency.py`, incluida la validación del
   apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
-  una salida bloqueada. Falta que el runner lo integre (T4.3, C).
+  una salida bloqueada.
+* T4.3 (C, hecho; PR #24): el runner admite I2 y emergencia; cada recorrido
+  captura la interrupción de la alarma y sigue con la evacuación. KPIs de
+  emergencia y metadatos de fin y alarma (D30).
+
+**Inc5: en curso.**
+
+* T5.4 (B, en revisión; rama `feat/perez-T5.4-performance`): tiempo de réplica de
+  los 13 escenarios en `docs/VERIFICACION.md`, de 3,4 a 4,3 s, y 4,7 s en X7. En
+  X7 bajaba de 6,9 s al quitar una búsqueda en todas las incidencias para cada
+  espectador al evacuar; resultados idénticos. Sin más cuellos de botella en los
+  módulos de B.
 
 ## Siguiente paso
 
-El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
-T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
-T5.2 está fusionada en PR #17 con salida y conservación completas.
-
-C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
-estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
-incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
-Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
-variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
-en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
-5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
-aislar la capacidad, no como resultados definitivos del escenario real.
-
-Próximo C: T5.1, piloto X0–X7 de diez réplicas con semillas comunes, tras revisar
-T4.3 y confirmar T2.1 (A, reparto/rendimiento del estadio completo). T5.2 permite
-calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráficas y
-T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
-oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
-I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
-* A: T2.1 en revisión (rama `feat/cuadros-T2.1-capacity`): comprobación de
-  capacidad y tiempo de réplica en `docs/VERIFICACION.md`.
+* C: T5.1, piloto de X0 a X7 con 10 réplicas y semillas comunes; después T5.3,
+  T6.1 y T6.2. T5.2 ya permite calcular intervalos y el número de réplicas.
+* A y B: revisar los resultados del piloto de su parte y preparar T6.2 y T6.3.
+* Grupo: resolver las dudas abiertas de abajo antes de lanzar las réplicas
+  definitivas; no se cambian parámetros en silencio.
 
 ## Reparto
 
@@ -166,10 +160,11 @@ por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
+Rama T5.4 sobre `main` tras el PR #25 (Python 3.13.2): 386 passed, 1 skipped; `make lint` limpio.
+
 Rama T4.3 con todo `main`: Python 3.12, `make check` limpio, 368 tests correctos,
 sin xfail. Restaurado el import pytest necesario en conservación tras la fusión
 de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
-B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
@@ -185,6 +180,15 @@ B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
 
 ## Dudas abiertas
 
+* T5.4 (B a grupo): en X5 los acomodadores son el cuello de botella. Con
+  conflictos al 1 % hay unos 490 por partido, unos 122 por macrozona, y cada uno
+  ocupa a un acomodador 4,7 min de media. Con 3 acomodadores por zona, en tres
+  réplicas la duración media de un conflicto (con la espera al acomodador) es de
+  40 a 52 min, el último espectador se sienta hasta en t = +180 y la réplica
+  termina hasta en t = +181. Con 6, de 12 a 17 min. Es lo que dan los parámetros
+  de la memoria, no un fallo, pero conviene confirmar que son los que se quieren
+  (sobre todo la resolución Triangular(1, 3, 10) min y que un acomodador atienda
+  un solo conflicto a la vez) antes de responder P6.
 * T2.3 (A → C): los procesos de avería siguen hasta el final de la réplica, así
   que con la salida integrada `n_turnstile_failures` contará también averías
   posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
