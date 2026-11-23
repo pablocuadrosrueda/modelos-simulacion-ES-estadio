@@ -33,18 +33,14 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | hecho | — |
 | T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | hecho | T1.1 |
 | T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
-| T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | pendiente | T1.2, T1.3 |
-| T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | en revisión | T1.2, T1.3 |
+| T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | hecho | T1.2, T1.3 |
 | T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | hecho | contrato (T0.3) |
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | pendiente | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | pendiente | T1.4 |
 
-T1.1, T1.2 y T1.3 fusionadas en los PR #1, #2 y #4. T1.5 fusionada en el
-[PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3).
-T1.4: implementación y pruebas revisadas por Chema, publicadas desde
-`feat/chema-T1.4-runner` en el [PR #6](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/6). Se activan ya los
-tests existentes que pasan con el runner; T1.7 sigue pendiente para su caso
-límite y el refuerzo de verificación. T1.6 necesita que se integren T1.4 y T1.5.
+T1.1, T1.2, T1.3, T1.5 y T1.4 fusionadas en los PR #1, #2, #4, #3 y #6.
+Quedan T1.6 (CLI y CSV, ya desbloqueada) y T1.7 (caso límite de muchos tornos
+y refuerzo de conservación).
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
@@ -53,9 +49,9 @@ límite y el refuerzo de verificación. T1.6 necesita que se integren T1.4 y T1.
 | T2.1 | 4 macrozonas con N = 48.775; comprobar reparto 25 % y ritmo por torno ≈ 13,6 pers/min; medir tiempo de una réplica (D15) | A | pendiente | Inc1 |
 | T2.2 | I2 fallo de lectura en `entry_process` (+ registro con `log_incident`) | A | pendiente | T2.5 (log_incident) |
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
-| T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | en revisión | Inc1 |
+| T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | hecho | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | pendiente | Inc1 |
-| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | en revisión | T1.2 |
+| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | hecho | T1.2 |
 | T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | pendiente | T2.6 |
 | T2.8 | KPIs P4/P6 e incidencias (`group_wait_diff_min`, `conflict_delay_s`, `n_conflicts`...); test de capacidad de recursos | C | pendiente | T2.4, T2.5 |
 
