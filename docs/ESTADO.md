@@ -48,7 +48,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3 a T2.7 hechas; T2.2 en revisión).
+**Inc2 · en curso** (T2.2 a T2.7 hechas; T2.1 en revisión).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -85,7 +85,7 @@ la protección de `main` exigiendo esos checks.
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
-* T2.2 (A, en revisión; rama `feat/cuadros-T2.2-read-failure`): I2 en `entry.py`.
+* T2.2 (A, hecho; PR #21): I2 en `entry.py`.
   `build_entry_resources` sortea en E0, del flujo `read_failure`, un `u` y un
   extra Uniforme(`extra_s`) por `id` (`sample_read_failures`) y los guarda en
   `EntryResources`; hay relectura si `u < prob` (`has_read_failure`, D26). La
@@ -93,6 +93,14 @@ la protección de `main` exigiendo esos checks.
   `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
   fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
   conjunto crece. Tests en `tests/test_read_failure.py`.
+* T2.1 (A, en revisión; rama `feat/cuadros-T2.1-capacity`): comprobación de
+  capacidad de la memoria (§4.3) en `src/sanmames/capacity.py` (E[S], disponibilidad,
+  capacidad, ρ en la franja pico real, vomitorios, vaciado y evacuación) y con
+  simulación (reparto, ritmo por torno con cola ≈ teórico, 2/3/4/10 tornos,
+  utilización). Tests en `tests/test_capacity.py`, script
+  `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`. Réplica
+  completa X0 sin I2: 2,9 s (10 réplicas: 28,8 s). Repone además el `import pytest`
+  que faltaba en `tests/test_conservacion.py` (igual que `chore/perez-docs-fix`).
 
 **Inc3: en curso.**
 
@@ -160,11 +168,10 @@ para T3.3. Los xfail se retirarán al conectar esa fase.
   `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
   (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
   `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
-* A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
-  y T2.2 (I2, ya tiene `log_incident`).
+* A: revisión de T2.1; repetir `scripts/validate_capacity.py` con X0 completo
+  cuando el runner admita I2.
 * B: T4.1 y T4.2 en revisión; después T5.4 (rendimiento) y T6.2 (verificación).
 * C: T3.3 (encadenar la salida en el runner; T3.1 ya en `main`) y luego T4.3.
-* A: revisión de T2.2; después T2.1 (cuatro macrozonas y medida de tiempo, D15).
 * C: con T2.2 todas las incidencias de entrada están implementadas; el runner
   debe admitir también I2 (el PR de T2.8 la sigue rechazando). Ver AVISOS.
 * B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
@@ -225,6 +232,17 @@ y los mismos 2 xfail; lint y `check_pr_docs` limpios.
   tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
   redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
   P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
+* T2.1 (A → C): el runner sigue rechazando I2 (`NotImplementedError`), así que
+  X0 tal cual no se ejecuta y la verificación se hizo sin I2. Un xfail estricto
+  en `tests/test_capacity.py` saltará cuando se quite la guarda.
+* T2.1 (A → grupo): con 2 tornos (ρ = 1,30 sin I2) el p95 de la espera es 8,6 min,
+  no > 10 como se esperaba en §5.3. Hipótesis: con I2 (ρ = 1,40) una aproximación
+  de fluido da ≈ 12 min de espera máxima, así que el p95 pasaría de 10. Pendiente
+  de medir con I2.
+* T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
+  franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
+  corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de
+  capacidad pura (incluye marcha y cola): coherente.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
