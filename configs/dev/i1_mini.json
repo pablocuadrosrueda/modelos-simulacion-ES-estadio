@@ -1,0 +1,20 @@
+{
+  "experiment": "i1_mini",
+  "label": "Inc1: llegada, entrada y asiento en una macrozona",
+  "question": "Verificación de la cadena de entrada sin incidencias",
+  "overrides": {
+    "name": "i1_mini",
+    "n_spectators": 600,
+    "zones": ["A"],
+    "zone_share": [1.0],
+    "gates_per_zone": 2,
+    "queue_discipline": "fifo",
+    "incidents": {
+      "seat_conflict": {"enabled": false},
+      "read_failure": {"enabled": false},
+      "turnstile_failure": {"enabled": false},
+      "gate_closure": {"enabled": false}
+    },
+    "emergency": {"enabled": false}
+  }
+}
