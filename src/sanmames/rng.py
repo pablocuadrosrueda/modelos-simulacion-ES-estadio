@@ -45,6 +45,26 @@ STREAM_NAMES: tuple[str, ...] = (
 STREAM_INDEX: dict[str, int] = {name: i for i, name in enumerate(STREAM_NAMES)}
 
 
+def _key_ints(key: tuple[str | int, ...]) -> tuple[int, ...]:
+    """Codifica una identidad ``(str | int, ...)`` como enteros >= 0, sin ambigüedad.
+
+    Cada parte va precedida de una etiqueta de tipo (0 = entero, 1 = texto), y el
+    texto se codifica en UTF-8 con un byte inicial para que ``"A"`` y ``"\\x00A"``
+    no coincidan.
+    """
+    out: list[int] = []
+    for part in key:
+        if isinstance(part, bool) or not isinstance(part, (int, np.integer, str)):
+            raise TypeError(f"Las partes de la clave deben ser str o int >= 0, no {part!r}")
+        if isinstance(part, str):
+            out += [1, int.from_bytes(b"\x01" + part.encode("utf-8"), "big")]
+        else:
+            if part < 0:
+                raise ValueError(f"Las partes enteras de la clave deben ser >= 0, no {part!r}")
+            out += [0, int(part)]
+    return tuple(out)
+
+
 class RngStreams:
     """Colección de generadores independientes, uno por fuente de azar.
 
@@ -80,6 +100,20 @@ class RngStreams:
             gen = np.random.default_rng(self.seed_sequence(self.seed, name))
             self._cache[name] = gen
         return gen
+
+    def substream(self, name: str, *key: str | int) -> np.random.Generator:
+        """Generador nuevo derivado del flujo ``name`` y de la identidad ``key``.
+
+        Para fuentes de azar **por recurso** (p. ej. un torno ``("A", 1, 2)``)
+        cuyo calendario debe ser el mismo en todos los escenarios: depende solo
+        de la semilla, del flujo y de ``key``, no del orden en que se crean los
+        recursos ni de cuántos hay (D22). No consume números de ``rngs[name]``.
+        No se cachea: cada llamada devuelve un generador desde el principio.
+        """
+        base = self.seed_sequence(self.seed, name)
+        return np.random.default_rng(
+            np.random.SeedSequence(entropy=self.seed, spawn_key=(*base.spawn_key, *_key_ints(key)))
+        )
 
     def get(self, name: str) -> np.random.Generator:
         """Alias de ``rngs[name]``."""

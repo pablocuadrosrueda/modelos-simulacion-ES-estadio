@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 salvo T1.7
-(T1.1–T1.6) y, de Inc2, T2.4 y T2.6. T1.7 en revisión en el PR #10._
+_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.4 y T2.6. T2.3 (I3) en revisión en `feat/cuadros-T2.3-turnstile-failure`._
 
 ## Hecho
 
@@ -15,7 +15,7 @@ docs para agentes. Automatización (T0.5, PR #7): CI con ruff + pytest en Python
 `make check`, `make hooks` y `make docs-check`. Pendiente fuera del repo: activar
 la protección de `main` exigiendo esos checks.
 
-**Inc1 · rebanada vertical — falta T1.7.**
+**Inc1 · rebanada vertical — completado.**
 
 * T1.1 (A, hecho; PR #1): `arrivals.py`. Franja por perfil + instante uniforme;
   zona/puerta/bloque, grupo, velocidad (normal truncada por inversión de la FDA)
@@ -41,12 +41,24 @@ la protección de `main` exigiendo esos checks.
   con las columnas acordadas y CLI que acepta nombres o rutas de experimento y
   guarda `results/<fichero>_kpis.csv`. Incluye corrección numérica en métricas
   para esperas nulas con redondeo s/min (tolerancia 1e-9 min), con tests.
-* T1.7 (C, en revisión; PR #10): siete pruebas nuevas de conservación en cada
+* T1.7 (C, hecho; PR #10): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.4 y T2.6 hechas).
+**Inc2 · en curso** (T2.4 y T2.6 hechas; T2.3 en revisión).
+
+* T2.3 (A, en revisión; rama `feat/cuadros-T2.3-turnstile-failure`): I3 en
+  `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
+  marcha y Uniforme(`repair_min`) parado; pide una plaza con `PRIORITY_FAILURE`
+  y `preempt=False` (adelanta a toda la cola, también a `PRIORITY_HIGH`, sin
+  cortar un servicio), suma en `failed_turnstiles` y registra `I3` con
+  `resource = "A-G1-T2"`, `t_start` y `t_end`. `turnstile_failure_process` lanza
+  un sub-bucle por torno; nueva `start_turnstile_failure_processes(ctx)` para E0.
+  Generador por torno con `RngStreams.substream` (D22): calendario idéntico con
+  2, 3 o 4 tornos. Además, sin cola `t_start_control = t_arrival` exacto (aviso
+  de B sobre redondeo s/min). Tests en `tests/test_turnstile_failure.py`,
+  `tests/test_rng.py` y `tests/test_entry.py`. El runner aún no lo lanza (C).
 
 * T2.4 (A, hecho; PR #8): `priority_of` con `queue_discipline == "priority"`:
   los grupos de `priority_groups` piden con `PRIORITY_HIGH` y adelantan a los
@@ -60,13 +72,14 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-* C: fusionar T1.7 (PR #10) para cerrar Inc1. En el runner, quitar la guarda
-  que rechaza `queue_discipline = "priority"` (T2.4 ya en `main`; sin ello X3 no
-  se ejecuta) y lanzar `gate_closure_process` en E0 (T2.6 ya en `main`). Después
+* C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
+  (T2.4 ya en `main`; sin ello X3 no se ejecuta), lanzar `gate_closure_process`
+  en E0 (T2.6 ya en `main`) y, cuando se fusione T2.3, admitir I3 y lanzar
+  `start_turnstile_failure_processes` (ver `docs/AVISOS.md`). Después
   T5.2 (estadística con datos sintéticos, sin dependencias) y T2.8 (necesita
   T2.5 de B).
-* A: T2.1 (cuatro macrozonas y medida de tiempo, D15), T2.3 (I3), T2.2 (I2, ya
-  tiene `log_incident`) y T2.7 (redirección, usa T2.6).
+* A: revisión de T2.3; después T2.1 (cuatro macrozonas y medida de tiempo, D15),
+  T2.2 (I2, ya tiene `log_incident`) y T2.7 (redirección, usa T2.6).
 * B: T2.5 (I1, conflicto de asiento) y T3.1 (salida); T3.3 de C depende de T3.1.
 
 ## Reparto
@@ -87,46 +100,32 @@ Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
-`main` tras el PR #11 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 197 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+`main` tras el PR #12 (2026-11-23, Python 3.13.2): `make lint` limpio y
+`make test` con 204 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+Rama T2.3: 229 correctos y los mismos 2 xfail; lint limpio.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
 * T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
   `results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas
   por réplica. El CSV es generado, no versionado.
-* T1.7: desde su carpeta, `PYTHONPATH=src make test
+* T1.7 (PR #10): siete pruebas de conservación por espectador en cada
+  transición, cola pendiente al alcanzar el límite y muchos tornos con demanda
+  idéntica. Desde su carpeta, `PYTHONPATH=src make test
   VENV=../modelos-simulacion-ES-estadio/.venv` y `make lint
   VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
   `PYTHONPATH=src` selecciona el código de esa carpeta.
 
 ## Dudas abiertas
 
-Ninguna pendiente.
+* T2.3 (A → C): los procesos de avería siguen hasta el final de la réplica, así
+  que con la salida integrada `n_turnstile_failures` contará también averías
+  posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
+  `t_start` anterior al último fin de control, o dejarlo así? La memoria no lo
+  precisa; queda para T2.8.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
 redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
 medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
 la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
-Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles A/B/C (arriba), I2/I3 en `entry.py` (D8),
-utilización de tornos (D12), puerta cerrada sin redirección (D13), evacuación de
-quien está en tránsito (D14, hipótesis) y medición temprana de rendimiento (D15).
-Verificación de `main` (2026-11-23, tras los PR #5–#8, Python 3.13.2):
-`make lint` limpio y `make test` con 175 tests correctos y 2 xfail esperados
-(salida, T3.3/T3.4). Prueba manual de T1.4 con `i1_mini`, semilla 20261105:
-600 filas, 600 sentados, último asiento en t = +31,907 min. `make run` queda
-pendiente de T1.6.
-La fusión paralela dejó dos entradas D19 en `DECISIONES.md`: prioridad de A y
-alcance provisional del runner de C. Distinguirlas por título hasta acordar la
-renumeración. No cambia el comportamiento del modelo.
-
-PR de cierre de Inc1: T1.6 #9 y T1.7 #10, abiertos para revisión del equipo.
-
-## Verificación de cierre T1.7 (PR #10)
-
-Rama sincronizada con main y con la actualización remota del equipo. Siete
-pruebas nuevas de conservación por espectador en cada transición, cola pendiente
-al alcanzar el límite y muchos tornos con demanda idéntica. Con T1.6 integrada:
-204 tests correctos, 2 xfail esperados de salida, lint y comprobación documental
-limpios. No cambia código de simulación ni interfaces. Pendiente de revisión y merge.
