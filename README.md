@@ -198,3 +198,8 @@ El informe comprueba conteos, semillas, terminación y precisión; rechaza una
 campaña aún incompleta. Distingue duración total de conflicto, espera de otros
 espectadores, espera del colectivo afectado por el cierre y cumplimiento del
 vaciado de emergencia por réplica.
+
+El manifiesto conserva el commit exacto usado para el cálculo. Las mejoras
+posteriores de informe/reanudación no reescriben esa procedencia ni los datos.
+Al reanudar una campaña compatible se conservan como mínimo los tamaños ya
+planificados, aunque un resultado parcial parezca haber alcanzado la precisión.

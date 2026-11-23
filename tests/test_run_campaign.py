@@ -95,19 +95,27 @@ def test_spawn_resume_and_reject_changed_config(tmp_path):
     reporter = runpy.run_path(str(ROOT / "scripts/report_campaign.py"))["build_report"]
     with pytest.raises(ValueError, match="no está completa"):
         reporter(output)
+    # Simula un objetivo ya fijado antes de una interrupción: no debe reducirse
+    # aunque las primeras observaciones sean constantes y ya cumplan el IC.
+    pending_manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+    pending_manifest["targets"] = {"X0_base": 4, "X1_test": 3}
+    (output / "manifest.json").write_text(json.dumps(pending_manifest), encoding="utf-8")
     completed = subprocess.run(cmd + ["--resume"], capture_output=True, text=True, env=env)
     assert completed.returncode == 0, completed.stderr
     result = pd.read_csv(output / "kpis.csv")
-    assert len(result) == 6
+    assert len(result) == 7
     assert not result.duplicated(["scenario", "seed"]).any()
-    assert result.groupby("scenario").seed.apply(list).tolist() == [[100, 101, 102]] * 2
+    assert result.groupby("scenario").seed.apply(list).tolist() == [
+        [100, 101, 102, 103],
+        [100, 101, 102],
+    ]
     assert all(
         (output / "checkpoints" / name).read_bytes() == data for name, data in original.items()
     )
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["completed"] is True
     report = reporter(output)
-    assert "X0_base" in report and "6 réplicas" in report
+    assert "X0_base" in report and "7 réplicas" in report
     precision = pd.read_csv(output / "precision.csv")
     precision.loc[0, "precision_met"] = False
     precision.to_csv(output / "precision.csv", index=False)
@@ -123,3 +131,8 @@ def test_spawn_resume_and_reject_changed_config(tmp_path):
     rejected = subprocess.run(cmd + ["--resume"], capture_output=True, text=True, env=env)
     assert rejected.returncode == 2
     assert "No se puede reanudar" in rejected.stderr
+
+
+def test_plan_does_not_reduce_persisted_targets(campaign):
+    frame = pd.DataFrame({"scenario": ["stable"] * 3, "wait_mean_min": [10, 10, 10]})
+    assert campaign.plan_replicas(frame, 30, {"stable": 70}) == {"stable": 70}

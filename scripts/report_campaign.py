@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _number(value) -> str:
-    return "—" if pd.isna(value) else f"{value:.3f}"
+    return "—" if pd.isna(value) else f"{value:.4f}"
 
 
 def _interval(values) -> str:
@@ -44,13 +44,16 @@ def build_report(data: Path) -> str:
     counts = kpis.groupby("scenario").size().to_dict()
     if counts != manifest["final_counts"] or not precision.precision_met.eq(True).all():
         raise ValueError("El tamaño o la precisión final no están verificados")
-    for _, group in kpis.groupby("scenario"):
+    for scenario, group in kpis.groupby("scenario"):
         if sorted(group.replica) != list(range(len(group))):
             raise ValueError("Hay índices de réplica ausentes")
         if not group.seed.eq(manifest["base_seed"] + group.replica).all():
             raise ValueError("Las semillas no corresponden a sus índices")
         mean, halfwidth = confidence_interval(group.wait_mean_min)
-        if len(group) < manifest["minimum_reps"] or halfwidth > 0.05 * abs(mean) + 1e-12:
+        if (
+            len(group) < max(manifest["minimum_reps"], manifest["pilot_targets"][scenario])
+            or halfwidth > 0.05 * abs(mean) + 1e-12
+        ):
             raise ValueError("El IC de espera no alcanza el objetivo")
     lines = [
         "# Resultados T5.3 · X0–X7 y sensibilidad S1",
@@ -167,14 +170,23 @@ def build_report(data: Path) -> str:
             rows,
         )
     if audit.experiment.eq("X5").any():
+        cfg = next(c for name, c in configs.items() if name.startswith("X5_"))
+        conflict = cfg["incidents"]["seat_conflict"]
+        tri = conflict["resolution_min"]
+        resolution = (tri["low"] + tri["mode"] + tri["high"]) / 3
+        expected = cfg["n_spectators"] * conflict["prob"] / len(cfg["zones"])
         lines += [
             "## P6 · Acomodadores",
             "",
             "La duración I1 medida incluye espera por acomodador y resolución. La resolución "
-            "por sí sola tiene media teórica 4,667 min; el rango de 1 a 10 min no limita la "
+            f"por sí sola tiene media teórica {resolution:.3f} min; su rango no limita la "
             "duración total cuando hay cola. Nueve puede reducir mucho la espera sin eliminarla. "
             "El indicador `conflict_delay_s` mide el contraste en otros espectadores de D25; "
             "no debe confundirse con la duración del conflicto de su causante.",
+            f"Comprobación orientativa con las configs: unos {expected:.1f} conflictos por "
+            f"macrozona requieren {expected * resolution:.1f} minutos de trabajo de acomodador. "
+            "Con pocos acomodadores esa carga se acumula, aunque cada resolución individual "
+            "esté dentro del rango especificado.",
             "",
         ]
         rows = [

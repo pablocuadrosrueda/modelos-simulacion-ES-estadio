@@ -115,7 +115,9 @@ def _export(records: dict, output: Path) -> pd.DataFrame:
     return kpis
 
 
-def plan_replicas(kpis: pd.DataFrame, minimum: int) -> dict[str, int]:
+def plan_replicas(
+    kpis: pd.DataFrame, minimum: int, planned: dict[str, int] | None = None
+) -> dict[str, int]:
     """Tamaño por escenario; amplía si el IC observado aún no cumple el 5 %."""
     targets = {}
     for scenario, group in kpis.groupby("scenario", sort=True):
@@ -123,7 +125,11 @@ def plan_replicas(kpis: pd.DataFrame, minimum: int) -> dict[str, int]:
         mean, halfwidth = confidence_interval(values)
         estimate = required_replications(values)
         met = math.isfinite(halfwidth) and halfwidth <= 0.05 * abs(mean)
-        targets[scenario] = max(minimum, len(values) if met else max(len(values) + 10, estimate))
+        targets[scenario] = max(
+            minimum,
+            (planned or {}).get(scenario, 0),
+            len(values) if met else max(len(values) + 10, estimate),
+        )
     return targets
 
 
@@ -274,7 +280,7 @@ def run_campaign(
         iteration += 1
         if records:
             current = _tables(records)[0]
-            targets = plan_replicas(current, minimum)
+            targets = plan_replicas(current, minimum, manifest.get("targets", targets))
         tasks = tasks_for(targets)
         manifest["targets"] = targets
         manifest["completed"] = False
