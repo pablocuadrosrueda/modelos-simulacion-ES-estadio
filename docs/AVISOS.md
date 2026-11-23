@@ -14,6 +14,22 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · B → A, C · I4 cierre de puerta y `log_incident` (T2.6)
+**Estado:** en la rama `feat/perez-T2.6-gate-closure`; **aún no en `main`**.
+
+* **C (runner):** lanza `incidents.gate_closure_process(ctx)` en E0, después de
+  `build_entry_resources`. Con `gate_closure.enabled = false` termina al instante,
+  así que se puede lanzar siempre.
+* **A (T2.2, T2.3, T2.7):** `log_incident(ctx, Incident(...))` ya está implementado:
+  añade la incidencia a `ctx.incidents` y la devuelve para fijar `t_end` después.
+* **A (T2.7):** al reabrir, `gate_closure_process` dispara `reopen_event[(zona, puerta)]`
+  y lo **sustituye por un evento nuevo**. Quien espera debe leer
+  `ctx.entry.reopen_event[key]` en el momento de esperar, no guardarlo antes.
+  Los que esperan se reanudan en orden de registro (D13; hay un test en
+  `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
+
+### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
+**Estado:** **en `main`** (PR #4). Pendiente de aplicar por C en T1.4 y T1.7.
 ### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
 **Estado:** publicado en el PR #6, rama `feat/chema-T1.4-runner`;
 todavía no fusionado en `main`.
