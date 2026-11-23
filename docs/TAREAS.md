@@ -35,13 +35,13 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | hecho | T1.2, T1.3 |
 | T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | hecho | contrato (T0.3) |
-| T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | en revisión | T1.4, T1.5 |
+| T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | hecho | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | en revisión | T1.4 |
 
 T1.1/T1.2/T1.3/T1.4/T1.5 fusionadas en main (PR #1/#2/#4/#6/#3).
-T1.6 publicada en el [PR #9](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/9)
+T1.6 fusionada en el [PR #9](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/9)
 y T1.7 publicada en el [PR #10](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/10).
-Ambas revisadas por Chema, pendientes de revisión del equipo y merge por separado.
+Ambas revisadas por Chema. T1.6 fusionada; T1.7 pendiente de revisión del equipo y merge.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 

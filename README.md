@@ -24,8 +24,9 @@ resumen en [`docs/ESPECIFICACION.md`](docs/ESPECIFICACION.md).
 **Inc0 (esqueleto) completado.** Hay tooling, configuraciones de todos los
 experimentos, carga y validación de configuración, generadores aleatorios por
 fuente, contratos entre módulos y tests de esas piezas.
-**La simulación todavía no está implementada.** Las funciones del modelo lanzan
-`NotImplementedError`. Siguiente paso: Inc1 (rebanada vertical de la entrada).
+**Inc1:** la rama T1.6 permite ejecutar la cadena llegada → entrada → asiento,
+repetirla con semillas registradas y guardar KPIs en CSV. Runner (PR #6), métricas y ubicación ya fusionadas en `main`. Permanencia, salida,
+incidencias y emergencia se implementan en los incrementos siguientes.
 El detalle está en [`docs/ESTADO.md`](docs/ESTADO.md).
 
 ## Estructura
@@ -74,16 +75,21 @@ El entorno se crea en `.venv/`. Si la ruta del repositorio contiene `:`,
 ## Uso
 
 ```bash
-make run EXP=X0 REPS=10                              # equivale a:
-python scripts/run_experiment.py X0 --reps 10         # (con el python del venv)
-python scripts/run_experiment.py --list               # experimentos disponibles
+make run EXP=configs/dev/i1_mini.json REPS=3
+.venv/bin/python scripts/run_experiment.py configs/dev/i1_mini.json --reps 3 --seed 20261105
+.venv/bin/python scripts/run_experiment.py --list
 ```
 
 El nombre del experimento puede ser el nombre completo del fichero
-(`X1_2tornos`) o un prefijo que identifique un solo fichero (`X0`). Cuando la
-simulación esté implementada, la tabla de KPIs por réplica se guardará en
-`results/<experimento>_kpis.csv`. Hoy el comando informa de que aún no está
-implementado.
+(`X1_2tornos`), un prefijo que identifique un solo fichero (`X0`), o la ruta a
+un JSON de experimento, también fuera de `configs/experiments`. La tabla se
+guarda en `results/<nombre_del_fichero>_kpis.csv`, con una fila por escenario
+y réplica y semilla `base_seed + replica`, común entre escenarios.
+
+Para Inc1 utiliza `configs/dev/i1_mini.json`: las configuraciones X0–X7 y S1
+requieren fases todavía pendientes. El runner rechaza incidencias/emergencia
+activadas en lugar de ignorarlas. La API `run_experiment` devuelve la tabla;
+la CLI es quien escribe el CSV.
 
 Desde Python, la carga de configuración ya funciona:
 
