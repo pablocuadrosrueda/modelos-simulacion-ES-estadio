@@ -23,8 +23,45 @@ Reglas:
   cola máxima por salida incluye paso en servicio. Evacuación e I2 pendientes.
 * Caso reproducible: `make run EXP=configs/dev/i3_mini.json REPS=3`.
 
+### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D25)
+**Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
+
+* **C (T4.3):** cada espectador va en un único proceso con `try` y
+  `except simpy.Interrupt`. Dentro del `try`, el recorrido normal (entrada,
+  asiento, permanencia, salida); en el `except`,
+  `yield from emergency.evacuation_process(sp, ctx)`.
+* **C (T4.3):** en E0, después de crear `ctx.exits` y la lista de procesos,
+  lanzar `env.process(emergency.alarm_process(ctx, journeys))`, con
+  `journeys[i]` el proceso del espectador `id == i`. Con la emergencia
+  desactivada termina al instante, así que se puede lanzar siempre. Hay que dejar
+  de rechazar `emergency.enabled = true`.
+* **C (T4.3):** E8 es cuando terminan todos los procesos de espectadores (los
+  que no habían llegado o abandonan terminan al momento). Los procesos de
+  averías (I3) no terminan nunca: no esperar por ellos.
+* **C (KPIs):** `abandoned` marca a quien estaba en cola exterior; quien no
+  había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
+  quienes tienen `t_safe`.
+### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
+**Estado:** en la rama `feat/cuadros-T2.2-read-failure`; **aún no en `main`**.
+
+* **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
+  entrada están implementadas. En `main` el runner aún rechaza cualquier
+  incidencia con `NotImplementedError` y no lanza
+  `start_turnstile_failure_processes(ctx)` ni `gate_closure_process(ctx)`: sin
+  eso **X0, que las lleva activadas, no se puede ejecutar**. El PR abierto de
+  T2.8 ya integra I1, I3 e I4 pero sigue rechazando I2 («pendiente de T2.2»);
+  cuando T2.2 esté en `main`, esa guarda se puede quitar. I2 no necesita nada
+  en E0: el sorteo va en `build_entry_resources` y la relectura en
+  `entry_process`.
+* **C (métricas):** `n_read_failures` = filas `kind == "I2"` de
+  `df.attrs["incidents"]` (coincide con `df["read_failure"].sum()`). La
+  relectura ocupa el torno, así que entra en el servicio de `turnstile_util`
+  (`t_end_control - t_start_control`), como pide D12.
+* `build_entry_resources` consume ahora el flujo `read_failure` (no afecta a los
+  demás flujos ni a resultados previos).
+
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
+**Estado:** en `main` (PR #15); aplicado por C en T3.3.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
   `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después

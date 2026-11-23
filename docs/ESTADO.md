@@ -1,7 +1,8 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria)._
+Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
+Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria) y T2.2 (I2)._
 
 ## Hecho
 
@@ -46,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3 a T2.7 hechas).
+**Inc2 · en curso** (T2.3 a T2.7 hechas; T2.2 en revisión).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -83,15 +84,36 @@ la protección de `main` exigiendo esos checks.
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
+* T2.2 (A, en revisión; rama `feat/cuadros-T2.2-read-failure`): I2 en `entry.py`.
+  `build_entry_resources` sortea en E0, del flujo `read_failure`, un `u` y un
+  extra Uniforme(`extra_s`) por `id` (`sample_read_failures`) y los guarda en
+  `EntryResources`; hay relectura si `u < prob` (`has_read_failure`, D26). La
+  relectura sigue al servicio sin liberar el torno: `read_failure = True`,
+  `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
+  fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
+  conjunto crece. Tests en `tests/test_read_failure.py`.
+
 **Inc3: en curso.**
 
-* T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
+* T3.1 y T3.2 (B, hecho; PR #15): `exit.py` con
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea, o la grada
   superior `exit_stagger_min` después), `choose_exit` (menos cola, sin bloqueadas,
   desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
+
+**Inc4: en curso.**
+
+* T4.1 y T4.2 (B, en revisión; rama `feat/perez-T4.1-evacuation`): `emergency.py`
+  con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
+  `alarm_process` (fase de evacuación, accesos cerrados, reacción sorteada por
+  `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
+  interrupción de los procesos de los espectadores) y `evacuation_process`
+  (abandono o reacción, marcha más rápida, salida con menos cola y `t_safe`).
+  Decisión D25. Tests en `tests/test_emergency.py`, incluida la validación del
+  apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
+  una salida bloqueada. Falta que el runner lo integre (T4.3, C).
 
 ## Siguiente paso
 
@@ -103,7 +125,7 @@ Caso de desarrollo: `configs/dev/i3_mini.json` (dos variantes, semillas comunes)
 
 Próximo C: T3.4, conservación exhaustiva durante entrada, permanencia y salida,
 con incidencias y límite de tiempo. Después T4.3 depende de T4.1/T4.2 de B.
-A tiene pendientes T2.1/T2.2. Los experimentos oficiales de T5.1 esperan a Inc4;
+A tiene pendiente T2.1; I2 (PR #21) y evacuación (PR #19) ya están fusionadas, pendientes de conectar en T4.3. Los experimentos oficiales de T5.1 esperan a Inc4;
 no se desactivan incidencias del modelo para presentar resultados definitivos.
 
 ## Reparto
@@ -126,9 +148,9 @@ por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
-`main` tras los PR #13 y #14 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 239 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
-Rama T2.7: 253 correctos y los mismos 2 xfail; lint y `check_pr_docs` limpios.
+Python 3.13.2, `make lint` limpio; los 2 xfail son los de salida (T3.3/T3.4).
+`main` tras los PR #15 y #16: 268 correctos y 2 xfail. Rama T2.2: 279 correctos
+y los mismos 2 xfail; lint y `check_pr_docs` limpios.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
