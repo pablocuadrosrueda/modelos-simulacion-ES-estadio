@@ -182,3 +182,8 @@ Los índices compartidos usan la misma semilla. `--pilot-only` permite comprobar
 el piloto antes de continuar con `--resume`. Cada réplica deja un checkpoint;
 no se permite mezclar código/configuraciones/versiones al reanudar. Ajustar
 `--workers` cambia solo el número de procesos, no los resultados.
+
+Los checkpoints de la campaña son locales y no se versionan; `--resume` se usa
+en el mismo directorio local. Los agregados y la procedencia sí se comparten en
+Git para revisión. Con el entorno activado, `python scripts/run_campaign.py`
+funciona también en Windows; la CI verifica rutas portables y procesos spawn.

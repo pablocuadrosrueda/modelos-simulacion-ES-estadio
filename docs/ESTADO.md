@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0 a Inc4 completos y, de
-Inc5, T5.2 y T5.4. En revisión: T5.1 (piloto de X0 a X7) en esta rama._
+Inc5, T5.1, T5.2 y T5.4. T5.3 está en ejecución en esta rama._
 
 ## Hecho
 
@@ -47,7 +47,6 @@ la protección de `main` exigiendo esos checks.
   siguen pendientes de T3.3/T3.4.
 
 **Inc2 · completado.**
-**Inc2: completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -142,24 +141,32 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T5.1 fusionada en PR #26; piloto anterior histórico en `results/pilot`.
-C implementa T5.3 en `feat/chema-T5.3-final`. Decisiones del grupo: X6 en −30
-(D31 ya en main); X5 conserva parámetros y añade nueve acomodadores (D33).
-Se recalcula el piloto de diez réplicas de X0–X7 y S1 con el código actual;
-se guardará en `results/final/pilot`. Después se ampliará por escenario a un
-mínimo de treinta y al tamaño estimado, verificando la precisión relativa del
-5 % a IC 95 % (D34). Se reutilizan las semillas del piloto sin contarlas dos
-veces. Guardado por réplica y reanudación con controles de procedencia.
+T5.3 en ejecución desde `feat/chema-T5.3-final`, PR #29 (borrador hasta terminar).
+Aplicadas decisiones del grupo: X6 en −30 (D31); X5 conserva parámetros y añade
+nueve acomodadores (D33). Piloto actualizado completo: 190 réplicas, 19 escenarios
+(X0–X7 con 13 variantes principales + seis S1), en `results/final/pilot`.
+Las 100 réplicas de escenarios no modificados reproducen todos los KPIs del
+piloto anterior. X6 en +20 queda histórico en `results/pilot`.
 
-Se corrige la escritura de rutas del manifiesto para Windows (`/`) y se añade
-CI específica de rutas/reanudación. No se alteran módulos de A/B ni se reducen
-resoluciones de conflictos para evitar la saturación. El resultado con tres
-acomodadores se mantiene y se contrastará con seis/nueve en P6.
+Piloto X5: duración media de I1 con espera de 44,02 / 13,69 / 6,75 min con
+3 / 6 / 9 acomodadores; se conserva el resultado de saturación. X6 en −30:
+382,8 llegadas por réplica durante el cierre de A-1; todas redirigidas si se
+activa. La espera de ese colectivo es 0,529 min con redirección y 9,678 sin ella.
+Son cifras piloto; las definitivas se incorporarán al acabar la campaña.
 
-Después: T6.1 gráficas sobre las réplicas verificadas, T6.2 validación con el
-equipo y T6.3 memoria. I3 conserva D25: se cuentan todas las incidencias
-registradas, también posteriores a entrada; no se interpretarán como averías
-que afectaron necesariamente a espectadores.
+Objetivo inicial de T5.3: 2.798 réplicas en total (mínimo treinta por escenario,
+según precisión del piloto, hasta 247 en S1). Las 190 semillas/escenarios del
+piloto se reutilizan; quedan 2.608 nuevas en la primera ampliación. Se volverá
+a comprobar el IC 95 % y la semianchura ≤5 % de la espera media (D34), ampliando
+los escenarios que lo necesiten. Checkpoints locales por réplica para reanudar
+sin duplicados y con validación de código, configs y versiones.
+
+Validación de código: 399 tests correctos, uno lento opcional omitido. CI verde
+en Linux Python 3.10/3.12 y prueba específica de Windows (rutas y spawn/reanudación).
+Corregidas claves de rutas del manifiesto con `/`, también en Windows.
+
+Después: T6.1 gráficas, T6.2 validación conjunta y T6.3 memoria. I3 conserva D25:
+se cuentan todas las incidencias registradas, no solo las que afectaron al público.
 
 ## Reparto
 

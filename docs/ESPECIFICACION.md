@@ -273,8 +273,8 @@ Se cambia **un solo factor** respecto a X0; mismas semillas en todos.
 |---|---|
 | Tipo | Terminante: de t = −90 a la salida del último (≈ t = +115, unas 3 h 25 min). Límite de seguridad **6 h** (`max_sim_hours`). |
 | Warm-up | No (el estadio vacío es el estado inicial real). |
-| Réplicas | **10 piloto** por escenario; n = (t·s/h)² con IC 95 % y **h ≤ 5 % de la espera media**. Se prevén **≈ 30**. |
-| Volumen | 12 configuraciones × 30 ≈ **360 ejecuciones** + S1. |
+| Réplicas | **10 piloto** por escenario; n = (t·s/h)² con IC 95 % y **h ≤ 5 % de la espera media**. La Parte 1 preveía **≈ 30**; T5.3 fija n con el piloto y comprueba el IC (D34). |
+| Volumen | 13 configuraciones principales (D33) + seis de S1, con n según precisión (D34). |
 | Números aleatorios | **Mismas semillas** en todos los escenarios. |
 | Análisis | Media ± t_{0,975; n−1}·s/√n de cada KPI e IC de la diferencia con X0. |
 
