@@ -33,9 +33,16 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | en revisión | T1.1 |
 | T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | pendiente | T1.2, T1.3 |
-| T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | pendiente | contrato (T0.3) |
+| T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | hecho | contrato (T0.3) |
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | pendiente | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | pendiente | T1.4 |
+
+T1.1 y T1.2 fusionadas en `main` mediante PR #1 y #2 (2026-11-20).
+T1.5: implementación y pruebas revisadas localmente por Chema, con commit y
+publicación autorizados el 2026-11-22. Rama `feat/chema-T1.5-metrics` publicada
+con la cuenta `jmcb0024`, en revisión del equipo en el
+[PR #3](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/3).
+Todavía no está en `main`. No depende de T1.3.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
