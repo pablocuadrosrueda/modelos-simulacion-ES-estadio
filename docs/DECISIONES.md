@@ -162,3 +162,27 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Incidencia `I1`: `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` al
   detectarlo y `t_end` al resolverse (incluye la espera al acomodador).
 * Sustituye, para I1, la indicación de D17 de sortearlo en `generate_spectators`.
+### D22 · Averías de torno (I3): reloj en funcionamiento y generador por torno — 2026-11-23
+* **Reloj:** el tiempo entre fallos Exponencial(`mtbf_min`) se mide **en
+  funcionamiento**: empieza en la apertura y, tras cada avería, al terminar la
+  reparación. Así `mtbf_min` es el tiempo medio de buen funcionamiento (MTBF
+  en sentido estricto) y un torno no puede encadenar fallos durante su propia
+  reparación. Cada torno hace en promedio `T / (mtbf_min + media(repair_min))`
+  averías en un horizonte `T` (≈ T / 246,5 con la base).
+* **Cuándo se para:** al vencer ese tiempo el torno se avería, pero termina el
+  servicio en curso (memoria §3.2: «cuando el torno queda libre»): la avería
+  pide una plaza con `PRIORITY_FAILURE` y `preempt=False` y la reparación
+  Uniforme(`repair_min`) cuenta desde que la consigue (`t_start` de la
+  incidencia). Como el recurso de la puerta no distingue tornos físicos, «el
+  torno k» ocupa la primera plaza que se libera; con c bucles por puerta nunca
+  hay más de c averías a la vez.
+* **Números aleatorios comunes (D17):** cada torno `(zona, puerta, k)` tiene su
+  propio generador, `rngs.substream("turnstile_failure", zona, puerta, k)`, que
+  depende solo de la semilla y de esa identidad (`SeedSequence` con
+  `spawn_key = (9, …clave codificada)`). Sortea en orden fijo Exp, Unif, Exp,
+  Unif… El calendario de sorteos del torno A-G1-T1 es el mismo con 2, 3 o 4
+  tornos por puerta (X1) y con otras macrozonas; solo cambia, inevitablemente,
+  la espera hasta que el torno queda libre. No se añade ningún flujo a
+  `STREAM_NAMES`; el flujo padre `turnstile_failure` no se consume.
+* Numeración: D21 está reservado por T2.5 (rama `feat/perez-T2.5-seat-conflict`,
+  I1 con números comunes), abierta antes; esta decisión toma D22.

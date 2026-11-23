@@ -2,6 +2,7 @@
 
 _Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
 Inc2, T2.4 y T2.6. T2.5 en revisión en la rama `feat/perez-T2.5-seat-conflict`._
+Inc2, T2.4 y T2.6. T2.3 (I3) en revisión en `feat/cuadros-T2.3-turnstile-failure`._
 
 ## Hecho
 
@@ -47,6 +48,19 @@ la protección de `main` exigiendo esos checks.
   siguen pendientes de T3.3/T3.4.
 
 **Inc2 · en curso** (T2.4 y T2.6 hechas; T2.5 en revisión).
+**Inc2 · en curso** (T2.4 y T2.6 hechas; T2.3 en revisión).
+
+* T2.3 (A, en revisión; rama `feat/cuadros-T2.3-turnstile-failure`): I3 en
+  `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
+  marcha y Uniforme(`repair_min`) parado; pide una plaza con `PRIORITY_FAILURE`
+  y `preempt=False` (adelanta a toda la cola, también a `PRIORITY_HIGH`, sin
+  cortar un servicio), suma en `failed_turnstiles` y registra `I3` con
+  `resource = "A-G1-T2"`, `t_start` y `t_end`. `turnstile_failure_process` lanza
+  un sub-bucle por torno; nueva `start_turnstile_failure_processes(ctx)` para E0.
+  Generador por torno con `RngStreams.substream` (D22): calendario idéntico con
+  2, 3 o 4 tornos. Además, sin cola `t_start_control = t_arrival` exacto (aviso
+  de B sobre redondeo s/min). Tests en `tests/test_turnstile_failure.py`,
+  `tests/test_rng.py` y `tests/test_entry.py`. El runner aún no lo lanza (C).
 
 * T2.4 (A, hecho; PR #8): `priority_of` con `queue_discipline == "priority"`:
   los grupos de `priority_groups` piden con `PRIORITY_HIGH` y adelantan a los
@@ -76,6 +90,15 @@ la protección de `main` exigiendo esos checks.
 * A: T2.1 (cuatro macrozonas y medida de tiempo, D15), T2.3 (I3), T2.2 (I2, ya
   tiene `log_incident`) y T2.7 (redirección, usa T2.6).
 * B: T2.5 en revisión; después T3.1 (salida), de la que depende T3.3 de C.
+* C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
+  (T2.4 ya en `main`; sin ello X3 no se ejecuta), lanzar `gate_closure_process`
+  en E0 (T2.6 ya en `main`) y, cuando se fusione T2.3, admitir I3 y lanzar
+  `start_turnstile_failure_processes` (ver `docs/AVISOS.md`). Después
+  T5.2 (estadística con datos sintéticos, sin dependencias) y T2.8 (necesita
+  T2.5 de B).
+* A: revisión de T2.3; después T2.1 (cuatro macrozonas y medida de tiempo, D15),
+  T2.2 (I2, ya tiene `log_incident`) y T2.7 (redirección, usa T2.6).
+* B: T2.5 (I1, conflicto de asiento) y T3.1 (salida); T3.3 de C depende de T3.1.
 
 ## Reparto
 
@@ -100,20 +123,29 @@ Rama T2.5 integrada con `main` tras el PR #12 (Python 3.13.2): `make lint` limpi
 
 `main` tras el PR #11 (2026-11-23, Python 3.13.2): `make lint` limpio y
 `make test` con 197 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+`main` tras el PR #12 (2026-11-23, Python 3.13.2): `make lint` limpio y
+`make test` con 204 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+Rama T2.3: 229 correctos y los mismos 2 xfail; lint limpio.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
 * T1.6: `make run EXP=configs/dev/i1_mini.json REPS=3` genera tres filas en
   `results/i1_mini_kpis.csv`, semillas 20261105/20261106/20261107 y 600 entradas
   por réplica. El CSV es generado, no versionado.
-* T1.7: desde su carpeta, `PYTHONPATH=src make test
+* T1.7 (PR #10): siete pruebas de conservación por espectador en cada
+  transición, cola pendiente al alcanzar el límite y muchos tornos con demanda
+  idéntica. Desde su carpeta, `PYTHONPATH=src make test
   VENV=../modelos-simulacion-ES-estadio/.venv` y `make lint
   VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
   `PYTHONPATH=src` selecciona el código de esa carpeta.
 
 ## Dudas abiertas
 
-Ninguna pendiente.
+* T2.3 (A → C): los procesos de avería siguen hasta el final de la réplica, así
+  que con la salida integrada `n_turnstile_failures` contará también averías
+  posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
+  `t_start` anterior al último fin de control, o dejarlo así? La memoria no lo
+  precisa; queda para T2.8.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
