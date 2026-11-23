@@ -53,7 +53,7 @@ Flujo `name` = `default_rng(SeedSequence(entropy=seed, spawn_key=(STREAM_INDEX[n
 | 7 | `vomitory` | paso por vomitorio (N tiempos en `build_stadium_resources`, por `id`; D18) | stadium |
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
-| 10 | `exit_choice` | desempates de salida | exit, emergency |
+| 10 | `exit_choice` | desempates de salida (N en `build_exit_resources`, por `id`; D22) | exit, emergency |
 | 11 | `reaction` | reacción a la alarma | emergency |
 | 12 | `gate_choice` | desempates al redirigir (I4) | entry |
 

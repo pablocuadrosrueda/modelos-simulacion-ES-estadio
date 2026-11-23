@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 salvo T1.7
-(T1.1–T1.6) y, de Inc2, T2.4 y T2.6. T1.7 en revisión en el PR #10._
+_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.4 y T2.6. En revisión: T2.5 (I1) y T3.1/T3.2 (salida ordinaria)._
 
 ## Hecho
 
@@ -15,7 +15,7 @@ docs para agentes. Automatización (T0.5, PR #7): CI con ruff + pytest en Python
 `make check`, `make hooks` y `make docs-check`. Pendiente fuera del repo: activar
 la protección de `main` exigiendo esos checks.
 
-**Inc1 · rebanada vertical — falta T1.7.**
+**Inc1 · rebanada vertical — completado.**
 
 * T1.1 (A, hecho; PR #1): `arrivals.py`. Franja por perfil + instante uniforme;
   zona/puerta/bloque, grupo, velocidad (normal truncada por inversión de la FDA)
@@ -41,7 +41,7 @@ la protección de `main` exigiendo esos checks.
   con las columnas acordadas y CLI que acepta nombres o rutas de experimento y
   guarda `results/<fichero>_kpis.csv`. Incluye corrección numérica en métricas
   para esperas nulas con redondeo s/min (tolerancia 1e-9 min), con tests.
-* T1.7 (C, en revisión; PR #10): siete pruebas nuevas de conservación en cada
+* T1.7 (C, hecho; PR #10): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
@@ -58,16 +58,27 @@ la protección de `main` exigiendo esos checks.
   `reopen_event`, que se sustituye por uno nuevo (D13). Falta integrarla con la
   elección de puerta (T2.7, A) y lanzarla desde el runner (C).
 
+**Inc3 · en curso.**
+
+* T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
+  `exit_pass_time_s` (60 / (anchura × 66) ≈ 0,23 s), `build_exit_resources`
+  (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea o grada
+  superior +`exit_stagger_min`), `choose_exit` (menos cola, sin bloqueadas,
+  desempate con números comunes, D22) y `exit_process` (liberación → marcha →
+  cola → paso). Tests en `tests/test_exit.py`, incluida la validación de §4.3:
+  12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
+
 ## Siguiente paso
 
-* C: fusionar T1.7 (PR #10) para cerrar Inc1. En el runner, quitar la guarda
+* C: en el runner, quitar la guarda
   que rechaza `queue_discipline = "priority"` (T2.4 ya en `main`; sin ello X3 no
   se ejecuta) y lanzar `gate_closure_process` en E0 (T2.6 ya en `main`). Después
   T5.2 (estadística con datos sintéticos, sin dependencias) y T2.8 (necesita
   T2.5 de B).
 * A: T2.1 (cuatro macrozonas y medida de tiempo, D15), T2.3 (I3), T2.2 (I2, ya
   tiene `log_incident`) y T2.7 (redirección, usa T2.6).
-* B: T2.5 (I1, conflicto de asiento) y T3.1 (salida); T3.3 de C depende de T3.1.
+* B: T2.5 y T3.1/T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
+* C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
 
 ## Reparto
 
