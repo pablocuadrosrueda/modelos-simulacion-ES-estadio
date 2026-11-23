@@ -47,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · completado salvo T2.1 (en revisión).**
+**Inc2 · completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -92,13 +92,20 @@ la protección de `main` exigiendo esos checks.
   `t_end_control` incluye el extra e incidencia `I2` de la puerta usada. Mismos
   fallos y extras con 2/3/4 tornos y con otro perfil; al subir `prob` el
   conjunto crece. Tests en `tests/test_read_failure.py`.
-* T2.1 (A, en revisión; rama `feat/cuadros-T2.1-capacity`): comprobación de
+* T2.1 (A, hecho; PR #25): comprobación de
   capacidad de la memoria (§4.3) en `src/sanmames/capacity.py` (E[S], disponibilidad,
   capacidad, ρ en la franja pico real, vomitorios, vaciado y evacuación) y con
   simulación (reparto, ritmo por torno con cola ≈ teórico, 2/3/4/10 tornos,
   utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
   `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
   comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
+* Estudio X6 (A, en revisión; rama `feat/cuadros-X6-study`; no es tarea del
+  tablero): sensibilidad del instante del cierre I4 (`start_min` de −45 a +20,
+  10 y 20 min, con y sin redirección, 5 réplicas con semillas comunes) en
+  `scripts/study_gate_closure.py` y `docs/ESTUDIO_X6.md`. Con redirección el cierre
+  se absorbe siempre; sin ella el efecto es máximo a −30 (+292 ± 24 s de espera
+  media en A-1, +0,67 p. p. de entrada tardía) y nulo a +20 (+4 s). Propuesta
+  D31: `start_min = −30`, pendiente del grupo.
 
 **Inc3: en curso.**
 
@@ -143,8 +150,9 @@ calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráfic
 T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
 oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
 I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
-* A: T2.1 en revisión (rama `feat/cuadros-T2.1-capacity`): comprobación de
-  capacidad y tiempo de réplica en `docs/VERIFICACION.md`.
+* A: estudio X6 en revisión; cuando el grupo confirme D31, cambiar
+  `gate_closure.start_min` en `configs/base.json` en un commit aparte.
+* Grupo: confirmar D31 (instante del cierre de X6) antes del piloto T5.1.
 
 ## Reparto
 
@@ -193,12 +201,10 @@ B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
 * T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
   mientras dura. Alternativa: parar también los tornos de esa puerta y/o
   redirigir su cola; ver D23.
-* T2.7 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
-  cuando solo llega el 2 % del público. En una macrozona realista (N/4, 6
-  puertas, semilla 11) afecta a 26 personas frente a 330 si empieza en −25. Con 2
-  tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
-  redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
-  P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
+* X6 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
+  cuando solo llega el 2 % del público, y X6 no responde a nada (diferencia sin −
+  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`; propuesta D31:
+  `start_min = −30` (10 min). Pendiente de confirmar; no se cambia la config aquí.
 * T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
   franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
   corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de

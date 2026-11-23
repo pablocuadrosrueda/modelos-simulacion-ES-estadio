@@ -323,3 +323,21 @@ los KPIs P5 ordinarios no aplican y quedan NaN.
 La doble D25 surgida de trabajo paralelo se desambigua: D25 = Inc2 (T2.8),
 D28 = evacuación de B. Las referencias de documentación en sus módulos se
 actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).
+
+### D31 · Instante del cierre de puerta en X6 — 2026-11-23 · **pendiente de confirmar por el grupo**
+**Propuesta:** `incidents.gate_closure.start_min = −30` (hoy +20), con
+`duration_min = 10` y la misma puerta (A-1). Estudio en `docs/ESTUDIO_X6.md`
+(5 réplicas por celda, semillas comunes).
+* **Motivo:** P7 pregunta por un «cierre en hora punta». A +20 llega el 2 % del
+  público y X6 no distingue las variantes: la diferencia sin − con redirección en
+  la espera media de A-1 es de 4 ± 1 s. A −30, comienzo de la franja de máximas
+  llegadas (−30 a 0), es de 292 ± 24 s y la entrada tardía sube 0,67 ± 0,11 p. p.
+  sin redirección; es el máximo de los instantes probados (−45, −30, −20, −10, 0,
+  +20). Además, a −30 no hay cola formada al cerrar, así que la hipótesis D23 no
+  influye.
+* **Alternativas:** −20 (194 ± 6 s; hasta ≈ 100 personas en cola al cerrar en
+  algunas semillas, sensible a D23); −30 con 20 min (escenario de estrés: 636 ± 25
+  s, 59 % de A-1 con más de 10 min); mantener +20 y reformular P7 como cierre fuera
+  de punta.
+* **Si se confirma:** cambiar `configs/base.json` (y sus tests de config) en un
+  commit aparte; los `X6_*.json` heredan el valor de la base.

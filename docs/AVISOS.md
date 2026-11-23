@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · A → C · No lanzar el piloto T5.1 con el cierre a +20 (D31)
+**Estado:** propuesta en la rama `feat/cuadros-X6-study`; **pendiente de confirmar
+por el grupo**. No cambia código ni configuración.
+
+* **C (T5.1):** con `gate_closure.start_min = +20` (valor actual de
+  `configs/base.json`) X6 no responde a P7: con y sin redirección salen resultados
+  prácticamente idénticos (4 s de diferencia). Antes de lanzar el piloto, esperar
+  a que el grupo confirme D31 o usar el valor propuesto, **−30**, como override
+  (`{"incidents": {"gate_closure": {"start_min": -30}}}`).
+* **C (T5.1, KPIs de P7):** el p95 global apenas cambia con el cierre (1 de 24
+  puertas). Para P7 son más informativos `queue_max_gate`, `late_pct` y la espera
+  de los asignados a la puerta cerrada (`gate == 1`, zona A); ver
+  `docs/ESTUDIO_X6.md`.
+
 ### 2026-11-23 · C → A, B · I2 y alarma conectadas en el runner (T4.3, D30)
 **Estado:** en revisión desde `feat/chema-T4.3-runner-emergency`.
 
