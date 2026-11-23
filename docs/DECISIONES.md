@@ -225,31 +225,6 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
 
-### D25. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
-* **Quién hace qué.** `emergency.alarm_process(ctx, journeys)` cambia el estado
-  al sonar la alarma y llama a `interrupt()` en los procesos vivos de
-  `journeys` (`journeys[i]` es el del espectador `id == i`). El proceso de cada
-  espectador (runner, T4.3) captura `simpy.Interrupt` y sigue con
-  `yield from evacuation_process(sp, ctx)`. Al interrumpir dentro de un `with
-  recurso.request()`, SimPy libera el torno, el vomitorio o el acomodador.
-* **Qué le toca a cada uno** (`status_at_alarm`, desarrolla D14): si aún no ha
-  llegado, nada (ya no llega). Si ha llegado y no ha terminado el control (en
-  cola, esperando reapertura o pasando el torno), abandona (`abandoned = True`).
-  Si ya pasó el torno (caminando, en el vomitorio, en un conflicto o sentado),
-  evacúa: reacción, la distancia `distance_m` completa a `speed_mps` por
-  `speed_factor`, la salida no bloqueada con menos cola y el paso de evacuación.
-* **Reacción con números comunes.** Al sonar la alarma se sortean de una vez
-  los `n_spectators` tiempos de reacción del flujo `"reaction"` y se guardan en
-  `ExitResources.reaction_s` por `id`, como en D18.
-* **Salidas.** El paso de todas las salidas pasa a ser el de una anchura
-  `exit_width_m` por `exit_width_factor` (unos 0,17 s por persona). Con
-  `blocked_exit` se inutiliza la salida 1 de `blocked_exit_zone`: la memoria dice
-  "una salida de la macrozona A" sin decir cuál, y con salidas iguales da lo mismo.
-* Al sonar la alarma se cierran todas las puertas de acceso y `ctx.phase` pasa
-  a `"evacuation"`. Un conflicto I1 en curso se da por terminado en `alarm_min`.
-* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
-  tardan 5,9 min en atravesar las 6 salidas ensanchadas y 7,1 min con una
-  bloqueada (`tests/test_emergency.py`).
 ### D26 · I2 con números comunes, sorteado en E0 en `entry` — 2026-11-23
 Igual que D18 y D21. `entry.build_entry_resources` llama a
 `entry.sample_read_failures`, que sortea del flujo `"read_failure"`, para los
@@ -289,3 +264,31 @@ El tiempo de vaciado de una réplica incompleta es NaN: el último paso observad
 no es el vaciado total. La cola por salida incluye a quien está atravesándola,
 según D24; sin llegadas se observa cero. Los contadores de incidencias mantienen
 D25, incluida la duda documentada sobre averías posteriores a la entrada.
+
+### D28. Evacuación: reparto con el runner, reacción con números comunes y salida bloqueada (2026-11-23)
+* **Quién hace qué.** `emergency.alarm_process(ctx, journeys)` cambia el estado
+  al sonar la alarma y llama a `interrupt()` en los procesos vivos de
+  `journeys` (`journeys[i]` es el del espectador `id == i`). El proceso de cada
+  espectador (runner, T4.3) captura `simpy.Interrupt` y sigue con
+  `yield from evacuation_process(sp, ctx)`. Al interrumpir dentro de un `with
+  recurso.request()`, SimPy libera el torno, el vomitorio o el acomodador.
+* **Qué le toca a cada uno** (`status_at_alarm`, desarrolla D14): si aún no ha
+  llegado, nada (ya no llega). Si ha llegado y no ha terminado el control (en
+  cola, esperando reapertura o pasando el torno), abandona (`abandoned = True`).
+  Si ya pasó el torno (caminando, en el vomitorio, en un conflicto o sentado),
+  evacúa: reacción, la distancia `distance_m` completa a `speed_mps` por
+  `speed_factor`, la salida no bloqueada con menos cola y el paso de evacuación.
+* **Reacción con números comunes.** Al sonar la alarma se sortean de una vez
+  los `n_spectators` tiempos de reacción del flujo `"reaction"` y se guardan en
+  `ExitResources.reaction_s` por `id`, como en D18.
+* **Salidas.** El paso de todas las salidas pasa a ser el de una anchura
+  `exit_width_m` por `exit_width_factor` (unos 0,17 s por persona). Con
+  `blocked_exit` se inutiliza la salida 1 de `blocked_exit_zone`: la memoria dice
+  "una salida de la macrozona A" sin decir cuál, y con salidas iguales da lo mismo.
+* Al sonar la alarma se cierran todas las puertas de acceso y `ctx.phase` pasa
+  a `"evacuation"`. Un conflicto I1 en curso se da por terminado en `alarm_min`.
+* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
+  tardan 5,9 min en atravesar las 6 salidas ensanchadas y 7,1 min con una
+  bloqueada (`tests/test_emergency.py`).
+* Numeración: se fusionó como un segundo D25 (PR #19) cuando el D25 de T2.8
+  (PR #18) ya estaba en `main`, y D27 lo tomó T3.3; renumerada a D28 el 2026-11-23.

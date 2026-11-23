@@ -14,7 +14,7 @@ Memoria §3.1 Fase D:
 * con ``blocked_exit`` una salida de ``blocked_exit_zone`` queda inutilizada;
 * al cruzar la salida registra ``t_safe``; el último marca E8.
 
-Reparto con el runner (D25): ``alarm_process`` cambia el estado (fase, puertas,
+Reparto con el runner (D28): ``alarm_process`` cambia el estado (fase, puertas,
 salidas, tiempos de reacción) e interrumpe con ``Process.interrupt`` los
 procesos de los espectadores que recibe en ``journeys``. El proceso de cada
 espectador (runner, T4.3) captura ``simpy.Interrupt`` y continúa con
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     from .runner import SimContext
 
 BLOCKED_EXIT_ID = 1
-"""Salida que se inutiliza en ``blocked_exit_zone`` con ``blocked_exit`` (D25)."""
+"""Salida que se inutiliza en ``blocked_exit_zone`` con ``blocked_exit`` (D28)."""
 
 NOT_ARRIVED = "not_arrived"
 OUTSIDE_QUEUE = "outside_queue"
@@ -47,7 +47,7 @@ ALREADY_OUT = "already_out"
 
 
 def status_at_alarm(spectator: Spectator, t_alarm_min: float) -> str:
-    """Dónde está el espectador al sonar la alarma (D14, D25).
+    """Dónde está el espectador al sonar la alarma (D14, D28).
 
     * ``NOT_ARRIVED``: aún no ha llegado; ya no llega y no cuenta.
     * ``OUTSIDE_QUEUE``: ha llegado pero no ha terminado el control (en cola,
@@ -74,7 +74,7 @@ def alarm_process(
 
     1. pone ``ctx.phase = "evacuation"`` y cierra todas las puertas de acceso;
     2. sortea los ``n_spectators`` tiempos de reacción del flujo ``"reaction"``
-       (``ExitResources.reaction_s``, por ``id``; números comunes, D25);
+       (``ExitResources.reaction_s``, por ``id``; números comunes, D28);
     3. ensancha las salidas: ``pass_time_s`` pasa a corresponder a una anchura
        ``exit_width_m * exit_width_factor``;
     4. con ``blocked_exit``, inutiliza la salida ``BLOCKED_EXIT_ID`` de
