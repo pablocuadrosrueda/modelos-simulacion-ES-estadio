@@ -1,6 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.4 y T2.6. T2.5 en revisión en la rama `feat/perez-T2.5-seat-conflict`._
 Inc2, T2.4 y T2.6. T2.3 (I3) en revisión en `feat/cuadros-T2.3-turnstile-failure`._
 
 ## Hecho
@@ -46,6 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
+**Inc2 · en curso** (T2.4 y T2.6 hechas; T2.5 en revisión).
 **Inc2 · en curso** (T2.4 y T2.6 hechas; T2.3 en revisión).
 
 * T2.3 (A, en revisión; rama `feat/cuadros-T2.3-turnstile-failure`): I3 en
@@ -69,9 +71,25 @@ la protección de `main` exigiendo esos checks.
   puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
   `reopen_event`, que se sustituye por uno nuevo (D13). Falta integrarla con la
   elección de puerta (T2.7, A) y lanzarla desde el runner (C).
+* T2.5 (B, en revisión; rama `feat/perez-T2.5-seat-conflict`): I1 en
+  `incidents.py` (`sample_seat_conflicts`, `has_seat_conflict`, `seat_conflict`)
+  e integrado en `seating_process`: al llegar al asiento, con `u < prob`, el
+  espectador retiene la plaza del vomitorio, espera a un acomodador de su zona y
+  resuelve en Triangular(1, 3, 10) min. Ocurrencia y duración sorteadas en E0 por
+  `id` (D21, números comunes). Tests en `tests/test_seat_conflict.py`. El runner
+  aún rechaza incidencias activas (D19).
 
 ## Siguiente paso
 
+* C: en el runner, quitar la guarda
+  que rechaza `queue_discipline = "priority"` (T2.4 ya en `main`; sin ello X3 no
+  se ejecuta), lanzar `gate_closure_process` en E0 (T2.6 ya en `main`) y admitir
+  `seat_conflict` (T2.5). Después
+  T5.2 (estadística con datos sintéticos, sin dependencias) y T2.8 (necesita
+  T2.5 de B).
+* A: T2.1 (cuatro macrozonas y medida de tiempo, D15), T2.3 (I3), T2.2 (I2, ya
+  tiene `log_incident`) y T2.7 (redirección, usa T2.6).
+* B: T2.5 en revisión; después T3.1 (salida), de la que depende T3.3 de C.
 * C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
   (T2.4 ya en `main`; sin ello X3 no se ejecuta), lanzar `gate_closure_process`
   en E0 (T2.6 ya en `main`) y, cuando se fusione T2.3, admitir I3 y lanzar
@@ -100,6 +118,11 @@ Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
+Rama T2.5 integrada con `main` tras el PR #12 (Python 3.13.2): `make lint` limpio,
+`make test` con 214 tests correctos y 2 xfail esperados; `check_pr_docs` OK.
+
+`main` tras el PR #11 (2026-11-23, Python 3.13.2): `make lint` limpio y
+`make test` con 197 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
 `main` tras el PR #12 (2026-11-23, Python 3.13.2): `make lint` limpio y
 `make test` con 204 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
 Rama T2.3: 229 correctos y los mismos 2 xfail; lint limpio.

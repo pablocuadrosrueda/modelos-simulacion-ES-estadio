@@ -14,6 +14,18 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · B → A, C · I1 conflicto por asiento (T2.5, D21)
+**Estado:** en la rama `feat/perez-T2.5-seat-conflict`; **aún no en `main`**.
+
+* **C (runner):** `seating_process` ya aplica I1 por sí solo; no hay que lanzar
+  nada más. Para ejecutar X0 o X5 falta que `run_replica` deje de rechazar
+  `seat_conflict.enabled = true` (D19).
+* **C (T2.8):** cada conflicto deja `Spectator.conflict = True` y una incidencia
+  `I1` con `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` (al llegar al
+  asiento) y `t_end` (resuelto). `n_conflicts` = incidencias `I1`. Para
+  `conflict_delay_s`: el bloque está «con conflicto activo» entre `t_start` y `t_end`.
+* **A:** el sorteo de I1 no va en `generate_spectators` (D17); se hace en E0 dentro
+  de `build_stadium_resources` (D21), así que `arrivals` no cambia.
 ### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D22)
 **Estado:** en la rama `feat/cuadros-T2.3-turnstile-failure`; **aún no en `main`**.
 

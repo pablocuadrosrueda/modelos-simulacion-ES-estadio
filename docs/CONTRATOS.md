@@ -56,7 +56,7 @@ de creación (D22). Uso actual: un generador por torno,
 | 5 | `service` | servicio en torno (por espectador, en `generate_spectators`; D17) | arrivals |
 | 6 | `read_failure` | I2 | entry |
 | 7 | `vomitory` | paso por vomitorio (N tiempos en `build_stadium_resources`, por `id`; D18) | stadium |
-| 8 | `seat_conflict` | I1 (ocurrencia y resolución) | incidents |
+| 8 | `seat_conflict` | I1 (ocurrencia y resolución; N + N en E0 por `id`, D21) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
 | 10 | `exit_choice` | desempates de salida | exit, emergency |
 | 11 | `reaction` | reacción a la alarma | emergency |
