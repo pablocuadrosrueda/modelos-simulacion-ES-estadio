@@ -15,7 +15,7 @@ Reglas:
 ## Vigentes
 
 ### 2026-11-23 · C → A, B · Runner hasta salida ordinaria (T3.3, D27)
-**Estado:** en revisión desde `feat/chema-T3.3-runner-exit`; depende del PR #18.
+**Estado:** **en `main`** (PR #20).
 
 * Aplicado el contrato de T3.1/T3.2: recursos en E0 y asiento → salida. Ya no
   termina al sentarse el último. Las políticas simultánea y escalonada funcionan.
@@ -23,10 +23,8 @@ Reglas:
   cola máxima por salida incluye paso en servicio. Evacuación e I2 pendientes.
 * Caso reproducible: `make run EXP=configs/dev/i3_mini.json REPS=3`.
 
-### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
-### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D25)
-**Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
+### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D28)
+**Estado:** **en `main`** (PR #19). Pendiente de aplicar por C (T4.3).
 
 * **C (T4.3):** cada espectador va en un único proceso con `try` y
   `except simpy.Interrupt`. Dentro del `try`, el recorrido normal (entrada,
@@ -44,7 +42,8 @@ Reglas:
   había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
   quienes tienen `t_safe`.
 ### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
-**Estado:** en la rama `feat/cuadros-T2.2-read-failure`; **aún no en `main`**.
+**Estado:** **en `main`** (PR #21). Pendiente de aplicar por C: el runner aún
+rechaza `read_failure.enabled = true`, así que X0 todavía no se puede ejecutar.
 
 * **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
   entrada están implementadas. En `main` el runner aún rechaza cualquier
@@ -61,19 +60,6 @@ Reglas:
   (`t_end_control - t_start_control`), como pide D12.
 * `build_entry_resources` consume ahora el flujo `read_failure` (no afecta a los
   demás flujos ni a resultados previos).
-
-### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** en `main` (PR #15); aplicado por C en T3.3.
-
-* **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
-  `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después
-  `yield from exit_process(sp, ctx)`: `exit_process` espera él solo hasta su
-  liberación (`release_time_min`, ya con la política escalonada de X4) y rellena
-  `exit_id`, `t_exit_queue` y `t_exit`. No hay que lanzar nada en E5.
-* **C (T3.3, KPIs):** `exit_queue_max` se reconstruye con `t_exit_queue` y
-  `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (unos 0,23 s), así que
-  quien está pasando cuenta en la cola hasta `t_exit`.
-* **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
 
 ### 2026-11-23 · C → A, B · Inc2 conectado e indicadores (T2.8, D25)
 **Estado:** fusionada en `main` (PR #18).
@@ -217,6 +203,19 @@ Sigue vigente la aplicación de D17 a las futuras incidencias de Inc2.
 * **C (T1.4):** aplicado en el runner (PR #6).
 
 ## Archivo
+
+### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
+**Estado:** en `main` (PR #15) y aplicado por C en T3.3 (PR #20).
+
+* **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
+  `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después
+  `yield from exit_process(sp, ctx)`: `exit_process` espera él solo hasta su
+  liberación (`release_time_min`, ya con la política escalonada de X4) y rellena
+  `exit_id`, `t_exit_queue` y `t_exit`. No hay que lanzar nada en E5.
+* **C (T3.3, KPIs):** `exit_queue_max` se reconstruye con `t_exit_queue` y
+  `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (unos 0,23 s), así que
+  quien está pasando cuenta en la cola hasta `t_exit`.
+* **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
 
 ### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
 **Estado:** fusionado en `main` (PR #4) y aplicado por C en T1.4 (PR #6),
