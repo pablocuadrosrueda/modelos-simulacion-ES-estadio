@@ -145,3 +145,17 @@ que aparenten incluir fases todavía pendientes. La configuración de desarrollo
 espectadores y todas las incidencias/emergencia desactivadas, compatible con
 `load_experiment` y con la futura CLI de T1.6. No añade parámetros al modelo.
 
+### D24 · Salidas estadísticas y muestras incompletas (T5.2) — 2026-11-23
+El análisis usa una observación por réplica, como exige §5.3 de la memoria.
+Los resúmenes son tablas anchas con media, semianchura del IC t-Student y n
+válido por KPI (`<nombre>_mean`, `<nombre>_halfwidth`, `<nombre>_n`). Se mantiene
+una fila por escenario y, en las comparaciones, se añade `baseline` y se excluye
+la fila del base. La diferencia es escenario − base, emparejada por `seed`.
+Se rechazan semillas duplicadas por escenario para no contarlas como réplicas
+independientes. NaN no equivale a cero: sin datos no hay estimación, y con una
+sola réplica no hay IC estimable. El tamaño definitivo se estima con el t y la
+desviación del piloto, redondeando arriba y sin bajar del piloto ya ejecutado.
+Se debe comprobar el IC de nuevo al añadir réplicas. Una media cero con
+variabilidad exige un objetivo absoluto, no se inventa una precisión relativa.
+Son convenciones de salida de T5.2; no cambia ningún parámetro de la simulación.
+

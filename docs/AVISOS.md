@@ -14,6 +14,17 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Análisis estadístico de réplicas (T5.2, D24)
+**Estado:** local sin commit en `feat/chema-T5.2-analysis`; no está en main.
+
+* `summarize` devuelve media, semianchura y n válido de cada KPI por escenario.
+  `compare_with_baseline` usa diferencias escenario − base emparejadas por seed.
+  El formato exacto está en CONTRATOS. No cambian los CSV por réplica ni Spectator.
+* Los NaN se omiten por KPI; con una sola réplica la semianchura es NaN.
+  Semillas duplicadas por escenario se rechazan, sin contarlas como réplicas nuevas.
+* T1.6 ya fusionada en el PR #9; T1.7 publicada en el PR #10. Los checks de ambos
+  (Python 3.10/3.12 y documentación) han pasado.
+
 ### 2026-11-23 · B → A, C · I4 cierre de puerta y `log_incident` (T2.6)
 **Estado actualizado:** fusionada en main mediante PR #5; integración en runner pendiente de Inc2.
 

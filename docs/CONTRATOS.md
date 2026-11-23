@@ -167,3 +167,28 @@ Un KPI que no aplica al escenario vale `NaN`.
 `ctx` es un `runner.SimContext` (env, config, rngs, spectators, incidents,
 entry, stadium, exits, phase). Los procesos SimPy son generadores que reciben
 `(spectator, ctx)` y mutan el `Spectator`.
+
+## Análisis entre réplicas (T5.2, D24)
+
+* `confidence_interval(values, level=0.95)` devuelve `(media, semianchura)` del
+  IC t-Student, con desviación muestral y n−1 grados de libertad. Ignora NaN;
+  sin datos, ambas salidas NaN; con un dato, semianchura NaN. Rechaza infinitos.
+* `required_replications(values, rel_halfwidth=0.05, level=0.95)` estima el total
+  `ceil((t_piloto*s/h)^2)`, con `h = rel_halfwidth*abs(media)`, sin bajar del
+  piloto válido ya disponible. Exige al menos dos datos. Media cero con
+  variabilidad no admite precisión relativa y lanza `ValueError`; sin
+  variabilidad devuelve el tamaño piloto. La precisión se debe verificar otra
+  vez tras ampliar la muestra: esta estimación no es una garantía final.
+* `summarize(kpis, level=0.95)`: una fila por `scenario`, en orden de aparición.
+  Columnas: `scenario` y, por cada nombre de `KPI_COLUMNS`, `<nombre>_mean`,
+  `<nombre>_halfwidth`, `<nombre>_n`. NaN no cuenta en n. Un KPI ausente o sin
+  observaciones tiene media/semianchura NaN y n=0; con n=1, semianchura NaN.
+* `compare_with_baseline(kpis, baseline="X0_base", level=0.95)` devuelve una fila
+  por escenario alternativo, con `scenario`, `baseline` y las mismas columnas
+  estadísticas. Calcula escenario − base por semilla común, no por orden de fila
+  ni por `replica`. n cuenta parejas válidas para cada KPI; sin parejas, n=0 y
+  resultados NaN. No incluye una fila del base comparado consigo mismo.
+* Las tablas requieren `scenario`; la comparación también `seed` y el escenario
+  base. Si se aporta `seed`, cada par `(scenario, seed)` debe ser único, sin
+  identificadores ausentes. `0 < level < 1`. No se alteran las tablas de entrada
+  ni las columnas del CSV de KPIs por réplica.
