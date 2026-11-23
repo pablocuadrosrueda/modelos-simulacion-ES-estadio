@@ -31,7 +31,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 |---|---|---|---|---|
 | T1.1 | `arrivals`: `sample_arrival_times`, `sample_truncated_normal`, `generate_spectators` (+ tests: perfil reproducido, repartos, rangos) | A | en revisión | — |
 | T1.2 | `entry`: `build_entry_resources`, `priority_of` (solo FIFO), `entry_process` sin incidencias usando `spectator.gate` (+ tests) | A | en revisión | T1.1 |
-| T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | en revisión | — (contrato `SimContext`) |
+| T1.3 | `stadium`: `build_stadium_resources`, `seating_process` sin conflictos, `is_late` (+ tests) | B | hecho | — (contrato `SimContext`) |
 | T1.4 | `runner`: `run_replica` (E0, proceso por espectador entry→seating, E9 al sentarse el último), DataFrame con `SPECTATOR_COLUMNS`, `df.attrs`; config de desarrollo `configs/dev/i1_mini.json` (zona A, sin incidencias) | C | pendiente | T1.2, T1.3 |
 | T1.5 | `metrics`: `queue_length_max` y KPIs de entrada (`n_*`, `wait_*`, `pct_wait_lt_10`, `queue_max_gate`, `turnstile_util`, `access_mean_min`, `late_pct`); el resto NaN | C | pendiente | contrato (T0.3) |
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | pendiente | T1.4, T1.5 |
@@ -46,7 +46,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T2.3 | I3 `turnstile_failure_process` con prioridad máxima, sin cortar servicios | A | pendiente | Inc1 |
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | pendiente | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | pendiente | Inc1 |
-| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | pendiente | T1.2 |
+| T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | en revisión | T1.2 |
 | T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | pendiente | T2.6 |
 | T2.8 | KPIs P4/P6 e incidencias (`group_wait_diff_min`, `conflict_delay_s`, `n_conflicts`...); test de capacidad de recursos | C | pendiente | T2.4, T2.5 |
 
