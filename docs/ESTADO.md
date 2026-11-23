@@ -219,3 +219,11 @@ alcance provisional del runner de C. Distinguirlas por título hasta acordar la
 renumeración. No cambia el comportamiento del modelo.
 
 PR de cierre de Inc1: T1.6 #9 y T1.7 #10, abiertos para revisión del equipo.
+
+## Verificación de cierre T1.7 (PR #10)
+
+Rama sincronizada con main y con la actualización remota del equipo. Siete
+pruebas nuevas de conservación por espectador en cada transición, cola pendiente
+al alcanzar el límite y muchos tornos con demanda idéntica. Con T1.6 integrada:
+204 tests correctos, 2 xfail esperados de salida, lint y comprobación documental
+limpios. No cambia código de simulación ni interfaces. Pendiente de revisión y merge.

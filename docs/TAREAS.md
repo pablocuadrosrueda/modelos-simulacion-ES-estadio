@@ -148,3 +148,7 @@ make test y make lint limpios antes del PR.
 ```
 
 Hito de Inc1: `make run EXP=<mini> REPS=3` escribe el CSV de KPIs.
+
+T1.7 (PR #10): siete pruebas de cierre preparadas y publicadas; verificación con
+T1.6 integrada: 204 tests correctos y dos pendientes esperados de salida. Estado:
+en revisión. TAREAS y ESTADO actualizados en esta rama para la CI documental.
