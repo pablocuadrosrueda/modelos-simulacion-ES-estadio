@@ -14,6 +14,24 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D21)
+**Estado:** en la rama `feat/cuadros-T2.3-turnstile-failure`; **aún no en `main`**.
+
+* **C (runner):** en E0, después de `ctx.entry = build_entry_resources(ctx)`,
+  llamar a `entry.start_turnstile_failure_processes(ctx)`. Si
+  `incidents.turnstile_failure.enabled` es falso no crea nada, así que se puede
+  llamar siempre.
+* **C (runner):** dejar de rechazar `turnstile_failure.enabled = true` en la
+  guarda de incidencias (las demás siguen pendientes).
+* Los procesos de avería **no terminan**: la réplica debe acabar por
+  `finished | time_limit`, como ya hace; no esperar a que acaben.
+* Cada avería queda en `ctx.incidents` como `Incident("I3", zona, "A-G1-T2",
+  t_start, t_end)` (min), y por tanto en `df.attrs["incidents"]`;
+  `n_turnstile_failures` puede contar las filas `kind == "I3"`. Duda abierta
+  para T2.8 en ESTADO (averías después de la entrada).
+* **Todos:** sin cola, `t_start_control` es ahora exactamente `t_arrival` (aviso
+  de B en T1.3); las tolerancias existentes siguen siendo válidas.
+
 ### 2026-11-23 · A → C · Prioridad no expulsiva en el torno (T2.4, D20)
 **Estado:** **en `main`** (PR #8). Pendiente de aplicar por C.
 
