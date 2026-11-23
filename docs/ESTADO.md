@@ -1,6 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
+Inc2, T2.3 a T2.7 y salida T3.1/T3.2. C: T2.8, T3.3/T3.4 y T5.2 en revisión._
 Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
 Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria) y T2.2 (I2)._
 
@@ -117,6 +118,25 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
+C ha publicado T5.2 (estadística, PR #17) y T2.8 (incidencias/KPIs, PR #18).
+T3.1/T3.2 de B están fusionadas (PR #15). T3.3 conecta ahora la salida ordinaria,
+incluida política escalonada y KPIs de vaciado/cola. Dos xfail activados.
+Caso analítico completo: 12.195 personas, seis salidas, unos 7,7 min sin marcha.
+Caso de desarrollo: `configs/dev/i3_mini.json` (dos variantes, semillas comunes).
+
+T3.4 añade conservación individual en todos los sucesos y puntos intermedios:
+12 combinaciones de semillas/políticas/con incidencias, además de límites durante
+cola exterior, partido, salida y antes de la llegada. Distingue conflictos con
+su registro I1 y la salida a pie mediante liberación calculada de la política.
+Validación conjunta T2.8/T3.3/T3.4: 295 tests correctos, cero xfail, lint limpio.
+T5.2 tiene sus 41 tests propios en PR #17 (rama independiente).
+
+Orden de revisión: PR #18 (T2.8) → PR #20 (T3.3) → PR de T3.4; PR #17
+(estadística) independiente. T3.4 se publica desde la rama T3.3 aún no fusionada
+para poder verificar la cadena completa, con dependencia explícita en el PR.
+Después T4.3 depende de T4.1/T4.2 de B. A tiene pendientes T2.1/T2.2. Los
+experimentos oficiales de T5.1 esperan a Inc4; no se desactivan incidencias del
+modelo para presentar resultados definitivos.
 Avance C, T2.8: prioridad e incidencias I1/I3/I4 integradas en el runner;
 indicadores por grupos, conflictos y recuentos implementados. Colas por puerta
 real y exclusión de quienes no han llegado. Caso `configs/dev/i2_mini.json`.
@@ -164,6 +184,8 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
+Autorización vigente (2026-11-23): implementar y publicar T5.2, T2.8, T3.3 y T3.4
+por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
