@@ -2,6 +2,7 @@
 
 _Última actualización: 2026-11-22 · `main` contiene Inc0 y T1.1/T1.2;
 T1.5 publicada y en revisión en el PR #3, rama `feat/chema-T1.5-metrics`._
+_Última actualización: 2026-11-23 · `main` contiene Inc0; Inc1 en curso._
 
 ## Hecho
 
@@ -51,6 +52,17 @@ y emergencia siguen pendientes.
   como fija el contrato. Tests con datos sintéticos en `tests/test_metrics.py`.
   No cambia firmas, columnas, parámetros ni flujos aleatorios.
 
+* T1.3 (B, en revisión): `stadium.py` con `build_stadium_resources` (un
+  `Resource` FIFO de `vomitory_capacity` plazas por `(zona, bloque)` y uno de
+  `stewards_per_zone` acomodadores por zona), `seating_process` sin conflictos
+  (espera a `t_end_control`, camina `distance_m / speed_mps`, cola y paso por el
+  vomitorio, se sienta) e `is_late`. Tiempos de paso con números comunes (D18).
+  Tests en `tests/test_stadium.py`: capacidad de 8 plazas y oleadas FIFO,
+  independencia de vomitorios, orden `t_end_control ≤ t_vomitory ≤ t_seated`
+  con entrada + asiento encadenados, `is_late` y determinismo. Los stubs de
+  `exit.py` y `emergency.py` ya existían desde Inc0 con docstring y firma; no
+  hubo que cambiarlos.
+
 ## Siguiente paso
 
 **Inc1 · rebanada vertical** (ver `docs/TAREAS.md`): una macrozona, entrada sin
@@ -95,3 +107,4 @@ Base del clon verificada el 2026-11-22 con Python 3.12.14: 99 tests pasan,
 (23 nuevos de métricas) y 5 xfail esperados; `make lint` y `git diff --check`
 limpios. Para revisar solo esta tarea: `.venv/bin/python -m pytest
 tests/test_metrics.py -v` desde la raíz del clon.
+Probado con Python 3.13.2 (rama T1.3): 114 tests pasan, 5 xfail esperados, ruff limpio.
