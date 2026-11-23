@@ -10,7 +10,7 @@
 .venv/bin/python scripts/run_pilot.py --reps 10 --output results/pilot_repetido
 ```
 
-El script evita sobrescribir resultados. Los CSV revisables están en [results/pilot](../results/pilot). `kpis.csv` mantiene el contrato original; `summary.csv` contiene media, semianchura y n válido. `comparisons.csv` usa diferencias emparejadas por semilla y las referencias indicadas abajo. `groups.csv` mide P4 con mayores/PMR y resto iguales en X0/X3, sin cambiar recorridos (D31). Los NaN se conservan para indicadores que no aplican. No se tratan espectadores como réplicas independientes.
+El script evita sobrescribir resultados. Los CSV revisables están en [results/pilot](../results/pilot). `kpis.csv` mantiene el contrato original; `summary.csv` contiene media, semianchura y n válido. `comparisons.csv` usa diferencias emparejadas por semilla y las referencias indicadas abajo. `groups.csv` mide P4 con mayores/PMR y resto iguales en X0/X3, sin cambiar recorridos (D32). Los NaN se conservan para indicadores que no aplican. No se tratan espectadores como réplicas independientes.
 
 ## Procedencia y auditoría
 

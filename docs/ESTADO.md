@@ -46,6 +46,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
+**Inc2 · completado.**
 **Inc2: completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
@@ -98,6 +99,13 @@ la protección de `main` exigiendo esos checks.
   utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
   `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
   comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
+* Estudio X6 (A, en revisión; rama `feat/cuadros-X6-study`; no es tarea del
+  tablero): sensibilidad del instante del cierre I4 (`start_min` de −45 a +20,
+  10 y 20 min, con y sin redirección, 5 réplicas con semillas comunes) en
+  `scripts/study_gate_closure.py` y `docs/ESTUDIO_X6.md`. Con redirección el cierre
+  se absorbe siempre; sin ella el efecto es máximo a −30 (+292 ± 24 s de espera
+  media en A-1, +0,67 p. p. de entrada tardía) y nulo a +20 (+4 s). **Decidido (D31):
+  `start_min = −30`**, ya aplicado en `configs/base.json` con un test de regresión.
 
 **Inc3: completado.**
 
@@ -139,7 +147,7 @@ T5.1 preparada para PR desde `feat/chema-T5.1-pilot`: 12 escenarios X0–X7,
 terminan completas; reparto por zona entre 24,484 % y 25,406 %. Datos auditados,
 IC y procedencia en `results/pilot`; explicación en `docs/PILOTO_T5.1.md`.
 Duración original de simulación/KPIs: 298,91 s (~2,49 s/réplica), más recálculo
-posterior de P4 con las mismas semillas para recuperar cohortes (D31).
+posterior de P4 con las mismas semillas para recuperar cohortes (D32).
 
 P4 compara ahora mayores/PMR y resto iguales en FIFO/prioridad, sin cambiar
 recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
@@ -159,6 +167,8 @@ sin S1. T2.1 ya fusionada por A (PR #25), con capacidad/rendimiento en
 `docs/VERIFICACION.md`; no bloquea la ampliación. T5.4 (B) ya fusionada (PR #27).
 Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
 Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
+* C: el piloto de X6 se ejecutó con el cierre en t = +20; con D31 (PR #28) el
+  cierre pasa a t = -30, así que hay que repetir X6 antes de usar sus resultados.
 * Grupo: resolver las dudas abiertas de abajo antes de lanzar las réplicas
   definitivas; no se cambian parámetros en silencio.
 
@@ -219,12 +229,11 @@ de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
 * T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
   mientras dura. Alternativa: parar también los tornos de esa puerta y/o
   redirigir su cola; ver D23.
-* T2.7 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
-  cuando solo llega el 2 % del público. En una macrozona realista (N/4, 6
-  puertas, semilla 11) afecta a 26 personas frente a 330 si empieza en −25. Con 2
-  tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
-  redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
-  P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
+* X6 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
+  cuando solo llega el 2 % del público, y X6 no responde a nada (diferencia sin −
+  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`. Decidido (D31):
+  `start_min = −30` (10 min), aplicado en `configs/base.json`. La memoria dice +20:
+  corregir el texto de la Parte 2.
 * T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
   franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
   corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de

@@ -152,3 +152,20 @@ def test_mini_config_single_zone(mini_config: Config) -> None:
 def test_raw_keeps_merged_dict() -> None:
     cfg = load_config(BASE_CONFIG_PATH, {"turnstiles_per_gate": 4})
     assert cfg.raw["turnstiles_per_gate"] == 4
+
+
+def test_gate_closure_starts_in_peak_hour(base_config: Config) -> None:
+    """D31: P7 habla de un cierre «en hora punta»; el cierre debe caer en la franja más cargada."""
+    gc = base_config.incidents.gate_closure
+    profile = base_config.active_profile
+
+    def density(b: ArrivalBin) -> float:
+        return b.prob / (b.end_min - b.start_min)
+
+    first = next(b for b in profile if b.start_min <= gc.start_min < b.end_min)
+    assert density(first) == pytest.approx(max(density(b) for b in profile))
+    assert gc.start_min == -30 and gc.duration_min == 10
+    # el cierre termina antes de que acabe la punta
+    assert gc.start_min + gc.duration_min <= max(
+        b.end_min for b in profile if density(b) == pytest.approx(max(map(density, profile)))
+    )
