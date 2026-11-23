@@ -71,3 +71,56 @@ def test_unknown_stream_raises() -> None:
 def test_invalid_seed(seed) -> None:
     with pytest.raises(ValueError):
         RngStreams(seed)
+
+
+# -- substream (generadores por recurso, D21) ---------------------------------
+
+
+def test_substream_reproducible_and_order_free() -> None:
+    a = RngStreams(5)
+    first = a.substream("turnstile_failure", "A", 1, 2).random(4)
+    a.substream("turnstile_failure", "B", 3, 1).random(10)  # otro torno antes
+    again = a.substream("turnstile_failure", "A", 1, 2).random(4)
+    other = RngStreams(5).substream("turnstile_failure", "A", 1, 2).random(4)
+    np.testing.assert_array_equal(first, again)
+    np.testing.assert_array_equal(first, other)
+
+
+def test_substream_depends_on_seed_name_and_key() -> None:
+    ref = RngStreams(5).substream("turnstile_failure", "A", 1, 2).random(4)
+    for gen in (
+        RngStreams(6).substream("turnstile_failure", "A", 1, 2),
+        RngStreams(5).substream("gate_choice", "A", 1, 2),
+        RngStreams(5).substream("turnstile_failure", "A", 1, 3),
+        RngStreams(5).substream("turnstile_failure", "B", 1, 2),
+        RngStreams(5).substream("turnstile_failure", "A", 2, 1),
+    ):
+        assert not np.array_equal(gen.random(4), ref)
+
+
+def test_substream_does_not_touch_parent_stream() -> None:
+    a, b = RngStreams(5), RngStreams(5)
+    a.substream("turnstile_failure", "A", 1, 1).random(100)
+    name = "turnstile_failure"
+    np.testing.assert_array_equal(a[name].random(4), b[name].random(4))
+
+
+def test_substream_key_encoding_is_unambiguous() -> None:
+    r = RngStreams(5)
+    pairs = [(("A", 1), ("A1",)), ((1, 2), (12,)), (("1",), (1,)), (("A",), ("\x00A",))]
+    for k1, k2 in pairs:
+        assert not np.array_equal(
+            r.substream("turnstile_failure", *k1).random(4),
+            r.substream("turnstile_failure", *k2).random(4),
+        )
+
+
+@pytest.mark.parametrize("bad", [-1, 1.5, True, None])
+def test_substream_rejects_bad_keys(bad: object) -> None:
+    with pytest.raises((TypeError, ValueError)):
+        RngStreams(5).substream("turnstile_failure", "A", bad)  # type: ignore[arg-type]
+
+
+def test_substream_unknown_stream() -> None:
+    with pytest.raises(KeyError):
+        RngStreams(5).substream("nope", "A")
