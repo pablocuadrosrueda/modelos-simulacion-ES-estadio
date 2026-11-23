@@ -256,6 +256,20 @@ no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
 se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
 con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.
 
+### D29 · Salidas estadísticas y muestras incompletas (T5.2) — 2026-11-23
+El análisis usa una observación por réplica, como exige §5.3 de la memoria.
+Los resúmenes son tablas anchas con media, semianchura del IC t-Student y n
+válido por KPI (`<nombre>_mean`, `<nombre>_halfwidth`, `<nombre>_n`). Se mantiene
+una fila por escenario y, en las comparaciones, se añade `baseline` y se excluye
+la fila del base. La diferencia es escenario − base, emparejada por `seed`.
+Se rechazan semillas duplicadas por escenario para no contarlas como réplicas
+independientes. NaN no equivale a cero: sin datos no hay estimación, y con una
+sola réplica no hay IC estimable. El tamaño definitivo se estima con el t y la
+desviación del piloto, redondeando arriba y sin bajar del piloto ya ejecutado.
+Se debe comprobar el IC de nuevo al añadir réplicas. Una media cero con
+variabilidad exige un objetivo absoluto, no se inventa una precisión relativa.
+Son convenciones de salida de T5.2; no cambia ningún parámetro de la simulación.
+
 ### D27 · Réplica completa y KPIs de salida ordinaria (T3.3) — 2026-11-23
 Se sustituye el fin provisional de D19 por el último espectador fuera. Se crean
 los recursos de salida en E0 y se encadenan los procesos de B sin alterar sus

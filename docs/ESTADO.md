@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 e Inc3 completos,
-Inc2 salvo T2.1 y, de Inc4, T4.1 y T4.2. En revisión: T5.2 (PR #17)._
+Inc2 salvo T2.1, de Inc4, T4.1 y T4.2, y de Inc5, T5.2. Nada en revisión._
 
 ## Hecho
 
@@ -124,11 +124,17 @@ la protección de `main` exigiendo esos checks.
   apartado 4.3 de la memoria: una macrozona evacúa en 5,9 min, y en 7,1 min con
   una salida bloqueada. Falta que el runner lo integre (T4.3, C).
 
+**Inc5: en curso.**
+
+* T5.2 (C, hecho; PR #17): `analysis.py` con intervalos t de Student, réplicas
+  necesarias estimadas con el piloto, resúmenes por escenario y diferencias
+  emparejadas por semilla. 41 pruebas en `tests/test_analysis.py`. Decisión D29.
+
 ## Siguiente paso
 
 * C: T4.3 (integrar la evacuación en el runner; ver `docs/AVISOS.md`) y quitar
   la guarda que aún rechaza I2 (T2.2 ya en `main`); sin eso X0 y X7 no se pueden
-  ejecutar. Fusionar T5.2 (PR #17). Después T5.1: los experimentos oficiales
+  ejecutar. Después T5.1: los experimentos oficiales
   esperan a Inc4 y no se desactivan incidencias del modelo para presentar
   resultados definitivos.
 * A: T2.1 (cuatro macrozonas y medida del tiempo de una réplica, D15).

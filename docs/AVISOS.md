@@ -62,13 +62,25 @@ rechaza `read_failure.enabled = true`, así que X0 todavía no se puede ejecutar
   demás flujos ni a resultados previos).
 
 ### 2026-11-23 · C → A, B · Inc2 conectado e indicadores (T2.8, D25)
-**Estado:** **en `main`** (PR #18).
+**Estado:** fusionada en `main` (PR #18).
 
 * Aplicados los avisos de prioridad, I1, I3 e I4. El runner ya lanza averías y
   cierre en E0; mantiene I2/emergencia pendientes. La cola usa `gate_used`.
 * Calcula P4, contraste P6 por solape temporal y recuentos de incidencias.
   Definiciones exactas en CONTRATOS/D25. No cambia Spectator ni firmas.
 * Caso de desarrollo: `make run EXP=configs/dev/i2_mini.json REPS=3`.
+
+### 2026-11-23 · C → A, B · Análisis estadístico de réplicas (T5.2, D29)
+**Estado:** publicada en PR #17; D29 distingue estadística de D24 (salida).
+
+* `summarize` devuelve media, semianchura y n válido de cada KPI por escenario.
+  `compare_with_baseline` usa diferencias escenario − base emparejadas por seed.
+  El formato exacto está en CONTRATOS. No cambian los CSV por réplica ni Spectator.
+* Los NaN se omiten por KPI; con una sola réplica la semianchura es NaN.
+  Semillas duplicadas por escenario se rechazan, sin contarlas como réplicas nuevas.
+* T1.6 ya fusionada en el PR #9; T1.7 publicada en el PR #10. Los checks de ambos
+  (Python 3.10/3.12 y documentación) han pasado.
+
 
 ### 2026-11-23 · A → C · Redirección ante el cierre de puerta (T2.7, D23)
 **Estado:** **en `main`** (PR #16). Pendiente de aplicar por C (runner y métricas).
