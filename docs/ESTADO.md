@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-20 · `main` contiene Inc0; Inc1 en curso._
+_Última actualización: 2026-11-23 · `main` contiene Inc0; Inc1 en curso._
 
 ## Hecho
 
@@ -39,6 +39,17 @@ Aún **no hay lógica de simulación**: `run_replica` y los procesos lanzan
   capacidad de tornos, independencia de puertas, determinismo y servicio
   idéntico con 2 y 4 tornos.
 
+* T1.3 (B, en revisión): `stadium.py` con `build_stadium_resources` (un
+  `Resource` FIFO de `vomitory_capacity` plazas por `(zona, bloque)` y uno de
+  `stewards_per_zone` acomodadores por zona), `seating_process` sin conflictos
+  (espera a `t_end_control`, camina `distance_m / speed_mps`, cola y paso por el
+  vomitorio, se sienta) e `is_late`. Tiempos de paso con números comunes (D18).
+  Tests en `tests/test_stadium.py`: capacidad de 8 plazas y oleadas FIFO,
+  independencia de vomitorios, orden `t_end_control ≤ t_vomitory ≤ t_seated`
+  con entrada + asiento encadenados, `is_late` y determinismo. Los stubs de
+  `exit.py` y `emergency.py` ya existían desde Inc0 con docstring y firma; no
+  hubo que cambiarlos.
+
 ## Siguiente paso
 
 **Inc1 · rebanada vertical** (ver `docs/TAREAS.md`): una macrozona, entrada sin
@@ -63,4 +74,4 @@ Ninguna pendiente.
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles A/B/C (arriba), I2/I3 en `entry.py` (D8),
 utilización de tornos (D12), puerta cerrada sin redirección (D13), evacuación de
 quien está en tránsito (D14, hipótesis) y medición temprana de rendimiento (D15).
-Probado con Python 3.10.12: 68 tests pasan, 5 xfail esperados, ruff limpio.
+Probado con Python 3.13.2 (rama T1.3): 114 tests pasan, 5 xfail esperados, ruff limpio.

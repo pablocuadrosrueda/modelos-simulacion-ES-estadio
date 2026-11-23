@@ -112,3 +112,15 @@ los números aleatorios comunes que exige la memoria (§5.3).
   (`read_failure_u`, `read_extra_s`); y en T2.5 (I1): ocurrencia del conflicto y
   su duración. I3 e I4 son procesos por recurso, no por espectador: cada uno usa
   su propio flujo.
+
+### D18 · Paso por el vomitorio con números comunes, sorteado en `stadium` — 2026-11-23
+El paso por el vomitorio es una variable por espectador, así que D17 obliga a no
+sortearla dentro del proceso. Para no tocar `Spectator` ni `arrivals` (rol A),
+`stadium.build_stadium_resources` sortea de una vez `n_spectators` tiempos
+Triangular(`vomitory_pass_s`) del flujo `"vomitory"` y los guarda en
+`StadiumResources.vomitory_pass_s`; el espectador `id` usa la posición `id`.
+Como `id` va de 0 a N−1 y no depende del escenario (salvo el perfil de llegadas,
+igual que `service_s`), cada espectador recibe el mismo número en todos los
+escenarios. No es columna del DataFrame. Si se prefiere un atributo
+`Spectator.vomitory_s` como `service_s`, el cambio es local a A y B.
+
