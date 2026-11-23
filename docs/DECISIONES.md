@@ -148,14 +148,14 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
 * Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
   (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
 
-### D22 · Salida ordinaria: elección de salida y desempate con números comunes — 2026-11-23
+### D22. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
 * El espectador elige salida **al llegar** a la zona de salidas, tras recorrer
   `distance_m`: la no bloqueada de su macrozona con menos personas (en cola + la
   que está pasando). `t_exit_queue` es ese instante y `t_exit` el final de su paso.
 * Desempate entre salidas igual de cargadas: como en D18, `build_exit_resources`
   sortea en E0 `n_spectators` uniformes del flujo `"exit_choice"`
   (`ExitResources.tie_u`, por `id`); entre las `k` empatadas, en orden de
-  `exit_id`, se toma la `floor(u·k)`-ésima.
+  `exit_id`, se toma la de posición `floor(u * k)`.
 * Quien se sienta después de su liberación (E5) sale en cuanto se lanza
   `exit_process`. La política escalonada (`release_time_min`, T3.2) se implementa
   a la vez porque es una línea: grada superior `exit_stagger_min` después.

@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23 · `main` contiene Inc0, Inc1 completo y, de
+_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
 Inc2, T2.4 y T2.6. En revisión: T2.5 (I1) y T3.1/T3.2 (salida ordinaria)._
 
 ## Hecho
@@ -15,7 +15,7 @@ docs para agentes. Automatización (T0.5, PR #7): CI con ruff + pytest en Python
 `make check`, `make hooks` y `make docs-check`. Pendiente fuera del repo: activar
 la protección de `main` exigiendo esos checks.
 
-**Inc1 · rebanada vertical — completado.**
+**Inc1, rebanada vertical: completado.**
 
 * T1.1 (A, hecho; PR #1): `arrivals.py`. Franja por perfil + instante uniforme;
   zona/puerta/bloque, grupo, velocidad (normal truncada por inversión de la FDA)
@@ -58,14 +58,14 @@ la protección de `main` exigiendo esos checks.
   `reopen_event`, que se sustituye por uno nuevo (D13). Falta integrarla con la
   elección de puerta (T2.7, A) y lanzarla desde el runner (C).
 
-**Inc3 · en curso.**
+**Inc3: en curso.**
 
 * T3.1 y T3.2 (B, en revisión; rama `feat/perez-T3.1-exit`): `exit.py` con
-  `exit_pass_time_s` (60 / (anchura × 66) ≈ 0,23 s), `build_exit_resources`
+  `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea o grada
   superior +`exit_stagger_min`), `choose_exit` (menos cola, sin bloqueadas,
-  desempate con números comunes, D22) y `exit_process` (liberación → marcha →
-  cola → paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de la memoria:
+  desempate con números comunes, D22) y `exit_process` (liberación, marcha, cola y
+  paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de la memoria:
   12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
 
 ## Siguiente paso

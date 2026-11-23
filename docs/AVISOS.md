@@ -14,16 +14,16 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-23 · B → C · Salida ordinaria lista (T3.1, T3.2, D22)
+### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D22)
 **Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
-  `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` →
+  `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después
   `yield from exit_process(sp, ctx)`: `exit_process` espera él solo hasta su
   liberación (`release_time_min`, ya con la política escalonada de X4) y rellena
   `exit_id`, `t_exit_queue` y `t_exit`. No hay que lanzar nada en E5.
 * **C (T3.3, KPIs):** `exit_queue_max` se reconstruye con `t_exit_queue` y
-  `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (≈ 0,23 s), así que
+  `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (unos 0,23 s), así que
   quien está pasando cuenta en la cola hasta `t_exit`.
 * **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
 

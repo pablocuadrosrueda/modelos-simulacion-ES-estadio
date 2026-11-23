@@ -187,7 +187,7 @@ def test_exit_capacity_one_per_pass_time(mini_config: Config) -> None:
 
 
 def test_zone_exit_time_matches_memoria() -> None:
-    """Validación (apartado 4.3 de la memoria): una macrozona cruza sus 6 salidas en ≈ 7,7 min."""
+    """Validación (apartado 4.3 de la memoria): una macrozona sale por sus 6 salidas en 7,7 min."""
     cfg = load_config(overrides={**MINI_OVERRIDES, "n_spectators": 12_195})
     ctx = make_ctx(cfg)
     sps = [make_spectator(i, distance_m=1.0, speed_mps=1.0) for i in range(cfg.n_spectators)]

@@ -38,7 +38,7 @@ una sola macrozona sin incidencias (llegada → torno → asiento). Sin salida.
 | T1.6 | `experiments.run_experiment` + CLI escribe `results/<exp>_kpis.csv` (aceptar también rutas de config fuera de `configs/experiments`) | C | hecho | T1.4, T1.5 |
 | T1.7 | Quitar `xfail` de `test_orden_temporal`; conservación limitada a la entrada; caso límite (muchos tornos → espera ≈ 0) | C | hecho | T1.4 |
 
-T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10: **Inc1 completado**.
+T1.1 a T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10: **Inc1 completado**.
 
 ## Inc2 · Estadio completo e incidencias de entrada
 
