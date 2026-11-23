@@ -30,9 +30,10 @@ Reglas:
   con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
 
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
-**Estado:** en las ramas `feat/cuadros-T1.1-arrivals` y `feat/cuadros-T1.2-entry`;
-**aún no en `main`** (esperan sus PR). Hasta entonces, para trabajar contra ello,
-parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
+**Estado actualizado el 2026-11-22:** T1.1 y T1.2 ya están en `main`
+(PR #1 y #2 fusionados el 2026-11-20). Se puede partir de `main` actualizado.
+El aviso sigue vigente para las obligaciones de D17 en las futuras incidencias
+de Inc2 y hasta que los afectados hayan aplicado sus consecuencias.
 
 * **`Spectator` tiene un argumento obligatorio más:** `service_s` (tiempo de
   servicio en torno, s), justo después de `t_arrival`. Si construyes
@@ -51,8 +52,8 @@ parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
 * **`entry.service_time_s` ya no existe.** No lo uses.
 * **B (T1.3):** `seating_process` parte de `sp.t_end_control` y escribe
   `t_vomitory` y `t_seated`.
-* **C (T1.4):** `run_replica` depende de T1.2 y T1.3 en `main`; hasta entonces,
-  stubs.
+* **C (T1.4):** T1.2 ya está en `main`; queda T1.3 para verificar la cadena
+  completa de entrada y asiento. T1.5 se puede implementar con datos sintéticos.
 
 ## Archivo
 
