@@ -99,6 +99,21 @@ cfg = load_config(overrides={"turnstiles_per_gate": 4})
 exp = load_experiment("configs/experiments/S1_sensibilidad.json")  # 6 variantes
 ```
 
+En la rama T5.2, el análisis entre réplicas se puede comprobar con datos sencillos:
+
+```python
+from sanmames.analysis import confidence_interval, required_replications
+
+mean, halfwidth = confidence_interval([1, 2, 3, 4, 5])
+print(mean, halfwidth)  # 3.0, aproximadamente 1.96324 (IC del 95 %)
+print(required_replications([8, 10, 12], rel_halfwidth=0.1))  # 75 en total
+```
+
+`summarize` resume los KPIs por escenario; `compare_with_baseline` compara
+escenario − base emparejando semillas. Cada KPI incluye media, semianchura y n
+válido. Los datos no observados siguen siendo NaN. Las réplicas definitivas y
+las gráficas corresponden a las tareas posteriores, con el modelo completo.
+
 ## Trabajo en equipo con agentes
 
 Somos tres personas y trabajamos en paralelo con dos sesiones de Claude Code y

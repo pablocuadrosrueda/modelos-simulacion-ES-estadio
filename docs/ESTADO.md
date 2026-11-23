@@ -1,9 +1,8 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3 a T2.7 y salida T3.1/T3.2. C: T2.8, T3.3/T3.4 y T5.2 en revisión._
-Inc2, T2.3 a T2.7, y T3.1 y T3.2. En revisión: T4.1 y T4.2 (evacuación)._
-Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria) y T2.2 (I2)._
+_Última actualización: 2026-11-23. `main` contiene Inc0, Inc1, Inc2 salvo T2.1,
+Inc3 completo, módulos de emergencia T4.1/T4.2 y estadística T5.2.
+T4.3 (integración de alarma y KPIs) está en revisión en esta rama._
 
 ## Hecho
 
@@ -48,7 +47,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3 a T2.7 hechas; T2.2 en revisión).
+**Inc2 · completado salvo T2.1 (reparto/rendimiento).**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -85,7 +84,7 @@ la protección de `main` exigiendo esos checks.
   está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
   Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
-* T2.2 (A, en revisión; rama `feat/cuadros-T2.2-read-failure`): I2 en `entry.py`.
+* T2.2 (A, hecho; PR #21): I2 en `entry.py`.
   `build_entry_resources` sortea en E0, del flujo `read_failure`, un `u` y un
   extra Uniforme(`extra_s`) por `id` (`sample_read_failures`) y los guarda en
   `EntryResources`; hay relectura si `u < prob` (`has_read_failure`, D26). La
@@ -106,7 +105,7 @@ la protección de `main` exigiendo esos checks.
 
 **Inc4: en curso.**
 
-* T4.1 y T4.2 (B, en revisión; rama `feat/perez-T4.1-evacuation`): `emergency.py`
+* T4.1 y T4.2 (B, hecho; PR #19): `emergency.py`
   con `status_at_alarm` (no ha llegado, en cola exterior, dentro o ya fuera),
   `alarm_process` (fase de evacuación, accesos cerrados, reacción sorteada por
   `id`, salidas ensanchadas, salida 1 de la zona A bloqueada si toca, e
@@ -120,12 +119,12 @@ la protección de `main` exigiendo esos checks.
 
 El equipo ha fusionado T2.8 (#18), I2 (#21), emergencia T4.1/T4.2 (#19) y
 T3.3/T3.4 mediante el PR #22 (incluye los commits de salida del PR #20).
-T5.2 sigue publicada en PR #17, actualizada con salida y conservación completas.
+T5.2 está fusionada en PR #17 con salida y conservación completas.
 
 C publica ahora T4.3: runner con I2 y alarma, interrupción/evacuación de todos los
 estados y KPIs de emergencia, sin modificar lógica de A/B. D30 documenta datos
 incompletos y metadatos de fin/alarma; D28 desambigua la antigua D25 de evacuación.
-Validación: 327 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
+Validación conjunta con T5.2: 368 tests correctos, cero xfail y lint limpio. Tres réplicas de cada
 variante de `i4_mini` con todas las incidencias; X0 completo ejecutado desde CLI
 en un test. Referencias de capacidad en recorrido completo: 7,7 min de salida,
 5,9 min de evacuación y 7,1 min con salida bloqueada, sin marcha/reacción para
@@ -196,3 +195,9 @@ I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
 redirección (D13), evacuación de quien está en tránsito (D14, hipótesis) y
 medición temprana de rendimiento (D15). Resuelta el 2026-11-23: el doble D19 de
 la fusión paralela se renumeró; D19 es el alcance del runner y D20 la prioridad.
+
+## Análisis de C (T5.2, fusionada en PR #17)
+
+IC t-Student, réplicas estimadas con el piloto, resúmenes por escenario y
+diferencias emparejadas por seed. 41 pruebas propias. Formato D29/CONTRATOS.
+Los dos xfail antiguos de salida ya están activados; no quedan pruebas xfail.

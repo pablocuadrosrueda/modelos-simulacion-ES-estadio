@@ -39,7 +39,7 @@ Reglas:
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** en `main` (PR #15); aplicado por C en la rama T3.3.
 ### 2026-11-23, de B a C: evacuación lista para el runner (T4.1, T4.2, D28)
-**Estado:** en la rama `feat/perez-T4.1-evacuation`; **aún no en `main`**.
+**Estado:** fusionada en `main` (PR #19); aplicada por C en la rama T4.3.
 
 * **C (T4.3):** cada espectador va en un único proceso con `try` y
   `except simpy.Interrupt`. Dentro del `try`, el recorrido normal (entrada,
@@ -57,7 +57,7 @@ Reglas:
   había llegado queda con `t_safe` NaN y `abandoned = False`. Los evacuables son
   quienes tienen `t_safe`.
 ### 2026-11-23 · A → C · I2 fallo de lectura; incidencias de entrada completas (T2.2, D26)
-**Estado:** en la rama `feat/cuadros-T2.2-read-failure`; **aún no en `main`**.
+**Estado:** fusionada en `main` (PR #21); aplicada por C en la rama T4.3.
 
 * **C (runner):** con T2.2, T2.3, T2.5, T2.6 y T2.7 todas las incidencias de
   entrada están implementadas. En `main` el runner aún rechaza cualquier
@@ -76,7 +76,7 @@ Reglas:
   demás flujos ni a resultados previos).
 
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** **en `main`** (PR #15). Pendiente de aplicar por C (T3.3).
+**Estado:** en `main` (PR #15); aplicado por C en T3.3.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
   `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después
@@ -96,6 +96,18 @@ Reglas:
 * Calcula P4, contraste P6 por solape temporal y recuentos de incidencias.
   Definiciones exactas en CONTRATOS/D25. No cambia Spectator ni firmas.
 * Caso de desarrollo: `make run EXP=configs/dev/i2_mini.json REPS=3`.
+
+### 2026-11-23 · C → A, B · Análisis estadístico de réplicas (T5.2, D29)
+**Estado:** publicada en PR #17; D29 distingue estadística de D24 (salida).
+
+* `summarize` devuelve media, semianchura y n válido de cada KPI por escenario.
+  `compare_with_baseline` usa diferencias escenario − base emparejadas por seed.
+  El formato exacto está en CONTRATOS. No cambian los CSV por réplica ni Spectator.
+* Los NaN se omiten por KPI; con una sola réplica la semianchura es NaN.
+  Semillas duplicadas por escenario se rechazan, sin contarlas como réplicas nuevas.
+* T1.6 ya fusionada en el PR #9; T1.7 publicada en el PR #10. Los checks de ambos
+  (Python 3.10/3.12 y documentación) han pasado.
+
 
 ### 2026-11-23 · A → C · Redirección ante el cierre de puerta (T2.7, D23)
 **Estado:** **en `main`** (PR #16). Pendiente de aplicar por C (runner y métricas).
