@@ -159,7 +159,7 @@ Un KPI que no aplica al escenario vale `NaN`.
 | Módulo | Función | Contrato |
 |---|---|---|
 | arrivals | `generate_spectators(config, rngs) -> list[Spectator]` | N espectadores con atributos iniciales |
-| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22) |
+| entry | `build_entry_resources(ctx)`, `entry_process(sp, ctx)`, `choose_gate`, `priority_of`, `turnstile_failure_process(zone, gate, ctx)`, `start_turnstile_failure_processes(ctx) -> list[Process]` | E1-E3, I2, I3. `entry_process` espera él mismo hasta `t_arrival` (D16). I3: incidencia con `resource = "A-G1-T2"` (D22). `choose_gate(sp, ctx) -> int` en E1; `gate_used` puede diferir de `gate` (I4, D23) |
 | stadium | `build_stadium_resources(ctx)`, `seating_process(sp, ctx)`, `is_late` | E3->E4 |
 | incidents | `log_incident`, `has_seat_conflict`, `seat_conflict(sp, ctx)` (sub-proceso), `gate_closure_process(ctx)` | I1, I4 |
 | exit | `build_exit_resources(ctx)`, `exit_process(sp, ctx)`, `choose_exit`, `release_time_min`, `exit_pass_time_s` | E5, E6 |
