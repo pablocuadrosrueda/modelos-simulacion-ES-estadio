@@ -187,7 +187,31 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Numeración: D21 está reservado por T2.5 (rama `feat/perez-T2.5-seat-conflict`,
   I1 con números comunes), abierta antes; esta decisión toma D22.
 
-### D23. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
+### D23 · Cierre de puerta (I4): a quién afecta y a qué puerta se redirige — 2026-11-23
+* **Hipótesis pendiente de confirmar por el grupo.** El cierre afecta solo a
+  quien **llega** (E1) mientras dura (memoria §3.2: «nadie entra por esa puerta»,
+  «las llegadas se redirigen o esperan»). Quien ya está en la cola o en control
+  de esa puerta al cerrarse sigue su curso y los tornos siguen atendiéndolo. Es
+  la lectura más simple y literal; la memoria no trata la cola existente.
+  * Alternativa (no implementada): parar los tornos de la puerta durante el
+    cierre y/o redirigir la cola existente. Sin redirección aumentaría la espera
+    de los que estaban en cola (hasta `duration_min` más); con redirección
+    trasladaría esa cola a las puertas vecinas. En ambos casos X6 mostraría un
+    efecto mayor del cierre y una diferencia mayor entre las dos variantes.
+* **Elección al llegar, una vez:** `choose_gate` se evalúa en E1 con el estado
+  de ese instante; quien se redirige no vuelve a cambiar de puerta. Sin
+  desplazamiento extra (la memoria no modela el exterior).
+* **Criterio y desempate:** entre las puertas **abiertas** de la macrozona, la de
+  menor `(len(queue), count, nº de puerta)`, determinista y sin azar (el flujo
+  `gate_choice` queda sin uso). Un desempate aleatorio habría que sortearlo por
+  espectador al generarlo (D17) y cambiaría `Spectator`.
+* **Sin alternativa abierta** (p. ej. `gates_per_zone = 1`) o sin redirección: se
+  espera a la reapertura (D13), leyendo `reopen_event` en cada vuelta.
+* Quien llega exactamente en el instante de reapertura puede encontrarse la
+  puerta aún cerrada según el orden de los sucesos simultáneos de SimPy; con
+  llegadas continuas tiene probabilidad nula.
+
+### D24. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
 * El espectador elige salida **al llegar** a la zona de salidas, tras recorrer
   `distance_m`: la no bloqueada de su macrozona con menos personas (en cola más la
   que está pasando). `t_exit_queue` es ese instante y `t_exit` el final de su paso.

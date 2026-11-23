@@ -14,7 +14,7 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D23)
+### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
@@ -27,8 +27,25 @@ Reglas:
   quien está pasando cuenta en la cola hasta `t_exit`.
 * **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
 
+### 2026-11-23 · A → C · Redirección ante el cierre de puerta (T2.7, D23)
+**Estado:** **en `main`** (PR #16). Pendiente de aplicar por C (runner y métricas).
+
+* **C (runner), para poder ejecutar X6:** lanzar
+  `incidents.gate_closure_process(ctx)` en E0, después de
+  `build_entry_resources` (con el cierre desactivado termina al instante), y
+  dejar de rechazar `gate_closure.enabled = true`. `entry_process` ya llama a
+  `choose_gate` y espera la reapertura por sí solo.
+* **C (métricas):** `gate_used` puede diferir de `gate` cuando hay redirección.
+  Hoy `compute_kpis` calcula `queue_max_gate` con `df.groupby(["zone", "gate"])`,
+  la puerta **asignada**: con X6 mezclaría colas de puertas distintas. Debe
+  agrupar por `["zone", "gate_used"]`. `turnstile_util` no se ve afectada (es
+  global, sobre `n_turnstiles`).
+* Quien espera a la reapertura cuenta como en cola de su puerta desde
+  `t_arrival` hasta `t_start_control`, así que su espera entra en `wait_*` y en
+  la cola de esa puerta.
+
 ### 2026-11-23 · B → A, C · I1 conflicto por asiento (T2.5, D21)
-**Estado:** **en `main`** (PR #13). Pendiente de aplicar por C (runner y T2.8).
+**Estado:** **en `main`** (PR #13). Pendiente de aplicar por C.
 
 * **C (runner):** `seating_process` ya aplica I1 por sí solo; no hay que lanzar
   nada más. Para ejecutar X0 o X5 falta que `run_replica` deje de rechazar
@@ -41,7 +58,7 @@ Reglas:
   de `build_stadium_resources` (D21), así que `arrivals` no cambia.
 
 ### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D22)
-**Estado:** **en `main`** (PR #14). Pendiente de aplicar por C (runner).
+**Estado:** **en `main`** (PR #14). Pendiente de aplicar por C.
 
 * **C (runner):** en E0, después de `ctx.entry = build_entry_resources(ctx)`,
   llamar a `entry.start_turnstile_failure_processes(ctx)`. Si

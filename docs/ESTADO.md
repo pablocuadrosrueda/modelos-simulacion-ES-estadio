@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0, Inc1 completo y, de
-Inc2, T2.3, T2.4, T2.5 y T2.6. En revisión: T3.1 y T3.2 (salida ordinaria)._
+Inc2, T2.3 a T2.7. En revisión: T3.1 y T3.2 (salida ordinaria)._
 
 ## Hecho
 
@@ -46,7 +46,7 @@ la protección de `main` exigiendo esos checks.
   puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
   siguen pendientes de T3.3/T3.4.
 
-**Inc2 · en curso** (T2.3, T2.4, T2.5 y T2.6 hechas).
+**Inc2 · en curso** (T2.3 a T2.7 hechas).
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -58,24 +58,30 @@ la protección de `main` exigiendo esos checks.
   Generador por torno con `RngStreams.substream` (D22): calendario idéntico con
   2, 3 o 4 tornos. Además, sin cola `t_start_control = t_arrival` exacto (aviso
   de B sobre redondeo s/min). Tests en `tests/test_turnstile_failure.py`,
-  `tests/test_rng.py` y `tests/test_entry.py`. El runner aún no lo lanza (C).
-
+  `tests/test_rng.py` y `tests/test_entry.py`.
 * T2.4 (A, hecho; PR #8): `priority_of` con `queue_discipline == "priority"`:
   los grupos de `priority_groups` piden con `PRIORITY_HIGH` y adelantan a los
   normales; no expulsiva (`preempt=False`) y FIFO dentro de cada nivel (D20).
   Tests en `tests/test_entry.py`, con un escenario exacto a mano y la
   comprobación, con la misma semilla, de que X3 baja la espera de mayores y PMR.
-* T2.6 (B, hecho; PR #5): `log_incident` y `gate_closure_process` (I4): cierra la
-  puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
-  `reopen_event`, que se sustituye por uno nuevo (D13). Falta integrarla con la
-  elección de puerta (T2.7, A) y lanzarla desde el runner (C).
 * T2.5 (B, hecho; PR #13): I1 en
   `incidents.py` (`sample_seat_conflicts`, `has_seat_conflict`, `seat_conflict`)
   e integrado en `seating_process`: al llegar al asiento, con `u < prob`, el
   espectador retiene la plaza del vomitorio, espera a un acomodador de su zona y
   resuelve en Triangular(1, 3, 10) min. Ocurrencia y duración sorteadas en E0 por
-  `id` (D21, números comunes). Tests en `tests/test_seat_conflict.py`. El runner
-  aún rechaza incidencias activas (D19).
+  `id` (D21, números comunes). Tests en `tests/test_seat_conflict.py`.
+* T2.6 (B, hecho; PR #5): `log_incident` y `gate_closure_process` (I4): cierra la
+  puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
+  `reopen_event`, que se sustituye por uno nuevo (D13). La elección de puerta
+  llega con T2.7; falta lanzarla desde el runner (C).
+* T2.7 (A, hecho; PR #16): `choose_gate`
+  en `entry.py`, evaluado al llegar (E1). Puerta asignada abierta: esa. Cerrada
+  con `redirect_on_gate_closure`: la abierta de su macrozona con menos cola por
+  `(len(queue), count, nº de puerta)`, sin azar; sin redirección o sin otra
+  abierta: espera en un bucle que lee `reopen_event` en cada vuelta y entra en
+  su puerta en orden de llegada (D13). `gate_used` es la puerta real. Quien ya
+  está en cola al cerrarse sigue su curso (hipótesis D23, pendiente del grupo).
+  Tests en `tests/test_choose_gate.py`, incluido X6 saturado en punta.
 
 **Inc3: en curso.**
 
@@ -83,22 +89,25 @@ la protección de `main` exigiendo esos checks.
   `exit_pass_time_s` (60 / (anchura * 66), unos 0,23 s), `build_exit_resources`
   (6 salidas de capacidad 1 por zona), `release_time_min` (simultánea, o la grada
   superior `exit_stagger_min` después), `choose_exit` (menos cola, sin bloqueadas,
-  desempate con números comunes, D23) y `exit_process` (liberación, marcha, cola y
+  desempate con números comunes, D24) y `exit_process` (liberación, marcha, cola y
   paso). Tests en `tests/test_exit.py`, incluida la validación del apartado 4.3 de
   la memoria: 12.195 personas de una zona cruzan las 6 salidas en 7,7 min.
 
 ## Siguiente paso
 
 * C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
-  (T2.4 ya en `main`; sin ello X3 no se ejecuta), lanzar `gate_closure_process`
-  en E0 (T2.6 ya en `main`), admitir I1 (T2.5) e I3 (T2.3, lanzar
-  `start_turnstile_failure_processes`); ver `docs/AVISOS.md`. Después
-  T5.2 (estadística con datos sintéticos, sin dependencias) y T2.8 (necesita
-  T2.5 de B).
-* A: T2.1 (cuatro macrozonas y medida de tiempo, D15),
-  T2.2 (I2, ya tiene `log_incident`) y T2.7 (redirección, usa T2.6).
+  (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
+  lanzar en E0 `gate_closure_process` (I4, T2.6) y
+  `start_turnstile_failure_processes` (I3, T2.3), y aceptar `seat_conflict`
+  (I1, T2.5); ver `docs/AVISOS.md`. Las métricas por puerta deben agrupar por
+  `gate_used` (T2.7). Después T5.2 (estadística con datos sintéticos) y T2.8.
+* A: T2.1 (cuatro macrozonas y medida de tiempo, D15)
+  y T2.2 (I2, ya tiene `log_incident`).
 * B: T3.1 y T3.2 en revisión; después T4.1 (evacuación), que depende de Inc3.
 * C: T3.3 (encadenar la salida en el runner) en cuanto T3.1 esté en `main`.
+* Grupo: confirmar la hipótesis D23 (cola existente al cerrar una puerta) y el
+  instante del cierre en X6 (`start_min = +20` cae fuera de la hora punta; ver
+  Dudas abiertas).
 
 ## Reparto
 
@@ -118,14 +127,9 @@ Commit cuando Chema lo indique; la publicación y el PR se tratan después.
 
 ## Verificación
 
-Rama T2.5 integrada con `main` tras el PR #12 (Python 3.13.2): `make lint` limpio,
-`make test` con 214 tests correctos y 2 xfail esperados; `check_pr_docs` OK.
-
-`main` tras el PR #11 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 197 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
-`main` tras el PR #12 (2026-11-23, Python 3.13.2): `make lint` limpio y
-`make test` con 204 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
-Rama T2.3: 229 correctos y los mismos 2 xfail; lint limpio.
+`main` tras los PR #13 y #14 (2026-11-23, Python 3.13.2): `make lint` limpio y
+`make test` con 239 tests correctos y 2 xfail esperados (salida, T3.3/T3.4).
+Rama T2.7: 253 correctos y los mismos 2 xfail; lint y `check_pr_docs` limpios.
 
 * T1.4: `i1_mini`, semilla 20261105: 600 filas, 600 sentados, último asiento en
   t = +31,907 min.
@@ -146,6 +150,15 @@ Rama T2.3: 229 correctos y los mismos 2 xfail; lint limpio.
   posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
   `t_start` anterior al último fin de control, o dejarlo así? La memoria no lo
   precisa; queda para T2.8.
+* T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
+  mientras dura. Alternativa: parar también los tornos de esa puerta y/o
+  redirigir su cola; ver D23.
+* T2.7 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
+  cuando solo llega el 2 % del público. En una macrozona realista (N/4, 6
+  puertas, semilla 11) afecta a 26 personas frente a 330 si empieza en −25. Con 2
+  tornos, la espera máxima en la puerta cerrada pasa de 9,0 a 8,3 min con
+  redirección si empieza en +20, y de 16,9 a 6,3 min si empieza en −25. Para que
+  P7 mida el «cierre en hora punta» habría que adelantarlo; no se cambia aquí.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin
