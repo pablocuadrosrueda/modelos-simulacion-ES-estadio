@@ -67,8 +67,8 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | pendiente | Inc3 |
-| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | pendiente | T4.1 |
+| T4.1 | `emergency`: `alarm_process` (cierra accesos, abandono de colas, salidas ×1,3) y `evacuation_process` (reacción, velocidad ×1,2) | B | en revisión | Inc3 |
+| T4.2 | Variante con salida bloqueada en `blocked_exit_zone` | B | en revisión | T4.1 |
 | T4.3 | `runner`: interrupción de los sentados con `Process.interrupt()`, E8; KPIs `evac_time_min`, `evac_pct_ref`, `n_abandoned`; contrastar con 5,9 / 7,1 min | C | pendiente | T4.1 |
 
 ## Inc5 · Experimentos y estadística
