@@ -58,7 +58,7 @@ de creación (D22). Uso actual: un generador por torno,
 | 7 | `vomitory` | paso por vomitorio (N tiempos en `build_stadium_resources`, por `id`; D18) | stadium |
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución; N + N en E0 por `id`, D21) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
-| 10 | `exit_choice` | desempates de salida | exit, emergency |
+| 10 | `exit_choice` | desempates de salida (N en `build_exit_resources`, por `id`; D24) | exit, emergency |
 | 11 | `reaction` | reacción a la alarma | emergency |
 | 12 | `gate_choice` | desempates al redirigir (I4) | entry |
 
@@ -173,7 +173,7 @@ Un KPI que no aplica al escenario vale `NaN`.
 entry, stadium, exits, phase). Los procesos SimPy son generadores que reciben
 `(spectator, ctx)` y mutan el `Spectator`.
 
-## Análisis entre réplicas (T5.2, D24)
+## Análisis entre réplicas (T5.2, D26)
 
 * `confidence_interval(values, level=0.95)` devuelve `(media, semianchura)` del
   IC t-Student, con desviación muestral y n−1 grados de libertad. Ignora NaN;

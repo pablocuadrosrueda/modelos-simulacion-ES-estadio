@@ -51,15 +51,15 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | T2.4 | Prioridad no expulsiva (X3) en `priority_of` | A | hecho | Inc1 |
 | T2.5 | `log_incident`, I1 `has_seat_conflict` + `seat_conflict` con acomodadores (retiene plaza de vomitorio) | B | hecho | Inc1 |
 | T2.6 | I4 `gate_closure_process` (cambia `gate_open`, dispara `reopen_event`) | B | hecho | T1.2 |
-| T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | en revisión | T2.6 |
+| T2.7 | `choose_gate` con redirección a la puerta con menos cola / espera a reapertura | A | hecho | T2.6 |
 | T2.8 | KPIs P4/P6 e incidencias (`group_wait_diff_min`, `conflict_delay_s`, `n_conflicts`...); test de capacidad de recursos | C | pendiente | T2.4, T2.5 |
 
 ## Inc3 · Salida ordinaria
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
-| T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | pendiente | Inc1 |
-| T3.2 | Salida escalonada (`release_time_min`, X4) | B | pendiente | T3.1 |
+| T3.1 | `exit`: recursos, `exit_pass_time_s`, `choose_exit`, `exit_process` (salida simultánea) | B | en revisión | Inc1 |
+| T3.2 | Salida escalonada (`release_time_min`, X4) | B | en revisión | T3.1 |
 | T3.3 | `runner`: encadenar asiento → permanencia → salida (E5, E6, E9); KPIs `exit_time_min`, `exit_queue_max`; contrastar con 7,7 min | C | pendiente | T3.1 |
 | T3.4 | `test_conservacion` completo sin `xfail` | C | pendiente | T3.3 |
 
