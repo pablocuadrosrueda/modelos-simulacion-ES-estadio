@@ -225,6 +225,19 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
 
+### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
+El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
+emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o
+del límite, nunca de que terminen los bucles de avería. La cola se reconstruye
+por puerta usada, excluyendo a quienes todavía no han llegado (`gate_used=-1`).
+P4 usa los colectivos de `priority_groups` con independencia de la disciplina.
+Para operacionalizar el «conflicto activo» de P6 se comprueba solape de intervalos
+en el mismo bloque/zona y se excluye al causante; sin población expuesta o de
+comparación, NaN. Los contadores siguen la definición literal de filas registradas:
+no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
+se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
+con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.
+
 ### D26 · Salidas estadísticas y muestras incompletas (T5.2) — 2026-11-23
 El análisis usa una observación por réplica, como exige §5.3 de la memoria.
 Los resúmenes son tablas anchas con media, semianchura del IC t-Student y n

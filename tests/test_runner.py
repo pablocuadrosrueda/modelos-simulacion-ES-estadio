@@ -114,14 +114,11 @@ def test_multiple_zones() -> None:
     assert df["t_seated"].notna().all()
 
 
-@pytest.mark.parametrize(
-    "kind", ["seat_conflict", "read_failure", "turnstile_failure", "gate_closure"]
-)
-def test_rejects_unimplemented_incidents(kind: str) -> None:
+def test_rejects_unimplemented_read_failure() -> None:
     cfg = load_config(
-        overrides=deep_merge(MINI_OVERRIDES, {"incidents": {kind: {"enabled": True}}})
+        overrides=deep_merge(MINI_OVERRIDES, {"incidents": {"read_failure": {"enabled": True}}})
     )
-    with pytest.raises(NotImplementedError, match="Inc2"):
+    with pytest.raises(NotImplementedError, match="T2.2"):
         runner.run_replica(cfg, seed=1)
 
 
@@ -131,10 +128,9 @@ def test_rejects_emergency(mini_config: Config) -> None:
         runner.run_replica(cfg, seed=1)
 
 
-def test_rejects_priority_queue() -> None:
+def test_accepts_priority_queue() -> None:
     cfg = load_config(overrides={**MINI_OVERRIDES, "queue_discipline": "priority"})
-    with pytest.raises(NotImplementedError, match="T2.4"):
-        runner.run_replica(cfg, seed=1)
+    assert runner.run_replica(cfg, seed=1)["t_seated"].notna().all()
 
 
 def test_development_config() -> None:

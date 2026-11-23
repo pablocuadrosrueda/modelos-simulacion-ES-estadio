@@ -17,7 +17,7 @@ Responsable: C.
 from __future__ import annotations
 
 from collections.abc import Generator
-from dataclasses import asdict, dataclass, field, fields
+from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -26,7 +26,8 @@ import simpy
 from .arrivals import generate_spectators
 from .config import Config
 from .entities import INCIDENT_COLUMNS, SPECTATOR_COLUMNS, Incident, Spectator, min_to_s
-from .entry import build_entry_resources, entry_process
+from .entry import build_entry_resources, entry_process, start_turnstile_failure_processes
+from .incidents import gate_closure_process
 from .rng import RngStreams
 from .stadium import build_stadium_resources, seating_process
 
@@ -65,9 +66,9 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
 
     Termina al sentarse el último espectador o al alcanzar ``max_sim_hours``
     desde la apertura. Si se alcanza ese límite, conserva todos los espectadores
-    y deja en NaN los sucesos pendientes. La permanencia y salida se integran
-    en T3.3; las incidencias y emergencias activadas se rechazan explícitamente
-    hasta implementar esas fases. Esta versión admite solo colas FIFO.
+    y deja en NaN los sucesos pendientes. Admite FIFO/prioridad, conflictos I1,
+    averías I3 y cierre I4. I2 y emergencia siguen pendientes y se rechazan
+    explícitamente. La permanencia y salida se integran en T3.3.
 
     Args:
         config: escenario ya validado (``config.load_config`` / ``load_experiment``).
@@ -80,18 +81,15 @@ def run_replica(config: Config, seed: int) -> pd.DataFrame:
         ``"incidents"`` (DataFrame con ``entities.INCIDENT_COLUMNS``),
         ``"seed"`` y ``"scenario"`` (``config.name``).
     """
-    if any(getattr(config.incidents, f.name).enabled for f in fields(config.incidents)):
-        raise NotImplementedError("Inc1 solo admite incidencias desactivadas (pendientes de Inc2)")
+    if config.incidents.read_failure.enabled:
+        raise NotImplementedError("Fallo de lectura I2 pendiente de T2.2; desactiva read_failure")
     if config.emergency.enabled:
         raise NotImplementedError("Evacuación pendiente de Inc4; desactiva emergency.enabled")
-    if config.queue_discipline != "fifo":
-        raise NotImplementedError(
-            "Prioridad en tornos pendiente de T2.4; usa queue_discipline='fifo'"
-        )
-
     env = simpy.Environment(initial_time=min_to_s(config.t_open_min))
     ctx = SimContext(env=env, config=config, rngs=RngStreams(seed))
     ctx.entry = build_entry_resources(ctx)
+    start_turnstile_failure_processes(ctx)
+    env.process(gate_closure_process(ctx))
     ctx.stadium = build_stadium_resources(ctx)
     ctx.spectators = generate_spectators(config, ctx.rngs)
 
