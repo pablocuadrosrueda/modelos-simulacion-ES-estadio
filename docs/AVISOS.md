@@ -29,7 +29,6 @@ Reglas:
 ### 2026-11-23 · B → A, C · I4 cierre de puerta y `log_incident` (T2.6)
 **Estado:** **en `main`** (PR #5). Pendiente de aplicar: C (lanzarlo en el runner)
 y A (T2.2, T2.7).
-**Estado actualizado:** fusionada en main mediante PR #5; integración en runner pendiente de Inc2.
 
 * **C (runner):** lanza `incidents.gate_closure_process(ctx)` en E0, después de
   `build_entry_resources`. Con `gate_closure.enabled = false` termina al instante,
@@ -42,11 +41,8 @@ y A (T2.2, T2.7).
   Los que esperan se reanudan en orden de registro (D13; hay un test en
   `tests/test_incidents.py`). `gate_open[key]` ya es `True` cuando se reanudan.
 
-### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
-**Estado:** **en `main`** (PR #6). Vigente mientras el runner rechace
-incidencias, emergencia o prioridad.
 ### 2026-11-23 · C → A, B · Réplicas y CSV de Inc1 (T1.6)
-**Estado:** publicada en el PR #9, rama `feat/chema-T1.6-experiments`.
+**Estado:** **en `main`** (PR #9).
 
 * `make run EXP=configs/dev/i1_mini.json REPS=3` ejecuta tres réplicas y guarda
   los indicadores en `results/i1_mini_kpis.csv`. La API devuelve la tabla sin
@@ -56,7 +52,8 @@ incidencias, emergencia o prioridad.
   diferencia numérica negativa. No cambian columnas, firmas ni parámetros.
 
 ### 2026-11-23 · C → A, B · Runner de Inc1 preparado (T1.4, D19)
-**Estado actualizado:** fusionado en main mediante PR #6.
+**Estado:** **en `main`** (PR #6). Vigente mientras el runner rechace
+incidencias, emergencia o prioridad.
 
 * Conecta entrada y asiento con las interfaces de T1.2/T1.3. Devuelve una fila
   por espectador, las columnas acordadas y los metadatos de la réplica.
@@ -64,7 +61,7 @@ incidencias, emergencia o prioridad.
   apertura. Las fases posteriores siguen pendientes; sucesos no ocurridos, NaN.
 * Las configuraciones deben ser FIFO y desactivar incidencias y emergencia;
   otras opciones lanzan `NotImplementedError` (D19). Para probar, cargar
-  `configs/dev/i1_mini.json` con `load_experiment`; la CLI llega en T1.6.
+  `configs/dev/i1_mini.json` con `load_experiment` o, desde T1.6, `make run`.
 
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
 **Estado actualizado:** T1.1 y T1.2 fusionadas en `main` (PR #1 y #2).
