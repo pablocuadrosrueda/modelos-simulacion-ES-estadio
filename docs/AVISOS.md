@@ -14,7 +14,7 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D22)
+### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D23)
 **Estado:** en la rama `feat/perez-T3.1-exit`; **aún no en `main`**.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
@@ -26,6 +26,37 @@ Reglas:
   `t_exit` por `(zone, exit_id)`; el paso dura `pass_time_s` (unos 0,23 s), así que
   quien está pasando cuenta en la cola hasta `t_exit`.
 * **B (T4.x):** `ExitResources.blocked` y `pass_time_s` son los que cambiará la alarma.
+
+### 2026-11-23 · B → A, C · I1 conflicto por asiento (T2.5, D21)
+**Estado:** **en `main`** (PR #13). Pendiente de aplicar por C (runner y T2.8).
+
+* **C (runner):** `seating_process` ya aplica I1 por sí solo; no hay que lanzar
+  nada más. Para ejecutar X0 o X5 falta que `run_replica` deje de rechazar
+  `seat_conflict.enabled = true` (D19).
+* **C (T2.8):** cada conflicto deja `Spectator.conflict = True` y una incidencia
+  `I1` con `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` (al llegar al
+  asiento) y `t_end` (resuelto). `n_conflicts` = incidencias `I1`. Para
+  `conflict_delay_s`: el bloque está «con conflicto activo» entre `t_start` y `t_end`.
+* **A:** el sorteo de I1 no va en `generate_spectators` (D17); se hace en E0 dentro
+  de `build_stadium_resources` (D21), así que `arrivals` no cambia.
+
+### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D22)
+**Estado:** **en `main`** (PR #14). Pendiente de aplicar por C (runner).
+
+* **C (runner):** en E0, después de `ctx.entry = build_entry_resources(ctx)`,
+  llamar a `entry.start_turnstile_failure_processes(ctx)`. Si
+  `incidents.turnstile_failure.enabled` es falso no crea nada, así que se puede
+  llamar siempre.
+* **C (runner):** dejar de rechazar `turnstile_failure.enabled = true` en la
+  guarda de incidencias (las demás siguen pendientes).
+* Los procesos de avería **no terminan**: la réplica debe acabar por
+  `finished | time_limit`, como ya hace; no esperar a que acaben.
+* Cada avería queda en `ctx.incidents` como `Incident("I3", zona, "A-G1-T2",
+  t_start, t_end)` (min), y por tanto en `df.attrs["incidents"]`;
+  `n_turnstile_failures` puede contar las filas `kind == "I3"`. Duda abierta
+  para T2.8 en ESTADO (averías después de la entrada).
+* **Todos:** sin cola, `t_start_control` es ahora exactamente `t_arrival` (aviso
+  de B en T1.3); las tolerancias existentes siguen siendo válidas.
 
 ### 2026-11-23 · A → C · Prioridad no expulsiva en el torno (T2.4, D20)
 **Estado:** **en `main`** (PR #8). Pendiente de aplicar por C.

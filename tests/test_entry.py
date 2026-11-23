@@ -88,6 +88,27 @@ def test_single_spectator_no_wait(mini_config: Config) -> None:
     assert sp.read_failure is False
 
 
+@pytest.mark.parametrize("t_arrival", [-89.8356, -89.6164, -89.3972])
+def test_no_wait_start_equals_arrival_exactly(mini_config: Config, t_arrival: float) -> None:
+    """Sin cola, t_start_control == t_arrival exacto (redondeo s <-> min, aviso de B)."""
+    ctx = make_ctx(mini_config)
+    sp = make_spectator(0, t_arrival)
+    run_entry(ctx, [sp])
+    assert sp.t_start_control == sp.t_arrival
+    assert sp.t_start_control - sp.t_arrival == 0.0
+
+
+def test_late_launch_starts_at_launch_time(mini_config: Config) -> None:
+    """Lanzado después de su llegada, empieza al lanzarse (no se reescribe a t_arrival)."""
+    ctx = make_ctx(mini_config)
+    sp = make_spectator(0, -80.0)
+    ctx.spectators = [sp]
+    ctx.env.run(until=min_to_s(-70.0))
+    ctx.env.process(entry_process(sp, ctx))
+    ctx.env.run()
+    assert sp.t_start_control == pytest.approx(-70.0)
+
+
 def test_fifo_order_one_gate(mini_config: Config) -> None:
     """Llegadas escalonadas a una puerta saturada: se atienden por orden de llegada."""
     ctx = make_ctx(mini_config)

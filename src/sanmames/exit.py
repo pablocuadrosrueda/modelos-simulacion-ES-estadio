@@ -13,7 +13,7 @@ Memoria §3.1 Fase C, §4.3 y §4.5:
   ``60 / (exit_width_m * exit_rate_per_m_min)`` s por persona (≈ 0,23 s);
 * al pasar registra ``t_exit`` (E6).
 
-Números aleatorios comunes (D22): el desempate entre salidas igual de cargadas es
+Números aleatorios comunes (D23): el desempate entre salidas igual de cargadas es
 una variable por espectador. ``build_exit_resources`` sortea de una vez
 ``n_spectators`` uniformes del flujo ``"exit_choice"`` y el espectador ``id`` usa
 la suya, como en D18.
@@ -44,7 +44,7 @@ class ExitResources:
     blocked: set[tuple[str, int]] = field(default_factory=set)
     """Salidas inutilizadas (variante X7 con bloqueo)."""
     tie_u: np.ndarray = field(default_factory=lambda: np.empty(0))
-    """Uniforme(0, 1) del espectador ``id`` para desempatar salidas (D22)."""
+    """Uniforme(0, 1) del espectador ``id`` para desempatar salidas (D23)."""
 
 
 def exit_pass_time_s(width_m: float, rate_per_m_min: float) -> float:
@@ -64,7 +64,7 @@ def build_exit_resources(ctx: SimContext) -> ExitResources:
 
     Por cada salida ``(zone, exit_id)`` (``exit_id`` 1-indexado) un ``Resource``
     de capacidad 1 con el paso ordinario, ninguna bloqueada. Sortea además los
-    ``n_spectators`` números de desempate (D22).
+    ``n_spectators`` números de desempate (D23).
     """
     cfg = ctx.config
     res = ExitResources()
@@ -101,7 +101,7 @@ def choose_exit(spectator: Spectator, ctx: SimContext) -> int:
     """Salida no bloqueada de su macrozona con menos cola.
 
     Si varias empatan, elige entre ellas con el número de desempate del
-    espectador (D22): la ``floor(u * k)``-ésima de las ``k`` empatadas, en orden
+    espectador (D23): la ``floor(u * k)``-ésima de las ``k`` empatadas, en orden
     de ``exit_id``.
     """
     assert ctx.exits is not None, "build_exit_resources debe ejecutarse antes (E0)"

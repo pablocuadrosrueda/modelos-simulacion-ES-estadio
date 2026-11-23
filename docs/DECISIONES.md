@@ -148,9 +148,48 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
 * Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
   (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
 
-### D22. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
+### D21 · I1 con números comunes, sorteado en E0 — 2026-11-23
+Igual que D18. `stadium.build_stadium_resources` llama a
+`incidents.sample_seat_conflicts`, que sortea del flujo `"seat_conflict"`, para
+los `n_spectators`, un `u` ~ Uniforme(0, 1) y una resolución
+Triangular(`resolution_min`) en segundos. Se guardan en `StadiumResources`
+(`seat_conflict_u`, `seat_conflict_resolution_s`) por `id`. Hay conflicto si
+`u < prob`: al pasar de 0,5 % a 1 % el conjunto crece y conserva a los
+anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
+* El conflicto se detecta **al llegar al asiento**, tras el paso por el
+  vomitorio, y el espectador **retiene la plaza** mientras espera al acomodador
+  de su macrozona (FIFO) y mientras dura la resolución.
+* Incidencia `I1`: `resource` = bloque (`"A-B3"`), `spectator_id`, `t_start` al
+  detectarlo y `t_end` al resolverse (incluye la espera al acomodador).
+* Sustituye, para I1, la indicación de D17 de sortearlo en `generate_spectators`.
+### D22 · Averías de torno (I3): reloj en funcionamiento y generador por torno — 2026-11-23
+* **Reloj:** el tiempo entre fallos Exponencial(`mtbf_min`) se mide **en
+  funcionamiento**: empieza en la apertura y, tras cada avería, al terminar la
+  reparación. Así `mtbf_min` es el tiempo medio de buen funcionamiento (MTBF
+  en sentido estricto) y un torno no puede encadenar fallos durante su propia
+  reparación. Cada torno hace en promedio `T / (mtbf_min + media(repair_min))`
+  averías en un horizonte `T` (≈ T / 246,5 con la base).
+* **Cuándo se para:** al vencer ese tiempo el torno se avería, pero termina el
+  servicio en curso (memoria §3.2: «cuando el torno queda libre»): la avería
+  pide una plaza con `PRIORITY_FAILURE` y `preempt=False` y la reparación
+  Uniforme(`repair_min`) cuenta desde que la consigue (`t_start` de la
+  incidencia). Como el recurso de la puerta no distingue tornos físicos, «el
+  torno k» ocupa la primera plaza que se libera; con c bucles por puerta nunca
+  hay más de c averías a la vez.
+* **Números aleatorios comunes (D17):** cada torno `(zona, puerta, k)` tiene su
+  propio generador, `rngs.substream("turnstile_failure", zona, puerta, k)`, que
+  depende solo de la semilla y de esa identidad (`SeedSequence` con
+  `spawn_key = (9, …clave codificada)`). Sortea en orden fijo Exp, Unif, Exp,
+  Unif… El calendario de sorteos del torno A-G1-T1 es el mismo con 2, 3 o 4
+  tornos por puerta (X1) y con otras macrozonas; solo cambia, inevitablemente,
+  la espera hasta que el torno queda libre. No se añade ningún flujo a
+  `STREAM_NAMES`; el flujo padre `turnstile_failure` no se consume.
+* Numeración: D21 está reservado por T2.5 (rama `feat/perez-T2.5-seat-conflict`,
+  I1 con números comunes), abierta antes; esta decisión toma D22.
+
+### D23. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
 * El espectador elige salida **al llegar** a la zona de salidas, tras recorrer
-  `distance_m`: la no bloqueada de su macrozona con menos personas (en cola + la
+  `distance_m`: la no bloqueada de su macrozona con menos personas (en cola más la
   que está pasando). `t_exit_queue` es ese instante y `t_exit` el final de su paso.
 * Desempate entre salidas igual de cargadas: como en D18, `build_exit_resources`
   sortea en E0 `n_spectators` uniformes del flujo `"exit_choice"`
@@ -159,5 +198,5 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
 * Quien se sienta después de su liberación (E5) sale en cuanto se lanza
   `exit_process`. La política escalonada (`release_time_min`, T3.2) se implementa
   a la vez porque es una línea: grada superior `exit_stagger_min` después.
-* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona tardan 7,7 min en
-  atravesar las 6 salidas (`tests/test_exit.py`).
+* Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
+  tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
