@@ -113,7 +113,18 @@ los números aleatorios comunes que exige la memoria (§5.3).
   su duración. I3 e I4 son procesos por recurso, no por espectador: cada uno usa
   su propio flujo.
 
-### D18 · Semántica de la prioridad en el torno (X3) — 2026-11-23
+### D18 · Paso por el vomitorio con números comunes, sorteado en `stadium` — 2026-11-23
+El paso por el vomitorio es una variable por espectador, así que D17 obliga a no
+sortearla dentro del proceso. Para no tocar `Spectator` ni `arrivals` (rol A),
+`stadium.build_stadium_resources` sortea de una vez `n_spectators` tiempos
+Triangular(`vomitory_pass_s`) del flujo `"vomitory"` y los guarda en
+`StadiumResources.vomitory_pass_s`; el espectador `id` usa la posición `id`.
+Como `id` va de 0 a N−1 y no depende del escenario (salvo el perfil de llegadas,
+igual que `service_s`), cada espectador recibe el mismo número en todos los
+escenarios. No es columna del DataFrame. Si se prefiere un atributo
+`Spectator.vomitory_s` como `service_s`, el cambio es local a A y B.
+
+### D19 · Semántica de la prioridad en el torno (X3) — 2026-11-23
 * Solo actúa con `queue_discipline == "priority"`; con `"fifo"`, `priority_groups`
   se ignora. Con `"priority"` y `priority_groups` vacío equivale a FIFO.
 * Niveles SimPy (menor = antes): `PRIORITY_FAILURE` (−1, avería I3) < `PRIORITY_HIGH`

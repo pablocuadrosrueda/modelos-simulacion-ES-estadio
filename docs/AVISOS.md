@@ -14,10 +14,26 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · B → A, C · `stadium` listo (T1.3) y precisión de tiempos
+**Estado:** en la rama `feat/perez-T1.3-stadium`; **aún no en `main`**.
+
+* **C (T1.4):** `run_replica` crea `ctx.stadium = build_stadium_resources(ctx)`
+  en E0 (después de `ctx.entry`) y encadena
+  `yield from entry_process(sp, ctx)` → `yield from seating_process(sp, ctx)`.
+  `seating_process` también espera solo hasta `t_end_control` si se lanza antes.
+  Rellena `t_vomitory`, `t_seated` y `late`; `conflict` queda en `False` hasta T2.5.
+* **C (T1.4, D18):** `build_stadium_resources` usa `config.n_spectators` y el `id`
+  como índice: los `id` deben ir de 0 a N−1 (ya lo garantiza `generate_spectators`).
+* **A y C · coma flotante:** al convertir s ↔ min (`s_to_min(min_to_s(x))`)
+  `t_start_control` puede quedar ~1e-14 min por debajo de `t_arrival` cuando no
+  hay espera. Los tests de invariantes (T1.7, `test_orden_temporal`) deben comparar
+  con tolerancia, o A puede guardar `t_start_control = t_arrival` cuando no hay cola.
+
 ### 2026-11-20 · A → B, C · `Spectator.service_s` y orden de entrada (D16, D17)
-**Estado:** en las ramas `feat/cuadros-T1.1-arrivals` y `feat/cuadros-T1.2-entry`;
-**aún no en `main`** (esperan sus PR). Hasta entonces, para trabajar contra ello,
-parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
+**Estado actualizado el 2026-11-22:** T1.1 y T1.2 ya están en `main`
+(PR #1 y #2 fusionados el 2026-11-20). Se puede partir de `main` actualizado.
+El aviso sigue vigente para las obligaciones de D17 en las futuras incidencias
+de Inc2 y hasta que los afectados hayan aplicado sus consecuencias.
 
 * **`Spectator` tiene un argumento obligatorio más:** `service_s` (tiempo de
   servicio en torno, s), justo después de `t_arrival`. Si construyes
@@ -36,8 +52,8 @@ parte de `feat/cuadros-T1.2-entry` o espera a la fusión.
 * **`entry.service_time_s` ya no existe.** No lo uses.
 * **B (T1.3):** `seating_process` parte de `sp.t_end_control` y escribe
   `t_vomitory` y `t_seated`.
-* **C (T1.4):** `run_replica` depende de T1.2 y T1.3 en `main`; hasta entonces,
-  stubs.
+* **C (T1.4):** T1.2 ya está en `main`; queda T1.3 para verificar la cadena
+  completa de entrada y asiento. T1.5 se puede implementar con datos sintéticos.
 
 ## Archivo
 

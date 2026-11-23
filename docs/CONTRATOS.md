@@ -50,7 +50,7 @@ Flujo `name` = `default_rng(SeedSequence(entropy=seed, spawn_key=(STREAM_INDEX[n
 | 4 | `distance` | distancia puerta -> asiento | arrivals |
 | 5 | `service` | servicio en torno (por espectador, en `generate_spectators`; D17) | arrivals |
 | 6 | `read_failure` | I2 | entry |
-| 7 | `vomitory` | paso por vomitorio | stadium |
+| 7 | `vomitory` | paso por vomitorio (N tiempos en `build_stadium_resources`, por `id`; D18) | stadium |
 | 8 | `seat_conflict` | I1 (ocurrencia y resolución) | incidents |
 | 9 | `turnstile_failure` | I3 | entry |
 | 10 | `exit_choice` | desempates de salida | exit, emergency |
