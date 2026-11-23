@@ -224,3 +224,22 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
   a la vez porque es una línea: grada superior `exit_stagger_min` después.
 * Validación (apartado 4.3 de la memoria): 12.195 personas de una macrozona
   tardan 7,7 min en atravesar las 6 salidas (`tests/test_exit.py`).
+
+### D26 · I2 con números comunes, sorteado en E0 en `entry` — 2026-11-23
+Igual que D18 y D21. `entry.build_entry_resources` llama a
+`entry.sample_read_failures`, que sortea del flujo `"read_failure"`, para los
+`n_spectators`, un `u` ~ Uniforme(0, 1) y un extra Uniforme(`extra_s`) en
+segundos. Se guardan en `EntryResources` (`read_failure_u`,
+`read_failure_extra_s`) por `id`, aunque la incidencia esté desactivada. Hay
+relectura si está activa y `u < prob`: al pasar de 3 % a 6 % el conjunto crece y
+conserva a los anteriores, y cada espectador tiene el mismo extra en todos los
+escenarios (también con 2/3/4 tornos y con otro perfil de llegadas).
+* La relectura va **justo después del servicio** y **no libera el torno**:
+  ocupa `service_s + extra`; ni interrumpe ni se interrumpe.
+* Incidencia `I2`: `resource` = puerta usada (`"A-G1"`), `spectator_id`,
+  `t_start` al empezar la relectura (`t_start_control + service_s`) y `t_end` =
+  `t_end_control`.
+* Sustituye, para I2, la indicación de D17 de sortearlo en
+  `generate_spectators`. **No cambia el contrato de `Spectator`** ni `arrivals`.
+* Numeración: `main` llegaba a D24 y las ramas abiertas reclaman D24 (T5.2) y
+  D25 (T2.8 y T4.1); esta toma D26 para no chocar con ninguna.
