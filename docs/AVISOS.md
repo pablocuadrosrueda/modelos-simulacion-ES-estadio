@@ -63,7 +63,7 @@ Reglas:
   demás flujos ni a resultados previos).
 
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
-**Estado:** **en `main`** (PR #15). Pendiente de aplicar por C (T3.3).
+**Estado:** en `main` (PR #15); aplicado por C en T3.3.
 
 * **C (T3.3):** en E0, `ctx.exits = build_exit_resources(ctx)` (después de
   `ctx.stadium`). Encadena `yield from seating_process(sp, ctx)` y después

@@ -124,6 +124,10 @@ incluida política escalonada y KPIs de vaciado/cola. Dos xfail activados.
 Caso analítico completo: 12.195 personas, seis salidas, unos 7,7 min sin marcha.
 Caso de desarrollo: `configs/dev/i3_mini.json` (dos variantes, semillas comunes).
 
+Próximo C: T3.4, conservación exhaustiva durante entrada, permanencia y salida,
+con incidencias y límite de tiempo. Después T4.3 depende de T4.1/T4.2 de B.
+A tiene pendiente T2.1; I2 (PR #21) y evacuación (PR #19) ya están fusionadas, pendientes de conectar en T4.3. Los experimentos oficiales de T5.1 esperan a Inc4;
+no se desactivan incidencias del modelo para presentar resultados definitivos.
 T3.4 añade conservación individual en todos los sucesos y puntos intermedios:
 12 combinaciones de semillas/políticas/con incidencias, además de límites durante
 cola exterior, partido, salida y antes de la llegada. Distingue conflictos con
