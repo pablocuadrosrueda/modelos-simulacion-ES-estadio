@@ -52,6 +52,7 @@ configs/base.json + configs/experiments/X*.json (diff)
 | `incidents.py` | I1 conflicto por asiento, I4 cierre de puerta | B |
 | `metrics.py` | KPIs por réplica | C |
 | `runner.py` | `SimContext`, `run_replica` (E0, E9) | C |
+| `capacity.py` | Comprobación analítica de capacidad (§4.3, T2.1) | A |
 | `analysis.py` | IC, réplicas necesarias, comparación, gráficas | C |
 | `experiments.py` | Réplicas por escenario, semillas comunes | C |
 | `tests/` | Verificación | C (cada uno añade los de su módulo) |
