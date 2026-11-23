@@ -119,6 +119,7 @@ def test_queue_max_separates_zones_and_gates(base_config: Config) -> None:
         {
             "zone": ["A", "A", "A", "B", "B"],
             "gate": [1, 1, 2, 1, 1],
+            "gate_used": [1, 1, 2, 1, 1],
             "t_arrival": [-20.0] * 5,
             "t_start_control": [-19.0] * 5,
             "t_end_control": [-18.0] * 5,
@@ -130,19 +131,23 @@ def test_queue_max_separates_zones_and_gates(base_config: Config) -> None:
 
 def test_future_kpis_remain_nan(entry_df: pd.DataFrame, metrics_config: Config) -> None:
     kpis = compute_kpis(entry_df, metrics_config)
-    future = KPI_COLUMNS[KPI_COLUMNS.index("wait_mean_priority_min") :]
+    future = ["exit_time_min", "exit_queue_max", "evac_time_min", "evac_pct_ref", "n_abandoned"]
     assert all(math.isnan(kpis[name]) for name in future)
 
 
 def test_empty_replica(metrics_config: Config) -> None:
     kpis = compute_kpis(pd.DataFrame(columns=SPECTATOR_COLUMNS), metrics_config)
-    for name in ("n_spectators", "n_entered", "queue_max_gate"):
+    counts = {
+        "n_spectators",
+        "n_entered",
+        "queue_max_gate",
+        "n_conflicts",
+        "n_read_failures",
+        "n_turnstile_failures",
+    }
+    for name in counts:
         assert kpis[name] == 0
-    assert all(
-        math.isnan(value)
-        for name, value in kpis.items()
-        if name not in {"n_spectators", "n_entered", "queue_max_gate"}
-    )
+    assert all(math.isnan(value) for name, value in kpis.items() if name not in counts)
 
 
 def test_pending_events_are_not_zero_waits(entry_df: pd.DataFrame, metrics_config: Config) -> None:

@@ -20,6 +20,7 @@ from typing import Any
 import pandas as pd
 
 from .config import Config
+from .entities import INCIDENT_COLUMNS
 
 _TIME_TOL_MIN = 1e-9
 """Tolerancia numérica de conversión s <-> min (aviso B, D18)."""
@@ -81,11 +82,37 @@ def queue_length_max(start: pd.Series, end: pd.Series) -> int:
     return peak
 
 
-def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
-    """Calcula los KPIs de entrada de una réplica (T1.5).
+def _conflict_delay_s(df: pd.DataFrame, incidents: pd.DataFrame) -> float:
+    """Contraste P6 entre tránsitos con/sin solape con I1 en el mismo bloque."""
+    eligible = df["t_vomitory"].notna() & df["t_seated"].notna() & ~df["conflict"].eq(True)
+    exposed = pd.Series(False, index=df.index)
+    blocks = df["zone"].astype(str) + "-B" + df["block"].astype(str)
+    for event in incidents.loc[incidents["kind"] == "I1"].itertuples():
+        if pd.isna(event.t_start):
+            continue
+        end = math.inf if pd.isna(event.t_end) else event.t_end
+        if end <= event.t_start:
+            continue
+        exposed |= (
+            df["zone"].eq(event.zone)
+            & blocks.eq(event.resource)
+            & (df["t_vomitory"] < end)
+            & (df["t_seated"] > event.t_start)
+            & (df["t_seated"] > df["t_vomitory"])
+        )
+    durations = (df["t_seated"] - df["t_vomitory"]) * 60
+    with_conflict = durations[eligible & exposed]
+    without_conflict = durations[eligible & ~exposed]
+    if with_conflict.empty or without_conflict.empty:
+        return math.nan
+    return float(with_conflict.mean() - without_conflict.mean())
 
-    Los indicadores de grupos, incidencias, salida y evacuación quedan en
-    NaN hasta sus tareas correspondientes. Las medias de espera y acceso usan
+
+def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
+    """Calcula los KPIs de entrada, grupos e incidencias (T1.5/T2.8).
+
+    Los indicadores de salida y evacuación quedan en NaN hasta sus tareas.
+    Las medias de espera y acceso usan
     los tiempos observados, sin convertir los sucesos pendientes en ceros.
     Sin observaciones, las medias y porcentajes son NaN; los recuentos y la
     cola máxima son cero. La utilización requiere algún control terminado.
@@ -110,11 +137,13 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
         kpis["wait_p95_min"] = float(waits.quantile(0.95))
         kpis["pct_wait_lt_10"] = float((waits < 10).mean() * 100)
 
-    # Las puertas se numeran dentro de cada macrozona: A-G1 y B-G1 son distintas.
+    # gate_used se fija al llegar, también si espera una reapertura. -1 indica
+    # que todavía no ha llegado: no pertenece aún a ninguna cola observada.
+    arrived = df.loc[df["gate_used"] >= 1]
     kpis["queue_max_gate"] = max(
         (
             queue_length_max(gate["t_arrival"], gate["t_start_control"])
-            for _, gate in df.groupby(["zone", "gate"])
+            for _, gate in arrived.groupby(["zone", "gate_used"])
         ),
         default=0,
     )
@@ -134,4 +163,17 @@ def compute_kpis(df: pd.DataFrame, config: Config) -> dict[str, Any]:
         kpis["late_pct"] = float(
             (df.loc[before_kickoff, "t_seated"] > config.t_start_min).mean() * 100
         )
+
+    priority = df["group"].isin(config.priority_groups)
+    kpis["wait_mean_priority_min"] = float(waits[priority.reindex(waits.index)].mean())
+    kpis["wait_mean_rest_min"] = float(waits[~priority.reindex(waits.index)].mean())
+    kpis["group_wait_diff_min"] = kpis["wait_mean_priority_min"] - kpis["wait_mean_rest_min"]
+    incidents = df.attrs.get("incidents", pd.DataFrame(columns=INCIDENT_COLUMNS))
+    for kind, name in (
+        ("I1", "n_conflicts"),
+        ("I2", "n_read_failures"),
+        ("I3", "n_turnstile_failures"),
+    ):
+        kpis[name] = int(incidents["kind"].eq(kind).sum())
+    kpis["conflict_delay_s"] = _conflict_delay_s(df, incidents)
     return kpis

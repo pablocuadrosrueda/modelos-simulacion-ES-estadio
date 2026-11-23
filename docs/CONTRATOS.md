@@ -77,6 +77,11 @@ emergencia deben estar desactivadas y la cola debe ser FIFO; configuraciones
 fuera de este alcance lanzan `NotImplementedError`, sin ignorar opciones activas.
 La permanencia y salida se integran en T3.3 y la emergencia en T4.3.
 
+**Ampliación de Inc2 (T2.8, D25):** se admiten prioridad, I1, I3 e I4. El runner
+lanza en E0 los auxiliares de avería y cierre, y conserva su condición de fin
+por espectadores/límite (los bucles de avería no terminan). I2 y emergencia
+siguen rechazadas mientras no estén integradas.
+
 | Columna | Tipo | Quién la rellena | Descripción |
 |---|---|---|---|
 | `id` | int | arrivals | 0..N-1 |
@@ -153,6 +158,15 @@ Un KPI que no aplica al escenario vale `NaN`.
 
 > `turnstile_util` y `conflict_delay_s` quedan fijadas en `docs/DECISIONES.md`
 > (D12); si se cambia alguna, actualizar esta tabla y esa decisión.
+
+Precisión operativa de T2.8 (D25): `queue_max_gate` agrupa por `(zone, gate_used)`;
+`gate_used = -1` indica que no ha llegado y se excluye de las colas observadas.
+Los grupos de P4 los fija `priority_groups`, también con FIFO. Para P6, se
+excluye a los espectadores con `conflict=True`; se considera expuesto el tránsito
+`[t_vomitory, t_seated)` que solape un I1 activo `[t_start, t_end)` del mismo
+bloque y zona. Se resta la media de duración de los no expuestos y se convierte
+a segundos. Si falta una de las poblaciones, NaN. Los contadores I1/I2/I3 cuentan
+todas las filas registradas de ese tipo, incluidas las todavía no finalizadas.
 
 ## Firmas de los procesos (resumen)
 

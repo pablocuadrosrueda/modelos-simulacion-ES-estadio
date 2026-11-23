@@ -14,6 +14,15 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · Inc2 conectado e indicadores (T2.8, D25)
+**Estado:** preparado para PR desde `feat/chema-T2.8-metrics`.
+
+* Aplicados los avisos de prioridad, I1, I3 e I4. El runner ya lanza averías y
+  cierre en E0; mantiene I2/emergencia pendientes. La cola usa `gate_used`.
+* Calcula P4, contraste P6 por solape temporal y recuentos de incidencias.
+  Definiciones exactas en CONTRATOS/D25. No cambia Spectator ni firmas.
+* Caso de desarrollo: `make run EXP=configs/dev/i2_mini.json REPS=3`.
+
 ### 2026-11-23 · A → C · Redirección ante el cierre de puerta (T2.7, D23)
 **Estado:** en la rama `feat/cuadros-T2.7-choose-gate`; **aún no en `main`**.
 
