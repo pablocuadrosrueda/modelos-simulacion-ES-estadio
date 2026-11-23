@@ -84,6 +84,7 @@ def write_analysis(kpis: pd.DataFrame, output: Path) -> None:
         "X5": "X5_6acomodadores",
         "X6": "X6_sin_redireccion",
         "X7": "X7_todas_salidas",
+        "S1": "X0_base",
     }
     for experiment, reference in references.items():
         selected = kpis.loc[kpis.experiment.eq(experiment) | kpis.scenario.eq(reference)]
@@ -164,7 +165,8 @@ def run_pilot(
         "confidence_level": 0.95,
         "relative_halfwidth_target": 0.05,
         "source_sha256": {
-            str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources
+            p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sources
         },
         "scenarios": [{"experiment": exp, "config": asdict(cfg)} for _, exp, cfg in configs],
     }

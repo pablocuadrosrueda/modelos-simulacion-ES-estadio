@@ -1,7 +1,7 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-23. `main` contiene Inc0 a Inc4 completos y, de
-Inc5, T5.2 y T5.4. En revisión: T5.1 (piloto de X0 a X7) en esta rama._
+Inc5, T5.1, T5.2 y T5.4. T5.3 está en revisión en PR #29._
 
 ## Hecho
 
@@ -32,8 +32,7 @@ la protección de `main` exigiendo esos checks.
 * T1.4 (C, hecho; PR #6): `run_replica`, llegada → entrada → asiento, hasta
   sentarse todos o alcanzar `max_sim_hours` desde apertura (D19). Todas las
   columnas de `SPECTATOR_COLUMNS` y metadatos. `configs/dev/i1_mini.json`: 600
-  espectadores, zona A, FIFO, sin incidencias. Rechaza todavía incidencias,
-  emergencia y `queue_discipline = "priority"` (ver `docs/AVISOS.md`).
+  espectadores, zona A, FIFO, sin incidencias. Alcance inicial ampliado después por T2.8/T3.3/T4.3.
 * T1.5 (C, hecho; PR #3): KPIs de entrada y cola máxima por puerta. Utilización
   nominal desde apertura (D12); esperas pendientes no se sustituyen por ceros;
   métricas de fases futuras en NaN.
@@ -43,11 +42,10 @@ la protección de `main` exigiendo esos checks.
   para esperas nulas con redondeo s/min (tolerancia 1e-9 min), con tests.
 * T1.7 (C, hecho; PR #10): siete pruebas nuevas de conservación en cada
   transición, cola pendiente al alcanzar el límite y muchos tornos frente a una
-  puerta saturada con las mismas llegadas y servicios. Dos xfail de salida
-  siguen pendientes de T3.3/T3.4.
+  puerta saturada con las mismas llegadas y servicios. Los dos xfail de salida
+  se activaron posteriormente en T3.3/T3.4.
 
 **Inc2 · completado.**
-**Inc2: completado.**
 
 * T2.3 (A, hecho; PR #14): I3 en
   `entry.py`. Cada torno `(zona, puerta, k)` alterna Exponencial(`mtbf_min`) en
@@ -74,7 +72,7 @@ la protección de `main` exigiendo esos checks.
 * T2.6 (B, hecho; PR #5): `log_incident` y `gate_closure_process` (I4): cierra la
   puerta en `start_min`, registra `I4`, la reabre tras `duration_min` y dispara
   `reopen_event`, que se sustituye por uno nuevo (D13). La elección de puerta
-  llega con T2.7; falta lanzarla desde el runner (C).
+  llega con T2.7; lanzada desde el runner en T2.8 (C).
 * T2.7 (A, hecho; PR #16): `choose_gate`
   en `entry.py`, evaluado al llegar (E1). Puerta asignada abierta: esa. Cerrada
   con `redirect_on_gate_closure`: la abierta de su macrozona con menos cola por
@@ -142,35 +140,41 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T5.1 preparada para PR desde `feat/chema-T5.1-pilot`: 12 escenarios X0–X7,
-10 réplicas cada uno, semillas 20261105–20261114 y N=48.775. Las 120 réplicas
-terminan completas; reparto por zona entre 24,484 % y 25,406 %. Datos auditados,
-IC y procedencia en `results/pilot`; explicación en `docs/PILOTO_T5.1.md`.
-Duración original de simulación/KPIs: 298,91 s (~2,49 s/réplica), más recálculo
-posterior de P4 con las mismas semillas para recuperar cohortes (D32).
+T5.3 terminada, en revisión en PR #29 desde `feat/chema-T5.3-final`.
+**2.965 réplicas completas de 19 escenarios**: 13 principales X0–X7 (incluye
+X5 con 3/6/9 acomodadores y X6 en −30) y seis S1. Entre 30 y 247 réplicas por
+escenario. Los 19 IC al 95 % cumplen semianchura ≤5 % de la espera media;
+máximo observado 4,9865 %. Piloto actualizado: 190 réplicas; las 100 de escenarios
+sin cambio reproducen todos los KPIs anteriores. Las diez de cada piloto se
+reutilizan sin contarlas dos veces. X6 en +20 queda histórico.
 
-P4 compara ahora mayores/PMR y resto iguales en FIFO/prioridad, sin cambiar
-recorridos, configs ni KPIs originales. Las 20 reproducciones de X0/X3 coinciden
-en todos los KPIs originales y no se cuentan como nuevas réplicas. El script
-ya guarda estas cohortes directamente al repetir el lote.
+Datos definitivos y procedencia: `results/final`; piloto actualizado en su
+subcarpeta `pilot`. Informe reproducible: `docs/RESULTADOS_T5.3.md`, generado
+con `scripts/report_campaign.py`. El cálculo se fija en commit `fd6475c`;
+se verificaron sus 18 hashes al terminar. Las mejoras posteriores del informe
+y de conservación de objetivos al reanudar no cambian esos datos ni su origen.
 
-Validación con T2.1: 393 tests correctos y una prueba lenta opcional omitida
-(RUN_SLOW=1), sin xfail; lint y docs limpios. X0 espera media
-0,186 min; dos tornos: 3,986 min y 89,18 % bajo 10 min. Evacuación media 7,39 min
-sin bloqueo y 8,45 con bloqueo; el vaciado total <=8 se cumple en 9/10 y 0/10.
-Son resultados piloto, no conclusiones definitivas de la entrega.
+Resultados principales (IC del 95 % en el informe):
+* X5, 180 réplicas por nivel: duración media I1 con espera de 44,60 / 13,74 /
+  6,64 min con 3 / 6 / 9 acomodadores. Decisión D33 aplicada sin reducir los
+  parámetros de resolución; la saturación de tres es resultado de P6.
+* X6 en −30: espera del colectivo que llega a A-1 durante el cierre de 0,543
+  min con redirección (199 réplicas), frente a 9,626 sin ella (45 réplicas).
+* X7, 180 por variante: vaciado medio 7,469 min sin bloqueo y 8,420 con uno.
+  Vaciado completo ≤8 min en 163/180 y 0/180; no confundir media con garantía.
 
-Próximo C: T5.3, réplicas definitivas y S1. La precisión relativa del 5 % estima
-hasta 181 réplicas totales (no 30 por defecto); recalcular IC al ampliar. Un n
-común de 181 supondría 2.052 réplicas adicionales, unos 85 min al ritmo observado,
-sin S1. T2.1 ya fusionada por A (PR #25), con capacidad/rendimiento en
-`docs/VERIFICACION.md`; no bloquea la ampliación. T5.4 (B) ya fusionada (PR #27).
-Después T6.1 gráficas, T6.2 validación y T6.3 memoria.
-Siguen abiertas las dudas de X6 en +20 (fuera de punta) e I3 tras entrada.
-* C: el piloto de X6 se ejecutó con el cierre en t = +20; con D31 (PR #28) el
-  cierre pasa a t = -30, así que hay que repetir X6 antes de usar sus resultados.
-* Grupo: resolver las dudas abiertas de abajo antes de lanzar las réplicas
-  definitivas; no se cambian parámetros en silencio.
+Validación local: 400 tests correctos, uno lento opcional omitido, lint limpio.
+Auditoría: cero pérdidas o duplicados, semillas por índice correctas, tamaños
+no inferiores al plan, 180 semillas con idénticos conflictos en X5 3/6/9, y
+verificación del cierre/redirección. Hay CI Linux 3.10/3.12 y Windows específica
+para rutas y procesos/reanudación. Checkpoints locales, agregados versionados.
+
+**Próximo C: T6.1, gráficas P1–P8 sobre estos datos; ya no espera a otros módulos.**
+Después T6.2, verificación/validación conjunta, y T6.3, memoria de resultados.
+En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
+necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
+I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
+perjudicaron a espectadores. No se cambian hipótesis de D23 en esta campaña.
 
 ## Reparto
 
@@ -187,7 +191,7 @@ dependencias. Preparar código, tests y documentación **sin commit**. Al termin
 explicar los cambios y dar comandos completos para probarlos, con la ruta del
 clon; indicar tareas siguientes con sus dependencias. Incorporar correcciones.
 Commit cuando Chema lo indique; la publicación y el PR se tratan después.
-Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3 y T5.1)
+Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas del rol C (T5.2, T2.8, T3.3, T3.4, T4.3, T5.1 y T5.3)
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
@@ -210,34 +214,19 @@ de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
   VENV=../modelos-simulacion-ES-estadio/.venv`. Se comparte el entorno, pero
   `PYTHONPATH=src` selecciona el código de esa carpeta.
 
-## Dudas abiertas
+## Hipótesis y texto pendiente para la Parte 2
 
-* T5.4 (B a grupo): en X5 los acomodadores son el cuello de botella. Con
-  conflictos al 1 % hay unos 490 por partido, unos 122 por macrozona, y cada uno
-  ocupa a un acomodador 4,7 min de media. Con 3 acomodadores por zona, en tres
-  réplicas la duración media de un conflicto (con la espera al acomodador) es de
-  40 a 52 min, el último espectador se sienta hasta en t = +180 y la réplica
-  termina hasta en t = +181. Con 6, de 12 a 17 min. Es lo que dan los parámetros
-  de la memoria, no un fallo, pero conviene confirmar que son los que se quieren
-  (sobre todo la resolución Triangular(1, 3, 10) min y que un acomodador atienda
-  un solo conflicto a la vez) antes de responder P6.
-* T2.3 (A → C): los procesos de avería siguen hasta el final de la réplica, así
-  que con la salida integrada `n_turnstile_failures` contará también averías
-  posteriores a la entrada, que no afectan a nadie. ¿Contar solo las I3 con
-  `t_start` anterior al último fin de control, o dejarlo así? La memoria no lo
-  precisa; queda para T2.8.
-* T2.7 (A → grupo): D23 es una hipótesis: el cierre solo afecta a quien llega
-  mientras dura. Alternativa: parar también los tornos de esa puerta y/o
-  redirigir su cola; ver D23.
-* X6 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
-  cuando solo llega el 2 % del público, y X6 no responde a nada (diferencia sin −
-  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`. Decidido (D31):
-  `start_min = −30` (10 min), aplicado en `configs/base.json`. La memoria dice +20:
-  corregir el texto de la Parte 2.
-* T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
-  franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
-  corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de
-  capacidad pura (incluye marcha y cola): coherente.
+* I3 conserva la definición literal D25: incluye averías posteriores a la entrada.
+  El recuento no equivale al número de averías que afectaron a espectadores.
+* D23 se mantiene: el cierre solo afecta a quienes llegan mientras dura; las
+  personas ya en cola siguen atendidas. Cualquier cambio sería otro modelo.
+* X5 resuelta por el grupo (D33): se mantienen los parámetros y la saturación
+  con tres; se amplía a nueve. Resultados en `RESULTADOS_T5.3.md`.
+* X6 resuelta (D31): cierre en −30, aplicado y recalculado. Corregir en la Parte
+  2 el +20 de la memoria de la Parte 1; los resultados antiguos son históricos.
+* Verificación de A: el pico real anticipado da ρ≈0,81, no 0,65 como decía la
+  Parte 1. Corregir el texto; capacidad pura de salida ≈7,7 min y simulación
+  añade marcha/cola. No se modifican parámetros por esa diferencia.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin

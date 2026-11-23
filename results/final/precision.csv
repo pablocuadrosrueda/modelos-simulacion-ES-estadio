@@ -1,0 +1,20 @@
+scenario,n_valid,wait_mean_min,halfwidth_95_min,relative_halfwidth_pct,estimated_total_reps,note,precision_met
+S1_N_+10,73,0.48647588829753247,0.02190618244726755,4.503035602428369,73,estimación con t del piloto; comprobar al ampliar,True
+S1_N_-10,247,0.08994454587890896,0.0037692373111502717,4.190623538446391,247,estimación con t del piloto; comprobar al ampliar,True
+S1_serv_+25,30,1.4015973092626801,0.04987465285593107,3.5584152827867492,30,estimación con t del piloto; comprobar al ampliar,True
+S1_serv_-25,219,0.03105480305578299,0.0015485395260898937,4.986473503980333,219,estimación con t del piloto; comprobar al ampliar,True
+S1_vel_+15,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+S1_vel_-15,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X0_base,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X1_2tornos,30,4.016400571329411,0.07759875213455611,1.9320471341550292,30,estimación con t del piloto; comprobar al ampliar,True
+X1_4tornos,183,0.01592018003236288,0.0007465506727752246,4.689335618426555,183,estimación con t del piloto; comprobar al ampliar,True
+X2_anticipado,138,0.050372037949320235,0.0025013335839953682,4.965718453781804,138,estimación con t del piloto; comprobar al ampliar,True
+X3_prioridad,181,0.19235762220278566,0.008310738770525553,4.320462415450465,181,estimación con t del piloto; comprobar al ampliar,True
+X4_escalonada,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X5_3acomodadores,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X5_6acomodadores,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X5_9acomodadores,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X6_con_redireccion,199,0.2427100624652527,0.00900740334333824,3.711178371365536,199,estimación con t del piloto; comprobar al ampliar,True
+X6_sin_redireccion,45,0.40271264421774366,0.017600276019726965,4.370430447724067,45,estimación con t del piloto; comprobar al ampliar,True
+X7_salida_bloqueada,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True
+X7_todas_salidas,180,0.19228752863887644,0.00835035541881919,4.3426401482862085,180,estimación con t del piloto; comprobar al ampliar,True

@@ -167,3 +167,43 @@ en ambos escenarios, aunque `priority_groups` esté vacío en la config base.
 
 Informe del primer lote: [Piloto T5.1](docs/PILOTO_T5.1.md), con resultados,
 IC, estimación de réplicas y cuestiones pendientes antes de la entrega.
+
+Campaña T5.3 (X0–X7 con X5 de 3/6/9, X6 en −30, y sensibilidad S1):
+
+```bash
+.venv/bin/python scripts/run_campaign.py --output results/final --workers 4
+# Si se interrumpe, continuar sin recalcular las semillas ya guardadas:
+.venv/bin/python scripts/run_campaign.py --output results/final --workers 4 --resume
+```
+
+Calcula un piloto actualizado, estima n por escenario y amplía hasta verificar
+IC 95 % con semianchura ≤5 % de la espera media, con al menos treinta réplicas.
+Los índices compartidos usan la misma semilla. `--pilot-only` permite comprobar
+el piloto antes de continuar con `--resume`. Cada réplica deja un checkpoint;
+no se permite mezclar código/configuraciones/versiones al reanudar. Ajustar
+`--workers` cambia solo el número de procesos, no los resultados.
+
+Los checkpoints de la campaña son locales y no se versionan; `--resume` se usa
+en el mismo directorio local. Los agregados y la procedencia sí se comparten en
+Git para revisión. Con el entorno activado, `python scripts/run_campaign.py`
+funciona también en Windows; la CI verifica rutas portables y procesos spawn.
+
+Cuando la campaña haya terminado y verificado la precisión, generar su informe:
+
+```bash
+.venv/bin/python scripts/report_campaign.py
+```
+
+El informe comprueba conteos, semillas, terminación y precisión; rechaza una
+campaña aún incompleta. Distingue duración total de conflicto, espera de otros
+espectadores, espera del colectivo afectado por el cierre y cumplimiento del
+vaciado de emergencia por réplica.
+
+El manifiesto conserva el commit exacto usado para el cálculo. Las mejoras
+posteriores de informe/reanudación no reescriben esa procedencia ni los datos.
+Al reanudar una campaña compatible se conservan como mínimo los tamaños ya
+planificados, aunque un resultado parcial parezca haber alcanzado la precisión.
+
+Resultados definitivos de T5.3: [informe](docs/RESULTADOS_T5.3.md) y
+[tablas/procedencia](results/final). El piloto de X6 en +20 es histórico;
+la campaña actual usa −30 y añade X5 con nueve acomodadores (D31/D33).

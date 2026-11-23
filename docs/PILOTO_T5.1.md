@@ -1,5 +1,8 @@
 # Piloto T5.1 · X0–X7
 
+> Histórico: este lote usó X6 en +20 y no incluía X5 con nueve. El piloto
+> actualizado de T5.3 está en `results/final/pilot`; no mezclar ambos diseños.
+
 **Estado:** piloto de diez réplicas por escenario; resultados provisionales, no la entrega definitiva.
 
 12 escenarios, 120 réplicas de 48.775 espectadores; semillas comunes 20261105–20261114. No se han alterado parámetros del modelo ni hipótesis de X6/I3. Todas las réplicas terminan completas, con identidades únicas y exactamente un estado terminal por espectador.

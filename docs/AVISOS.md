@@ -14,6 +14,41 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-23 · C → A, B · T5.3 completa, X5 nueve y X6 recalculado (D33/D34)
+**Estado:** en revisión en PR #29, `feat/chema-T5.3-final`.
+
+* 2.965 réplicas completas, 19 escenarios con tamaños entre 30 y 247. Todos
+  cumplen IC 95 % con semianchura ≤5 % de la espera media (máximo 4,9865 %).
+* X5 mantiene 3/6 y añade 9, con los parámetros originales. Duración I1 con
+  espera: 44,60 / 13,74 / 6,64 min (180 por nivel). No se altera lógica de B.
+* X6 usa −30: espera de afectados 0,543 min con redirección y 9,626 sin ella.
+  El piloto antiguo en +20 queda histórico, fuera de las tablas definitivas.
+* X7: vaciado completo ≤8 min en 163/180 sin bloqueo y 0/180 con uno; medias
+  7,469 y 8,420 min. Porcentaje casi 100 % no implica todos fuera en cada partido.
+* Datos/procedencia en `results/final`, informe en `docs/RESULTADOS_T5.3.md`.
+  Modelo calculado en `fd6475c` y hashes comprobados antes de ajustes posteriores
+  de las herramientas. No se reescribe la procedencia de los resultados.
+* Corregidas rutas Windows; CI específica de rutas/spawn/reanudación. Al
+  reanudar se conservan los tamaños planificados y nunca se duplican semillas.
+* C puede empezar T6.1; T6.2/T6.3 son conjuntas. Partes 1/2 deben justificar
+  D31 (−30) y D33 (nueve), además de explicar la saturación. Se mantienen D23/D25.
+
+## Archivo
+
+### 2026-11-23 · C → A, B · Decisión X5 y campaña T5.3 (D33/D34)
+**Estado:** en curso en `feat/chema-T5.3-final`, por petición de Chema.
+
+* X5 añade nueve acomodadores, conservando tres/seis, probabilidad del 1 %,
+  resolución Triangular(1,3,10) min y atención de un conflicto por acomodador.
+  La saturación se analiza como resultado de P6; no se cambia lógica de B.
+* Se repite el piloto de X6 en −30 (D31) e incluye X5 con nueve y S1. Los datos
+  de X6 en +20 quedan históricos; los de `results/final/pilot` los sustituyen.
+* T5.3: mínimo treinta y estimación del piloto por escenario; se amplía hasta
+  comprobar el IC al 95 % con semianchura ≤5 % de la espera media. Semillas
+  comunes en los índices compartidos; checkpoints para reanudar sin duplicar.
+* Corregidas las rutas portables del manifiesto y añadida CI de Windows para
+  rutas y reanudación con procesos. Formato de resultados en CONTRATOS.
+
 ### 2026-11-23 · C → A, B · Piloto T5.1 y cohortes de P4 (D32)
 **Estado:** en revisión desde `feat/chema-T5.1-pilot`; informe en `docs/PILOTO_T5.1.md`.
 
@@ -242,7 +277,6 @@ Sigue vigente la aplicación de D17 a las futuras incidencias de Inc2.
   `t_vomitory` y `t_seated`.
 * **C (T1.4):** aplicado en el runner (PR #6).
 
-## Archivo
 
 ### 2026-11-23, de B a C: salida ordinaria lista (T3.1, T3.2, D24)
 **Estado:** en `main` (PR #15) y aplicado por C en T3.3 (PR #20).

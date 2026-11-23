@@ -19,3 +19,12 @@ results/pilot/*
 !results/pilot/precision.csv
 !results/pilot/manifest.json
 !results/pilot/groups.csv
+
+# T5.3: solo agregados y procedencia; checkpoints quedan locales.
+!results/final/
+results/final/*
+!results/final/*.csv
+!results/final/manifest.json
+!results/final/pilot/
+results/final/pilot/*
+!results/final/pilot/*.csv
