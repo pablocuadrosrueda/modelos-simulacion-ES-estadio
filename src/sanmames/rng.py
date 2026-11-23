@@ -107,7 +107,7 @@ class RngStreams:
         Para fuentes de azar **por recurso** (p. ej. un torno ``("A", 1, 2)``)
         cuyo calendario debe ser el mismo en todos los escenarios: depende solo
         de la semilla, del flujo y de ``key``, no del orden en que se crean los
-        recursos ni de cuántos hay (D21). No consume números de ``rngs[name]``.
+        recursos ni de cuántos hay (D22). No consume números de ``rngs[name]``.
         No se cachea: cada llamada devuelve un generador desde el principio.
         """
         base = self.seed_sequence(self.seed, name)

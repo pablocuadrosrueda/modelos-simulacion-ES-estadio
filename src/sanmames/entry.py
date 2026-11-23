@@ -154,7 +154,7 @@ def _turnstile_failure_loop(
     """Ciclo de fallo y reparación del torno ``k`` de la puerta ``(zone, gate)`` (I3).
 
     1. Funciona Exponencial(``mtbf_min``) (el reloj cuenta solo en funcionamiento,
-       D21).
+       D22).
     2. Pide una plaza del recurso de la puerta con ``PRIORITY_FAILURE`` y
        ``preempt=False``: adelanta a todos los que esperan, también a
        ``PRIORITY_HIGH``, pero nunca corta un servicio en curso.
@@ -162,7 +162,7 @@ def _turnstile_failure_loop(
        en ``failed_turnstiles`` y registra una incidencia ``I3`` con ``t_end``
        al terminar la reparación.
 
-    Usa un generador propio derivado de ``(zone, gate, k)`` (D21), así que el
+    Usa un generador propio derivado de ``(zone, gate, k)`` (D22), así que el
     calendario de sorteos de un torno es el mismo en todos los escenarios.
     """
     env = ctx.env

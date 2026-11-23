@@ -221,7 +221,7 @@ def test_failure_count_matches_rate() -> None:
     assert len(i3(ctx)) == pytest.approx(expected, rel=0.05)
 
 
-# -- números aleatorios comunes (D21) -------------------------------------------
+# -- números aleatorios comunes (D22) -------------------------------------------
 
 
 def test_reproducible_and_seed_dependent() -> None:

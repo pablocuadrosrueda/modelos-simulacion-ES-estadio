@@ -148,7 +148,7 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
 * Numeración: se fusionó como un segundo D19 (PR #8) cuando el D19 del runner
   (PR #6) ya estaba en `main`; renumerada a D20 el 2026-11-23.
 
-### D21 · Averías de torno (I3): reloj en funcionamiento y generador por torno — 2026-11-23
+### D22 · Averías de torno (I3): reloj en funcionamiento y generador por torno — 2026-11-23
 * **Reloj:** el tiempo entre fallos Exponencial(`mtbf_min`) se mide **en
   funcionamiento**: empieza en la apertura y, tras cada avería, al terminar la
   reparación. Así `mtbf_min` es el tiempo medio de buen funcionamiento (MTBF
@@ -170,3 +170,5 @@ espectadores y todas las incidencias/emergencia desactivadas, compatible con
   tornos por puerta (X1) y con otras macrozonas; solo cambia, inevitablemente,
   la espera hasta que el torno queda libre. No se añade ningún flujo a
   `STREAM_NAMES`; el flujo padre `turnstile_failure` no se consume.
+* Numeración: D21 está reservado por T2.5 (rama `feat/perez-T2.5-seat-conflict`,
+  I1 con números comunes), abierta antes; esta decisión toma D22.

@@ -73,7 +73,7 @@ def test_invalid_seed(seed) -> None:
         RngStreams(seed)
 
 
-# -- substream (generadores por recurso, D21) ---------------------------------
+# -- substream (generadores por recurso, D22) ---------------------------------
 
 
 def test_substream_reproducible_and_order_free() -> None:

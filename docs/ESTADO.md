@@ -55,7 +55,7 @@ la protección de `main` exigiendo esos checks.
   cortar un servicio), suma en `failed_turnstiles` y registra `I3` con
   `resource = "A-G1-T2"`, `t_start` y `t_end`. `turnstile_failure_process` lanza
   un sub-bucle por torno; nueva `start_turnstile_failure_processes(ctx)` para E0.
-  Generador por torno con `RngStreams.substream` (D21): calendario idéntico con
+  Generador por torno con `RngStreams.substream` (D22): calendario idéntico con
   2, 3 o 4 tornos. Además, sin cola `t_start_control = t_arrival` exacto (aviso
   de B sobre redondeo s/min). Tests en `tests/test_turnstile_failure.py`,
   `tests/test_rng.py` y `tests/test_entry.py`. El runner aún no lo lanza (C).

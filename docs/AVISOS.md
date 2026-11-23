@@ -14,7 +14,7 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D21)
+### 2026-11-23 · A → C · I3 avería de torno lista para el runner (T2.3, D22)
 **Estado:** en la rama `feat/cuadros-T2.3-turnstile-failure`; **aún no en `main`**.
 
 * **C (runner):** en E0, después de `ctx.entry = build_entry_resources(ctx)`,
