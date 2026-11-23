@@ -1,0 +1,21 @@
+{
+  "experiment": "i2_mini",
+  "label": "Verificación de entrada con prioridad e incidencias I1, I3 e I4",
+  "question": "Integración de Inc2 sin fallo de lectura I2",
+  "overrides": {
+    "name": "i2_mini",
+    "n_spectators": 600,
+    "zones": ["A"],
+    "zone_share": [1.0],
+    "gates_per_zone": 2,
+    "queue_discipline": "priority",
+    "priority_groups": ["elderly", "reduced_mobility"],
+    "incidents": {
+      "seat_conflict": {"enabled": true},
+      "read_failure": {"enabled": false},
+      "turnstile_failure": {"enabled": true},
+      "gate_closure": {"enabled": true, "start_min": -30}
+    },
+    "emergency": {"enabled": false}
+  }
+}

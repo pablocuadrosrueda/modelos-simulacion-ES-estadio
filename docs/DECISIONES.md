@@ -243,3 +243,15 @@ escenarios (también con 2/3/4 tornos y con otro perfil de llegadas).
   `generate_spectators`. **No cambia el contrato de `Spectator`** ni `arrivals`.
 * Numeración: `main` llegaba a D24 y las ramas abiertas reclaman D24 (T5.2) y
   D25 (T2.8 y T4.1); esta toma D26 para no chocar con ninguna.
+### D25 · Integración y cálculo de indicadores de Inc2 (T2.8) — 2026-11-23
+El runner admite los componentes ya fusionados: prioridad, I1, I3 e I4. I2 y
+emergencia siguen rechazadas. El fin sigue dependiendo de los espectadores o
+del límite, nunca de que terminen los bucles de avería. La cola se reconstruye
+por puerta usada, excluyendo a quienes todavía no han llegado (`gate_used=-1`).
+P4 usa los colectivos de `priority_groups` con independencia de la disciplina.
+Para operacionalizar el «conflicto activo» de P6 se comprueba solape de intervalos
+en el mismo bloque/zona y se excluye al causante; sin población expuesta o de
+comparación, NaN. Los contadores siguen la definición literal de filas registradas:
+no se aplica un filtro silencioso a I3 tras la entrada; la duda sobre ese filtro
+se mantiene en ESTADO. `configs/dev/i2_mini.json` es una comprobación pequeña,
+con I2 desactivada y cierre a -30 solo en desarrollo, sin alterar X6 ni la base.

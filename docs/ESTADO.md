@@ -104,6 +104,19 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
+Avance C, T2.8: prioridad e incidencias I1/I3/I4 integradas en el runner;
+indicadores por grupos, conflictos y recuentos implementados. Colas por puerta
+real y exclusión de quienes no han llegado. Caso `configs/dev/i2_mini.json`.
+Pruebas sintéticas y observación de capacidades en la simulación completa de
+entrada. Pendiente de revisión por PR desde `feat/chema-T2.8-metrics`.
+T5.2 publicada en PR #17. T3.1/T3.2 terminadas por B en PR #15, todavía abierto;
+la integración de salida se prepara después, sin editar los módulos de B.
+
+Validación T2.8 (Python 3.12): 256 tests correctos, 2 xfail de salida, lint y
+diff limpios. Tres réplicas de i2_mini: 600 entradas cada una, con I1/I3 registradas
+y KPIs por grupos. La salida de B (PR #15) ya figura fusionada y se recogerá
+para T3.3. Los xfail se retirarán al conectar esa fase.
+
 * C: en el runner, quitar la guarda que rechaza `queue_discipline = "priority"`
   (T2.4; sin ello X3 no se ejecuta) y admitir las incidencias ya implementadas:
   lanzar en E0 `gate_closure_process` (I4, T2.6) y
