@@ -324,10 +324,12 @@ La doble D25 surgida de trabajo paralelo se desambigua: D25 = Inc2 (T2.8),
 D28 = evacuación de B. Las referencias de documentación en sus módulos se
 actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).
 
-### D31 · Instante del cierre de puerta en X6 — 2026-11-23 · **pendiente de confirmar por el grupo**
-**Propuesta:** `incidents.gate_closure.start_min = −30` (hoy +20), con
-`duration_min = 10` y la misma puerta (A-1). Estudio en `docs/ESTUDIO_X6.md`
-(5 réplicas por celda, semillas comunes).
+### D31 · Instante del cierre de puerta en X6 — 2026-11-23 · **decidida (opción 1)**
+**Decisión:** `incidents.gate_closure.start_min = −30` (antes +20), con
+`duration_min = 10` y la misma puerta (A-1). Elegida el 2026-11-23 entre las cuatro
+opciones del estudio (`docs/ESTUDIO_X6.md`, 5 réplicas por celda, semillas comunes).
+**Desviación consciente de la memoria (§3.2, I4: «en t = 20 min»)**: el PDF debe
+corregirse en la Parte 2; hasta entonces manda esta decisión.
 * **Motivo:** P7 pregunta por un «cierre en hora punta». A +20 llega el 2 % del
   público y X6 no distingue las variantes: la diferencia sin − con redirección en
   la espera media de A-1 es de 4 ± 1 s. A −30, comienzo de la franja de máximas
@@ -339,5 +341,10 @@ actualizan sin cambiar su implementación. D29 queda para estadística (PR #17).
   algunas semillas, sensible a D23); −30 con 20 min (escenario de estrés: 636 ± 25
   s, 59 % de A-1 con más de 10 min); mantener +20 y reformular P7 como cierre fuera
   de punta.
-* **Si se confirma:** cambiar `configs/base.json` (y sus tests de config) en un
-  commit aparte; los `X6_*.json` heredan el valor de la base.
+* **Aplicada:** `configs/base.json` (`start_min = -30`) y un test de regresión en
+  `tests/test_config.py` que exige que el cierre caiga en la franja más cargada. Los
+  `X6_*.json` heredan el valor de la base; no hace falta tocarlos. Con la
+  redirección el cierre se absorbe; sin ella cuesta ≈ 5 min de espera media a los
+  asignados a A-1.
+* **Reversible:** si el grupo prefiriera otra opción, basta cambiar ese valor y el
+  test (una línea cada uno).

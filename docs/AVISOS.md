@@ -14,15 +14,16 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-23 · A → C · No lanzar el piloto T5.1 con el cierre a +20 (D31)
-**Estado:** propuesta en la rama `feat/cuadros-X6-study`; **pendiente de confirmar
-por el grupo**. No cambia código ni configuración.
+### 2026-11-23 · A → C · Cierre de puerta de X6 movido a −30 min (D31, decidida)
+**Estado:** decidida; el cambio va en la rama `feat/cuadros-X6-study` y estará en
+`main` al fusionarse su PR. Hasta entonces, para un piloto, usa el override
+`{"incidents": {"gate_closure": {"start_min": -30}}}`.
 
-* **C (T5.1):** con `gate_closure.start_min = +20` (valor actual de
-  `configs/base.json`) X6 no responde a P7: con y sin redirección salen resultados
-  prácticamente idénticos (4 s de diferencia). Antes de lanzar el piloto, esperar
-  a que el grupo confirme D31 o usar el valor propuesto, **−30**, como override
-  (`{"incidents": {"gate_closure": {"start_min": -30}}}`).
+* **C (T5.1):** `configs/base.json` pasa a `gate_closure.start_min = -30`
+  (10 min, puerta A-1). Los `X6_*.json` lo heredan. Con +20, X6 no respondía a P7;
+  con −30, sin redirección cuesta ≈ 5 min de espera media a los asignados a la
+  puerta cerrada y +0,7 p. p. de entrada tardía; con redirección el impacto
+  desaparece. No hace falta cambiar nada más en el runner.
 * **C (T5.1, KPIs de P7):** el p95 global apenas cambia con el cierre (1 de 24
   puertas). Para P7 son más informativos `queue_max_gate`, `late_pct` y la espera
   de los asignados a la puerta cerrada (`gate == 1`, zona A); ver

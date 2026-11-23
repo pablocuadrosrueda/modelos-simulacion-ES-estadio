@@ -104,8 +104,8 @@ la protección de `main` exigiendo esos checks.
   10 y 20 min, con y sin redirección, 5 réplicas con semillas comunes) en
   `scripts/study_gate_closure.py` y `docs/ESTUDIO_X6.md`. Con redirección el cierre
   se absorbe siempre; sin ella el efecto es máximo a −30 (+292 ± 24 s de espera
-  media en A-1, +0,67 p. p. de entrada tardía) y nulo a +20 (+4 s). Propuesta
-  D31: `start_min = −30`, pendiente del grupo.
+  media en A-1, +0,67 p. p. de entrada tardía) y nulo a +20 (+4 s). **Decidido (D31):
+  `start_min = −30`**, ya aplicado en `configs/base.json` con un test de regresión.
 
 **Inc3: en curso.**
 
@@ -150,9 +150,8 @@ calcular IC y tamaño definitivo; T5.3 depende del piloto. Después T6.1 gráfic
 T6.2 validación con el equipo; la memoria T6.3 depende de ambas. Los experimentos
 oficiales no se lanzan en este PR de integración. Siguen abiertas las dudas de
 I3 tras entrada y cierre X6; no se cambian parámetros en silencio.
-* A: estudio X6 en revisión; cuando el grupo confirme D31, cambiar
-  `gate_closure.start_min` en `configs/base.json` en un commit aparte.
-* Grupo: confirmar D31 (instante del cierre de X6) antes del piloto T5.1.
+* A: estudio X6 y D31 (`start_min = −30`) en revisión, en el mismo PR.
+* C: el piloto T5.1 puede lanzarse con la base; con −30, X6 responde a P7.
 
 ## Reparto
 
@@ -203,8 +202,9 @@ B: después, T5.4 (rendimiento) y T6.2/T6.3 con el grupo.
   redirigir su cola; ver D23.
 * X6 (A → grupo): en `configs/base.json` el cierre empieza en `start_min = +20`,
   cuando solo llega el 2 % del público, y X6 no responde a nada (diferencia sin −
-  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`; propuesta D31:
-  `start_min = −30` (10 min). Pendiente de confirmar; no se cambia la config aquí.
+  con redirección de 4 s). Estudio completo en `docs/ESTUDIO_X6.md`. Decidido (D31):
+  `start_min = −30` (10 min), aplicado en `configs/base.json`. La memoria dice +20:
+  corregir el texto de la Parte 2.
 * T2.1 (A → grupo): la memoria da ρ ≈ 0,65 para el perfil anticipado; con su
   franja pico real (−45 a −30, 24,4 %) es 0,81. Error de la memoria, no del modelo;
   corregir el texto de la Parte 2. Vaciado simulado 8,3 min frente a 7,7 de

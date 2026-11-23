@@ -130,7 +130,7 @@ inutilizada; su público se reparte entre las otras 5.
 | I1 Conflicto por asiento | Al llegar al asiento, **p = 0,5 %** | Ocupa una plaza del vomitorio hasta que un acomodador lo resuelve; **Triangular(1, 3, 10) min** | `incidents.seat_conflict` |
 | I2 Fallo de lectura | En el torno, **p = 3 %** | Añade **Uniforme(5, 15) s** al servicio | `incidents.read_failure` |
 | I3 Avería de torno | Tiempo entre fallos **Exponencial(media 240 min)** por torno | Cuando el torno queda libre, se para **Uniforme(3, 10) min** | `incidents.turnstile_failure` |
-| I4 Cierre de puerta | **Puerta 1 de la macrozona A**, en **t = +20 min**, **10 min** | Nadie entra por ella; redirección o espera según escenario | `incidents.gate_closure` |
+| I4 Cierre de puerta | **Puerta 1 de la macrozona A**, en **t = −30 min** (D31; la memoria decía +20), **10 min** | Nadie entra por ella; redirección o espera según escenario | `incidents.gate_closure` |
 
 Probabilidades y duraciones son hipótesis (sin datos públicos); se revisan en S1.
 

@@ -103,7 +103,7 @@ A-G1-T1 se avería de −28,5 a −19 min (I3), no por el cierre: sin cierre da 
   espera media a los asignados a esa puerta (máxima ≈ 10 min) y +0,7 p. p. de
   entrada tardía; con redirección a la puerta de su macrozona con menos cola el
   impacto desaparece».
-* Con +20 (actual): «el cierre no tiene efecto», pero es un artefacto del
+* Con +20 (valor anterior): «el cierre no tiene efecto», pero es un artefacto del
   instante, no una propiedad del sistema.
 
 **Alternativas para el grupo:**
@@ -138,6 +138,7 @@ No se ha cambiado el modelo.
 
 ## Pendiente
 
-* Que el grupo confirme el valor (D31). Después, en un commit aparte: cambiar
-  `configs/base.json` (y los `X6_*.json` si hiciera falta) y sus tests.
-* El piloto T5.1 no debería lanzarse con `start_min = +20` (aviso a C).
+* **Decidido (D31, opción 1): `start_min = −30`, 10 min.** Aplicado en
+  `configs/base.json`, con un test de regresión; los `X6_*.json` lo heredan.
+* El piloto T5.1 ya puede lanzarse con la base (aviso a C).
+* Corregir en el PDF de la Parte 2 el instante del cierre (la memoria dice +20).
