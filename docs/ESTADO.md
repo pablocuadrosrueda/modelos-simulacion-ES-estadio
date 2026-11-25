@@ -2,7 +2,7 @@
 
 _Última actualización: 2026-11-25. Inc0–Inc5 y T6.1 completos. T6.2 de A/B/C
 fusionada (PR #33/#32/#31). T6.3: partes A, B y C fusionadas (PR #34/#35/#36);
-integración en LaTeX en revisión._
+integración en LaTeX en revisión (PR de A). Cierre de T6.3: ver «Cierre de T6.3 · instrucciones por rol»._
 
 ## Hecho
 
@@ -297,6 +297,73 @@ En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
 necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
 I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
 perjudicaron a espectadores. No se cambian hipótesis de D23 en esta campaña.
+
+## Cierre de T6.3 · instrucciones por rol
+
+Estado: las tres partes están en `main`; la memoria única en LaTeX
+(`docs/memoria_parte2/latex/`) está en el PR de A. **Quedan cuatro cosas, y cada
+una tiene dueño.** Las discrepancias de cifras están en
+`docs/memoria_parte2/INFORME_COHERENCIA.md` (§5, «Qué decide cada uno»).
+Reglas comunes: no tocar `results/`, `src/` ni `configs/`; no cambiar la
+memoria en LaTeX (es de A; si ves algo, dilo en un aviso); cada PR actualiza
+`docs/ESTADO.md` y `docs/TAREAS.md`; antes del PR, `make docs-check` limpio.
+Fuente de verdad de las cifras: `results/final`.
+
+### Rol B (Pablo Pérez, Claude Code) — rama `feat/perez-T6.3-cierre`
+
+1. **Contraste «sin conflictos» de X0** (informe, n.º 2 y 3). B2 da 4,38 % de
+   entrada tardía sin conflictos (0,08 ± 0,01 puntos, 20 réplicas), y no lo
+   reproduce ningún script del repo. Elige una opción y deja la evidencia:
+   * **Reproducirlo:** un script en `scripts/` (por ejemplo ampliando
+     `scripts/validate_b.py`) que repita X0 sin I1 con las mismas semillas, y
+     una tabla en `docs/VALIDACION_T6.2.md` con n, media e IC. Recomendado con
+     las 180 semillas de `results/final`, no solo con 20.
+   * **Retirarlo:** quitar la frase de `B2_verificacion.md` y dejar solo lo que
+     sí se reproduce.
+2. **IC en B3** (informe, n.º 9–11): añadir IC y n a P5 y P6 con los valores del
+   informe (por ejemplo P6: 291,73 ± 11,92 / 36,84 ± 2,39 / 6,67 ± 0,55 s,
+   n = 180). Opcional: n = 5 en el caso de acomodadores casi ilimitados (n.º 15).
+3. Corregir en B2 la entrada tardía y el acceso de X0 a los valores de 180
+   réplicas: 4,578 ± 0,052 % y 1,972 ± 0,008 min (los de 20 réplicas pueden
+   quedar solo como submuestra del contraste, diciéndolo).
+4. Avisar en `docs/AVISOS.md` a A cuando esté hecho, indicando qué opción
+   elegiste en el punto 1: A actualizará el LaTeX.
+
+### Rol C (Chema, Codex) — rama `feat/chema-T6.3-cierre`
+
+1. Corregir en `C2_sensibilidad.md` el redondeo de la velocidad +15 % sobre el
+   vaciado: **−0,0861** (no −0,0862). Revisa que esa cifra no se repita en otro
+   sitio de C1–C3, en `docs/` o en el PDF `Memoria_Parte2_C.pdf`; si lo hay,
+   regenera el PDF.
+2. Opcional: dar IC y n de X6 en `C3_conclusiones_y_limites.md` (informe,
+   n.º 5 y 7), tomándolos de `results/final`.
+3. Pasar T6.1 a `hecho` en `docs/TAREAS.md` y `docs/ESTADO.md` (el PR #30 está
+   fusionado y sigue figurando «en revisión»).
+4. Revisar la memoria única de A (PR de integración): leer el PDF y comprobar
+   que sus cifras de la parte C coinciden con `results/final`. Si ves un error,
+   dilo en un aviso a A, no edites el LaTeX.
+5. Cuando se fusione todo, repetir `scripts/verify_results.py --replay` en
+   `main` y dejar constancia en `docs/VERIFICACION_C_T6.2.md`.
+
+### Grupo (los tres) — decidir antes de la entrega
+
+* **D23 · cola ya formada en el cierre de puerta.** Hoy figura «pendiente de
+  confirmar por el grupo» y la memoria la usa como hipótesis adoptada con su
+  limitación (redirección optimista), con un `% DECIDIR` en el LaTeX. **Propuesta
+  de A: confirmarla.** Cambiarla obligaría a repetir X6 y todo lo que depende de
+  él. Si se confirma: A actualiza `docs/DECISIONES.md` (D23 «decidida») y quita el
+  `% DECIDIR`. Si alguien discrepa, que lo diga en el chat del grupo antes de
+  tocar nada.
+* **Fecha de entrega** en la portada de la memoria (A la pone).
+* **Fuente F2:** si alguno tiene el dato original, dilo en un aviso; si no, la
+  memoria lo declara como limitación.
+
+### Rol A (Pablo Cuadros, Claude Code) — después de B, C y el grupo
+
+Cerrar el PR de integración, fusionar, actualizar A3 (quitar la crítica al
+título de P3 y la comparación de medias no emparejada de P7), aplicar D23 en
+`DECISIONES.md` si se confirma, quitar los `\pend` y `% DECIDIR` resueltos,
+recompilar con `latexmk -xelatex`, y marcar T6.3 como `hecho`.
 
 ## Reparto
 

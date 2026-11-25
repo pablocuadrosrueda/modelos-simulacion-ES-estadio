@@ -14,6 +14,17 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · Instrucciones para cerrar T6.3
+**Estado:** en el PR `feat/cuadros-T6.3-integracion`; aún no en `main`.
+
+* **B y C:** vuestras tareas concretas están en `docs/ESTADO.md`, sección
+  «Cierre de T6.3 · instrucciones por rol». Resumen: B reproduce o retira el
+  contraste «sin conflictos» y añade IC a B3; C corrige el redondeo de C2
+  (−0,0861) y cierra T6.1 en el tablero.
+* **Los tres:** hay que decidir D23 (propuesta: confirmarla) y la fecha de
+  entrega antes de entregar la memoria. Cifras comparadas y su fuente:
+  `docs/memoria_parte2/INFORME_COHERENCIA.md`.
+
 ### 2026-11-25 · A → B, C, grupo · Memoria integrada en LaTeX y decisiones pendientes
 **Estado:** en revisión en `feat/cuadros-T6.3-integracion`.
 
