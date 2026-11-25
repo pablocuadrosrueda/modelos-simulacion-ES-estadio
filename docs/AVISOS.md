@@ -14,8 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · C → A, B · Reparación del merge de capacity/verificador
+**Estado:** en revisión en `feat/chema-fix-verify-capacity`.
+
+* El aviso de A es correcto: `capacity.py` es análisis, no simulación. #36 y
+  #37 aportaban la misma exclusión. Su combinación dejó dos condiciones
+  superpuestas y un test incompleto (errores de sintaxis); por eso fallaba CI.
+* Se conserva `ANALYSIS_ONLY` de A, una sola condición y todos los tests de A/C.
+  No se toca `capacity.py`, el modelo ni los resultados de T5.3.
+* Se regenera `VERIFICACION_C_T6.2.md` para reflejar la exclusión y la huella
+  actual del verificador; la reproducción no amplía la muestra estadística.
+
+
 ### 2026-11-25 · A → C · `verify_results.py` ya no exige la huella de `capacity.py`
-**Estado:** en revisión en `fix/cuadros-verify-capacity`.
+**Estado:** fusionada en PR #37; integración reparada en la rama de C indicada arriba.
 
 * **Problema:** CI fallaba en `test_bad_replay_is_rejected_instead_of_reporting_success`
   con «Modelo distinto del cálculo original: src/sanmames/capacity.py», porque
