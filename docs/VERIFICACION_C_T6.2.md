@@ -4,7 +4,7 @@
 
 Campaña: 2965 réplicas, 19 escenarios. Código del cálculo original: `fd6475cdf4982b4f2ff9c7dd03dccd8a848f52cb`.
 
-Verificador SHA-256: `1fb387fcc8b64f778ee913012c07d451b39c89fd5909320fe67d850d947eb1ec`. Python 3.12.14.
+Verificador SHA-256: `f8a45c6e09a7cbf434b098259c343afcb2b81d14a09a785ccd3a33a53bdb35ad`. Python 3.12.14.
 
 ## Comprobaciones
 

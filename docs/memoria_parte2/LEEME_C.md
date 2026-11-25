@@ -15,6 +15,12 @@ maquetado con ReportLab y revisado página por página; las figuras del PDF usan
 los mismos contrastes de `results/final/comparisons.csv` que la figura S1.
 Tras editar las fuentes, la versión PDF debe reexportarse y revisarse de nuevo.
 
+## Correcciones de cierre
+
+Aplicadas las instrucciones de ESTADO: redondeo S1 a −0,0861, IC/n de X6 en
+C3 y revisión de la memoria integrada de A. PDF actualizado. Evidencia y
+pendientes externos en [REVISION_C_CIERRE.md](REVISION_C_CIERRE.md).
+
 ## Integración con el equipo
 
 - A tiene su borrador de entrada y P1–P4/P7 en el [PR #34](https://github.com/pablocuadrosrueda/modelos-simulacion-ES-estadio/pull/34).

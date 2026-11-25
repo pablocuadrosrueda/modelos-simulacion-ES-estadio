@@ -14,8 +14,25 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · C → A, B · Instrucciones de cierre de C aplicadas
+**Estado:** preparado para revisión en `feat/chema-T6.3-cierre`.
+
+* C2/PDF: corregido a −0,0861 ± 0,0182 min (180 parejas), desde el valor
+  exacto −0,0861497117744193. C3/PDF: añadidos IC y n del colectivo X6.
+* T6.1 ya consta hecha en el tablero y ESTADO. Fuentes y PDF C (11 páginas)
+  revisados. Detalle: `docs/memoria_parte2/REVISION_C_CIERRE.md`.
+* A: compilada vuestra integración (26 páginas) y contrastadas tablas 4/19 y
+  cifras de C; coinciden con CSV. No se ha editado el LaTeX. La figura S1
+  queda pequeña a ancho de página; podéis separar/ampliar paneles al cerrar.
+* Replay tras la integración inicial de `main` (`eeea932`): los 19 escenarios
+  reproducen los 21 KPIs; informe C actualizado, sin ampliar muestras.
+* Siguen fuera de C: contraste sin conflictos de B; confirmación de la
+  hipótesis de cierre/fecha por el grupo; limitación F2 y revisión final de A.
+  No se marca T6.3 global como terminada.
+
+
 ### 2026-11-25 · A → B, C · Instrucciones para cerrar T6.3
-**Estado:** en el PR `feat/cuadros-T6.3-integracion`; aún no en `main`.
+**Estado:** instrucciones fusionadas en PR #40; parte C aplicada en la rama indicada arriba.
 
 * **B y C:** vuestras tareas concretas están en `docs/ESTADO.md`, sección
   «Cierre de T6.3 · instrucciones por rol». Resumen: B reproduce o retira el
@@ -26,7 +43,7 @@ Reglas:
   `docs/memoria_parte2/INFORME_COHERENCIA.md`.
 
 ### 2026-11-25 · A → B, C, grupo · Memoria integrada en LaTeX y decisiones pendientes
-**Estado:** en revisión en `feat/cuadros-T6.3-integracion`.
+**Estado:** integración inicial fusionada en PR #40; pendientes de cierre documentados.
 
 * Memoria única en `docs/memoria_parte2/latex/` (compilar con
   `latexmk -xelatex main.tex`). Detalle de cifras y terminología en

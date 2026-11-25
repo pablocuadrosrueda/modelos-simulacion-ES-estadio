@@ -50,8 +50,9 @@ una duración total mayor no contradice su distribución, porque incorpora esper
 
 **P7. Cierre y redirección.** Con cierre de A-1 durante [-30,-20) min, la
 espera media de las personas asignadas a esa puerta que llegan durante el cierre
-es 9,626 min sin redirección y 0,543 min con ella. Son muestras distintas de
-45 y 199 réplicas. La diferencia global emparejada (con redirección menos sin redirección)
+es 9,6259 ± 0,1204 min sin redirección (n = 45) y
+0,5433 ± 0,0260 min con ella (n = 199). Son IC del 95 % de la media
+y muestras de tamaños distintos. La diferencia global emparejada (con redirección menos sin redirección)
 es -0,1596 ± 0,0072 min en 45 parejas. La redirección mitiga el cierre,
 pero no lo hace invisible frente a X0: con redirección menos X0, la diferencia
 global es +0,04989 ± 0,00346 min (180 parejas). Este último contraste se ha
