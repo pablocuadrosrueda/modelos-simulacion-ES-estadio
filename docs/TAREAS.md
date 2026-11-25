@@ -85,22 +85,25 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
 | T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | hecho | T5.3 |
-| T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | en curso | T5.3 |
-| T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | en revisión | T5.3 |
-| T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | A: en revisión (`feat/cuadros-T6.2-verificacion`); B, C: pendiente | T5.3 |
-| T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | pendiente | T6.1, T6.2 |
+| T6.2 | Verificación/validación de A, B y C; alcance interno y limitaciones documentadas | A, B, C | hecho | T5.3 |
+| T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | en curso | T6.1, T6.2 |
 
-### Seguimiento de T6.2 por rol
+### Cierre de T6.2 y seguimiento de T6.3
 
-La tarea conjunta sigue **en curso**; no se cierra solo con la parte C.
+T6.2: A, B y C fusionadas en PR #33, #32 y #31. Chema confirma el cierre
+conjunto. La ausencia de validación externa/F2 se conserva como limitación.
 
-| Rol | Estado de su parte | Evidencia / pendiente |
+| Sección T6.3 | Responsable | Estado |
 |---|---|---|
 | C · Chema | en revisión | Auditoría de las tablas de T5.3 y reproducción de 19 réplicas; `docs/VERIFICACION_C_T6.2.md` y `scripts/verify_results.py` |
 | A · Pablo Cuadros | hecho (PR #33); arreglo del verificador en revisión (`fix/cuadros-verify-capacity`) | Entrada y capacidad frente a `results/final` en `docs/VERIFICACION.md`; `capacity.py` excluido de las huellas de `verify_results.py` por ser solo de análisis |
 | B · Pablo Pérez | pendiente de revisión final | Confirmar capacidad y supuestos de vomitorios, acomodadores, salida y evacuación; evidencia existente en tests y `docs/VERIFICACION.md` |
 
 T6.3 espera al cierre conjunto de T6.2; T6.1 ya está fusionada (PR #30).
+| Modelo de entrada, verificación, P1–P4/P7 | A | en revisión, PR #34 |
+| Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | texto a integrar por su responsable |
+| Método, campaña, sensibilidad y conclusiones | C | en revisión, `docs/memoria_parte2/LEEME_C.md`; PDF de 11 páginas |
+| Integración y revisión final de la memoria conjunta | A, B, C | pendiente; no cubierta por la aportación C |
 
 ## Prompts de arranque de Inc1
 

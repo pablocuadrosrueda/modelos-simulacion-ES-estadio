@@ -159,4 +159,24 @@ def test_changing_runner_still_blocks_replay(verifier, campaign, model_copy):
     with (model_copy / "runner.py").open("a", encoding="utf-8") as f:
         f.write("\n# cambio en el modelo\n")
     with pytest.raises(ValueError, match="Modelo distinto del cálculo original: .*runner.py"):
+@pytest.mark.parametrize(
+    ("module", "message"),
+    [
+        ("src/sanmames/capacity.py", "identidades del runner"),
+        ("src/sanmames/runner.py", "Modelo distinto"),
+    ],
+)
+def test_replay_hash_excludes_only_analytical_capacity(
+    verifier, campaign, monkeypatch, module, message
+):
+    from sanmames.entities import SPECTATOR_COLUMNS
+
+    path = campaign / "manifest.json"
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    manifest["source_sha256"][module] = "0" * 64
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    monkeypatch.setattr(
+        verifier, "run_replica", lambda cfg, seed: pd.DataFrame(columns=SPECTATOR_COLUMNS)
+    )
+    with pytest.raises(ValueError, match=message):
         verifier.verify(campaign, replay=True)
