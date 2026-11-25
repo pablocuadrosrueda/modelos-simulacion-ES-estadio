@@ -1,7 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-23. `main` contiene Inc0 a Inc4 completos y, de
-Inc5, T5.1, T5.2 y T5.4. T5.3 está en revisión en PR #29._
+_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
+(T5.3 fusionada en PR #29). T6.1 preparada para revisión._
 
 ## Hecho
 
@@ -140,7 +140,7 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T5.3 terminada, en revisión en PR #29 desde `feat/chema-T5.3-final`.
+T5.3 terminada y fusionada en PR #29.
 **2.965 réplicas completas de 19 escenarios**: 13 principales X0–X7 (incluye
 X5 con 3/6/9 acomodadores y X6 en −30) y seis S1. Entre 30 y 247 réplicas por
 escenario. Los 19 IC al 95 % cumplen semianchura ≤5 % de la espera media;
@@ -169,8 +169,16 @@ no inferiores al plan, 180 semillas con idénticos conflictos en X5 3/6/9, y
 verificación del cierre/redirección. Hay CI Linux 3.10/3.12 y Windows específica
 para rutas y procesos/reanudación. Checkpoints locales, agregados versionados.
 
-**Próximo C: T6.1, gráficas P1–P8 sobre estos datos; ya no espera a otros módulos.**
-Después T6.2, verificación/validación conjunta, y T6.3, memoria de resultados.
+**T6.1 preparada para revisión** en `feat/chema-T6.1-plots`: figuras P1–P8
+y suplemento S1 en PNG 300 dpi + SVG, con IC del 95 %, unidades y n.
+Comando: `.venv/bin/python scripts/plot_results.py`. Índice e interpretación en
+`docs/GRAFICAS_T6.1.md`; puntos exactos y hashes en `results/figures`.
+No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
+comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
+vaciado y frecuencia observada de cumplir ocho minutos.
+
+**Siguiente: T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
+ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
 En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
 necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
 I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
@@ -195,6 +203,11 @@ Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
+
+T6.1 (2026-11-25, Python 3.12): `make check`, 407 passed y 1 skipped
+(prueba lenta opcional de capacidad), lint y docs-check limpios. Siete pruebas
+nuevas de emparejamiento, identidades, unidades, conteo y exportación; revisión
+visual de las nueve figuras. CI Windows ampliada a la exportación de figuras.
 
 Rama T5.4 sobre `main` tras el PR #25 (Python 3.13.2): 386 passed, 1 skipped; `make lint` limpio.
 

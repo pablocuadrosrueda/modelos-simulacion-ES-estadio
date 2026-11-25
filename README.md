@@ -207,3 +207,17 @@ planificados, aunque un resultado parcial parezca haber alcanzado la precisión.
 Resultados definitivos de T5.3: [informe](docs/RESULTADOS_T5.3.md) y
 [tablas/procedencia](results/final). El piloto de X6 en +20 es histórico;
 la campaña actual usa −30 y añade X5 con nueve acomodadores (D31/D33).
+
+### Gráficas definitivas (T6.1)
+
+```bash
+.venv/bin/python scripts/plot_results.py
+# Alternativa con entorno activado, también en Windows:
+python scripts/plot_results.py --data results/final --output results/figures
+```
+
+Produce P1–P8 y S1 en PNG (300 dpi) y SVG, sin ejecutar simulaciones.
+[Índice y lectura de las figuras](docs/GRAFICAS_T6.1.md).
+`results/figures/statistics.csv` permite revisar cada punto, IC y tamaño de muestra;
+`manifest.json` registra hashes de entradas, script y salidas. Rechaza campañas
+incompletas o tablas auxiliares con identidades incompatibles.

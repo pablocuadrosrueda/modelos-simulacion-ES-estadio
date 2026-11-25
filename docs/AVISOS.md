@@ -14,8 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · C → A, B · Figuras para la memoria (T6.1)
+**Estado:** preparadas para revisión en `feat/chema-T6.1-plots`.
+
+* P1–P8 y S1: `results/figures`, PNG 300 dpi y SVG. Índice e interpretación:
+  `docs/GRAFICAS_T6.1.md`. Datos definitivos de T5.3 (PR #29 fusionada).
+* P4 usa `groups.csv` (D32); P6 no confunde duración I1 con retraso al resto.
+  P8 muestra 163/180 frente a 0/180 réplicas vaciadas en ≤8 minutos.
+* Para la memoria, conservar unidades, IC y tamaños; no afirmar cumplimiento
+  universal por una media menor de ocho minutos ni optimalidad de nueve acomodadores.
+* Sin cambios de contratos o parámetros. Siguiente: T6.2 conjunta, luego T6.3.
+
+
 ### 2026-11-23 · C → A, B · T5.3 completa, X5 nueve y X6 recalculado (D33/D34)
-**Estado:** en revisión en PR #29, `feat/chema-T5.3-final`.
+**Estado:** fusionada en `main` mediante PR #29.
 
 * 2.965 réplicas completas, 19 escenarios con tamaños entre 30 y 247. Todos
   cumplen IC 95 % con semianchura ≤5 % de la espera media (máximo 4,9865 %).
