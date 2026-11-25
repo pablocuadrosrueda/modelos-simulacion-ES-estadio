@@ -6,8 +6,8 @@ Autor: Pablo Pérez Molina (rol B). Texto final para la memoria de la Parte 2. L
 
 Además de las pruebas automáticas de cada componente, se ha comprobado que el
 modelo reproduce los cálculos de capacidad de la Parte 1. Para aislar el paso
-por las salidas, la prueba usa una macrozona de 12.195 personas que llegan
-juntas, con 1 m de recorrido y 1 s de reacción.
+por las salidas, la prueba usa una macrozona, un cuarto del aforo (unas 12.194
+personas), que llegan juntas, con 1 m de recorrido y 1 s de reacción.
 
 | Caso | Salidas | Paso por persona | Parte 1 | Modelo |
 | --- | --- | --- | --- | --- |
@@ -24,8 +24,9 @@ llegada al vomitorio, asiento y salida.
 Por último, dos casos límite con el estadio completo confirman la lectura de los
 resultados de P6 y P8:
 
-* Con acomodadores prácticamente ilimitados, la duración media de un conflicto
-  baja a 4,62 min, la media teórica de la resolución (4,67 min). Por tanto, la
+* Con acomodadores prácticamente ilimitados (1.000 por macrozona, 5 réplicas),
+  la duración media de un conflicto baja a 4,62 min (entre 4,51 y 4,68 según la
+  réplica), la media teórica de la resolución (4,67 min). Por tanto, la
   saturación observada con 3 acomodadores se debe a que faltan acomodadores, no
   a un error del modelo.
 * En las réplicas de evacuación con todas las salidas que no vacían en 8 min,
@@ -35,9 +36,13 @@ resultados de P6 y P8:
 ## Peso de los conflictos en la entrada tardía del escenario base
 
 En el escenario base, con conflictos al 0,5 % y 6 acomodadores por macrozona, el
-4,46 % de quienes llegan antes del inicio se sienta después. Repitiendo las 20
-primeras réplicas con los mismos números aleatorios pero sin conflictos, ese
-porcentaje baja al 4,38 %: los conflictos solo aportan 0,08 puntos (0,01), y el
-tiempo medio de acceso apenas cambia (de 1,96 a 1,93 min). En el escenario base,
-por tanto, la entrada tardía se debe casi por completo a la llegada en los
-últimos minutos y al recorrido hasta el asiento, no a los conflictos.
+4,58 % (0,05) de quienes llegan antes del inicio se sienta después, y el tiempo
+medio de acceso es de 1,97 min (0,01), con 180 réplicas. Repitiendo esas mismas
+180 réplicas, con los mismos números aleatorios pero sin conflictos, la entrada
+tardía baja al 4,49 % (0,05) y el acceso a 1,94 min (0,01).
+
+En diferencia emparejada por semilla, los conflictos aportan solo 0,09 puntos
+(0,01) de entrada tardía y 0,03 min (unos 2 s) de tiempo de acceso. En el
+escenario base, por tanto, la entrada tardía se debe casi por completo a la
+llegada en los últimos minutos y al recorrido hasta el asiento, no a los
+conflictos.

@@ -1,8 +1,9 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-25. Inc0–Inc5 y T6.1 completos. T6.2 de A/B/C
-fusionada (PR #33/#32/#31). T6.3: partes A, B y C fusionadas (PR #34/#35/#36);
-integración en LaTeX en revisión (PR de A). Cierre de T6.3: ver «Cierre de T6.3 · instrucciones por rol»._
+_Última actualización: 2026-11-25. Inc0 a Inc5, T6.1 y T6.2 completos. T6.3: partes
+A, B y C (PR #34, #35 y #36) e integración en LaTeX (PR #40) fusionadas; falta el
+cierre por roles (ver «Cierre de T6.3: instrucciones por rol»). Entrega de la
+memoria: 11 de diciembre de 2026; defensa: 14 o 17 de diciembre._
 
 ## Hecho
 
@@ -98,8 +99,7 @@ la protección de `main` exigiendo esos checks.
   utilización), con X0 completo. Tests en `tests/test_capacity.py`, script
   `scripts/validate_capacity.py` y resultados en `docs/VERIFICACION.md`: todas las
   comprobaciones cuadran. Réplica completa de X0: 3,0 s (10 réplicas: 30,2 s).
-* Estudio X6 (A, en revisión; rama `feat/cuadros-X6-study`; no es tarea del
-  tablero): sensibilidad del instante del cierre I4 (`start_min` de −45 a +20,
+* Estudio X6 (A, hecho; PR #28; no es tarea del tablero): sensibilidad del instante del cierre I4 (`start_min` de −45 a +20,
   10 y 20 min, con y sin redirección, 5 réplicas con semillas comunes) en
   `scripts/study_gate_closure.py` y `docs/ESTUDIO_X6.md`. Con redirección el cierre
   se absorbe siempre; sin ella el efecto es máximo a −30 (+292 ± 24 s de espera
@@ -133,13 +133,30 @@ la protección de `main` exigiendo esos checks.
 
 **Inc5: completado.**
 
+* T5.1 a T5.3 (C, hecho; PR #26 y #29): piloto y campaña definitiva de **2.965
+  réplicas de 19 escenarios** (13 principales de X0 a X7, con X5 en 3, 6 y 9
+  acomodadores y X6 en -30, y seis de S1), entre 30 y 247 réplicas por escenario
+  hasta que la semianchura del IC de la espera media no pasa del 5 % (máximo
+  4,99 %). Datos en `results/final`, informe en `docs/RESULTADOS_T5.3.md`
+  (`scripts/report_campaign.py`), calculados con el commit `fd6475c`. T5.2 (PR
+  #17): IC t de Student, réplicas necesarias y contrastes emparejados por semilla.
+
 * T5.4 (B, hecho; PR #27): tiempo de réplica de
   los 13 escenarios en `docs/VERIFICACION.md`, de 3,4 a 4,3 s, y 4,7 s en X7. En
   X7 bajaba de 6,9 s al quitar una búsqueda en todas las incidencias para cada
   espectador al evacuar; resultados idénticos. Sin más cuellos de botella en los
   módulos de B.
 
-**Inc6: en curso.**
+**Inc6: en curso (falta cerrar T6.3).**
+
+* T6.1 (C, hecho; PR #30): figuras P1 a P8 y S1 en PNG y SVG con IC del 95 %,
+  en `results/figures` (`scripts/plot_results.py`, índice en
+  `docs/GRAFICAS_T6.1.md`).
+* T6.2 (A, B y C, hecho; PR #33, #32 y #31). Evidencia: `docs/VERIFICACION.md`
+  (A), `docs/VALIDACION_T6.2.md` y `scripts/validate_b.py` (B),
+  `docs/VERIFICACION_C_T6.2.md` y `scripts/verify_results.py` (C). No hay
+  validación externa con datos reales de colas ni la cifra publicada de F2: se
+  declara como limitación.
 
 * T6.2, parte de A (hecho; PR #33):
   entrada y capacidad contrastadas con `results/final` **sin regenerar datos**
@@ -168,7 +185,7 @@ la protección de `main` exigiendo esos checks.
   sin regenerar. Una «PENDIENTE DE CONFIRMAR»: contraste emparejado X6 con
   redirección − X0, que no está en `comparisons.csv`. No cambia código ni datos.
 
-* **T6.3, integración (A, en revisión; rama `feat/cuadros-T6.3-integracion`).**
+* **T6.3, integración (A, hecho; PR #40).**
   `docs/memoria_parte2/INFORME_COHERENCIA.md` contrasta las cifras repetidas de
   A, B y C con `results/final` (solo lectura) y fija la regla de terminología:
   la memoria no cita nombres de código, ficheros ni números de decisión. Memoria
@@ -185,118 +202,16 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-T5.3 terminada y fusionada en PR #29.
-**2.965 réplicas completas de 19 escenarios**: 13 principales X0–X7 (incluye
-X5 con 3/6/9 acomodadores y X6 en −30) y seis S1. Entre 30 y 247 réplicas por
-escenario. Los 19 IC al 95 % cumplen semianchura ≤5 % de la espera media;
-máximo observado 4,9865 %. Piloto actualizado: 190 réplicas; las 100 de escenarios
-sin cambio reproducen todos los KPIs anteriores. Las diez de cada piloto se
-reutilizan sin contarlas dos veces. X6 en +20 queda histórico.
+Cerrar T6.3 siguiendo el apartado de abajo: cada rol corrige lo suyo, el grupo
+decide D23, la fecha de la portada y la fuente F2, y A recompila la memoria en
+LaTeX y la da por cerrada. Después, preparar la defensa.
 
-Datos definitivos y procedencia: `results/final`; piloto actualizado en su
-subcarpeta `pilot`. Informe reproducible: `docs/RESULTADOS_T5.3.md`, generado
-con `scripts/report_campaign.py`. El cálculo se fija en commit `fd6475c`;
-se verificaron sus 18 hashes al terminar. Las mejoras posteriores del informe
-y de conservación de objetivos al reanudar no cambian esos datos ni su origen.
-
-Resultados principales (IC del 95 % en el informe):
-* X5, 180 réplicas por nivel: duración media I1 con espera de 44,60 / 13,74 /
-  6,64 min con 3 / 6 / 9 acomodadores. Decisión D33 aplicada sin reducir los
-  parámetros de resolución; la saturación de tres es resultado de P6.
-* X6 en −30: espera del colectivo que llega a A-1 durante el cierre de 0,543
-  min con redirección (199 réplicas), frente a 9,626 sin ella (45 réplicas).
-* X7, 180 por variante: vaciado medio 7,469 min sin bloqueo y 8,420 con uno.
-  Vaciado completo ≤8 min en 163/180 y 0/180; no confundir media con garantía.
-
-Validación local: 400 tests correctos, uno lento opcional omitido, lint limpio.
-Auditoría: cero pérdidas o duplicados, semillas por índice correctas, tamaños
-no inferiores al plan, 180 semillas con idénticos conflictos en X5 3/6/9, y
-verificación del cierre/redirección. Hay CI Linux 3.10/3.12 y Windows específica
-para rutas y procesos/reanudación. Checkpoints locales, agregados versionados.
-
-**T6.1 hecha (PR #30)**: figuras P1–P8
-y suplemento S1 en PNG 300 dpi + SVG, con IC del 95 %, unidades y n.
-Comando: `.venv/bin/python scripts/plot_results.py`. Índice e interpretación en
-`docs/GRAFICAS_T6.1.md`; puntos exactos y hashes en `results/figures`.
-No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
-comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
-vaciado y frecuencia observada de cumplir ocho minutos.
-
-**Siguiente: T6.2 y T6.3 de B y C.** La lista de T6.2 está en
-`docs/VERIFICACION.md` («Pendiente de B y C»). Para T6.3, B y C añaden sus
-secciones en `docs/memoria_parte2/` (ver su `LEEME.md` y los «Cruces con B y C»
-al final de A3).
-**T6.2 · parte C preparada para revisión**, rama `feat/chema-T6.2-verificacion-C`.
-`scripts/verify_results.py` comprueba las 2.965 réplicas: identidades entre tablas,
-recuentos terminales, reparto, relojes, rangos de KPIs y NaN según la fase.
-Recalcula resumen, contrastes emparejados (P4 con colectivos comparables) y precisión.
-Con `--replay` se han repetido 19 réplicas (una por escenario, semilla 20261105):
-IDs y terminación correctos, los 21 KPIs coinciden con T5.3 en todos los casos.
-Código de `src/` contrastado por SHA-256 con el de la campaña, salvo
-`capacity.py` (módulo de análisis, ver abajo).
-
-**Arreglo de CI (A, rama `fix/cuadros-verify-capacity`).** Tras T6.2 de A (PR #33),
-`test_bad_replay_is_rejected_instead_of_reporting_success` fallaba: `--replay`
-rechazaba la huella de `src/sanmames/capacity.py`, que ganó funciones nuevas
-(modelo fluido, `busy_rate_per_turnstile`). El diff respecto a `fd6475c` es solo
-aditivo y ningún módulo que genera datos importa `capacity`, así que se excluye
-de la comprobación de huellas (`ANALYSIS_ONLY`). Tests nuevos: cambiar
-`capacity.py` no bloquea el replay y cambiar `runner.py` sí. `--replay` completo
-repetido el 2026-11-25 (Python 3.13.2): 19 escenarios, los 21 KPIs coinciden.
-No cambian `results/final` ni el modelo.
-Informe y límites: `docs/VERIFICACION_C_T6.2.md`. No se alteran modelo ni datos.
-
-**T6.2 sigue en curso**: A y B deben revisar/confirmar la evidencia existente
-de capacidad y supuestos de sus módulos (`docs/VERIFICACION.md`). No se da
-por cerrada su parte. T6.3 (memoria) depende del cierre conjunto de T6.2; las
-figuras de T6.1 ya están en main.
-**T6.2 en curso.** Documento común `docs/VALIDACION_T6.2.md`: mapa de cada
-comprobación del apartado 6 de la especificación con su prueba y su resultado,
-para que A y C revisen su parte. B añade `scripts/validate_b.py`, con dos
-comprobaciones sobre la simulación completa. En X5, con acomodadores casi
-ilimitados la duración de un conflicto baja a 4,62 min, la media teórica de la
-resolución (4,67): la saturación se debe a los acomodadores. En X7 con todas las
-salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
-persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
-7,36 min. Con una salida bloqueada manda la cola en las salidas.
-
-**T6.3 en curso.** La parte de B de la memoria está en `docs/memoria_parte2/`,
-con la convención de A: `B1_modelo_implementado.md` (asiento, I1, I4, salida,
-evacuación, números aleatorios comunes e hipótesis), `B2_verificacion.md`
-(contraste con la Parte 1, casos límite y peso de los conflictos en la entrada
-tardía de X0) y `B3_respuestas_P5_P6_P8.md` (con sus figuras). Redactada como
-texto final, sin referencias internas (decisiones, tareas ni nombres de código).
-P7 la responde A3 y los cambios comunes respecto a la Parte 1 están en A1.
-
-**Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
-ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
-**Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
-B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
-memoria de resultados, depende de T6.1 y T6.2.
-**T6.2 completada en el alcance de verificación interna acordado.** Las partes
-de A (PR #33), B (PR #32) y C (PR #31) están fusionadas; Chema confirma el
-cierre conjunto para empezar T6.3. Evidencia en `docs/VERIFICACION.md`,
-`docs/VALIDACION_T6.2.md` y `docs/VERIFICACION_C_T6.2.md`. No se afirma validación
-externa con datos de colas/salida ni consulta independiente de F2.
-
-**T6.3 · parte C preparada para revisión**, por petición expresa de Chema de
-hacer solo C. Fuentes en `docs/memoria_parte2/C1_metodo_estadistico_y_campana.md`,
-`C2_sensibilidad.md` y `C3_conclusiones_y_limites.md`; PDF de lectura de 11 páginas
-`Memoria_Parte2_C.pdf`, con hashes de sus fuentes editables. Índice: `LEEME_C.md`.
-C1 explica runner, KPIs, semillas, IC y tamaños; C2 analiza S1; C3 sintetiza P1–P8,
-cambios respecto a Parte 1 y límites. No se ha compuesto la memoria conjunta.
-A tiene su borrador en PR #34; B aporta sus secciones de ubicación/salida/evacuación.
-
-Corregidas etiquetas P3/P6 de las figuras: entrada tardía incluye recorrido, no
-solo colas. Contraste adicional para P7 (con redirección − X0): +0,04989 ± 0,00346
-min, 180 parejas; se documenta sin cambiar `results/final/comparisons.csv`.
-
-**Siguiente:** revisión del texto C, integración por el equipo con A/B, formato y
-revisión final de la memoria conjunta. T6.3 global sigue en curso.
-En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
-necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
-I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
-perjudicaron a espectadores. No se cambian hipótesis de D23 en esta campaña.
+* T6.3 parte C (hecho; PR #36): `C1_metodo_estadistico_y_campana.md`,
+  `C2_sensibilidad.md` y `C3_conclusiones_y_limites.md`, con un PDF de lectura
+  (`Memoria_Parte2_C.pdf`). Contraste adicional para P7 (X6 con redirección
+  menos X0): +0,04989 ± 0,00346 min, 180 parejas.
+* T6.3 parte B (hecho; PR #35): `B1`, `B2` y `B3` en `docs/memoria_parte2/`,
+  redactados como texto final.
 
 ## Cierre de T6.3 · instrucciones por rol
 
@@ -310,6 +225,9 @@ memoria en LaTeX (es de A; si ves algo, dilo en un aviso); cada PR actualiza
 Fuente de verdad de las cifras: `results/final`.
 
 ### Rol B (Pablo Pérez, Claude Code) — rama `feat/perez-T6.3-cierre`
+
+**Estado:** hecho en la rama `feat/perez-T6.3-cierre` (opción «reproducirlo» del
+punto 1, con las 180 semillas; ver aviso de B a A).
 
 1. **Contraste «sin conflictos» de X0** (informe, n.º 2 y 3). B2 da 4,38 % de
    entrada tardía sin conflictos (0,08 ± 0,01 puntos, 20 réplicas), y no lo
