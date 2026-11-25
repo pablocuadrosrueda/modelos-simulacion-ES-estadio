@@ -276,6 +276,7 @@ def verify(directory: Path, *, replay=False) -> dict:
     replays = []
     if replay:
         for name, digest in manifest["source_sha256"].items():
+            # ANALYSIS_ONLY (capacity.py): análisis, no participa en las réplicas.
             if name.startswith("src/") and name not in ANALYSIS_ONLY:
                 require(
                     model_digest(ROOT / name) == digest,
