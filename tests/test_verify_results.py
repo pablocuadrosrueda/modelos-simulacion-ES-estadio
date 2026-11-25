@@ -1,7 +1,9 @@
 """T6.2 C: detectar tablas incoherentes, sin volver a simular toda la campaña."""
 
+import ast
 import hashlib
 import importlib.util
+import json
 import shutil
 from pathlib import Path
 
@@ -114,3 +116,47 @@ def test_model_digest_ignores_crlf_but_detects_code_changes(verifier, tmp_path):
     assert verifier.model_digest(source) == expected
     source.write_bytes(b"x = 3\r\ny = 2\r\n")
     assert verifier.model_digest(source) != expected
+
+
+@pytest.fixture
+def model_copy(verifier, monkeypatch, tmp_path):
+    """Copia de src/ con la que el verificador compara huellas, sin tocar el repo."""
+    root = tmp_path / "repo"
+    shutil.copytree(ROOT / "src", root / "src", ignore=shutil.ignore_patterns("__pycache__"))
+    monkeypatch.setattr(verifier, "ROOT", root)
+    monkeypatch.setattr(
+        verifier, "run_replica", lambda cfg, seed: pd.DataFrame(columns=verifier.SPECTATOR_COLUMNS)
+    )
+    return root / "src/sanmames"
+
+
+def test_capacity_is_analysis_only_and_not_imported_by_the_model(verifier):
+    """Justifica ANALYSIS_ONLY: ningún otro módulo de src/ importa capacity."""
+    for path in (ROOT / "src/sanmames").glob("*.py"):
+        if path.name == "capacity.py":
+            continue
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+            if isinstance(node, ast.ImportFrom):
+                names = [node.module or ""] + [a.name for a in node.names]
+            elif isinstance(node, ast.Import):
+                names = [a.name for a in node.names]
+            else:
+                continue
+            assert not any(n.split(".")[-1] == "capacity" for n in names), path
+    manifest = json.loads((ROOT / "results/final/manifest.json").read_text(encoding="utf-8"))
+    assert set(verifier.ANALYSIS_ONLY) <= set(manifest["source_sha256"])
+
+
+def test_changing_capacity_does_not_block_replay(verifier, campaign, model_copy):
+    with (model_copy / "capacity.py").open("a", encoding="utf-8") as f:
+        f.write("\n\ndef nueva_funcion_de_analisis():\n    return 1\n")
+    # Pasa la comprobación de huellas y llega a la réplica (falseada a propósito).
+    with pytest.raises(ValueError, match="identidades del runner"):
+        verifier.verify(campaign, replay=True)
+
+
+def test_changing_runner_still_blocks_replay(verifier, campaign, model_copy):
+    with (model_copy / "runner.py").open("a", encoding="utf-8") as f:
+        f.write("\n# cambio en el modelo\n")
+    with pytest.raises(ValueError, match="Modelo distinto del cálculo original: .*runner.py"):
+        verifier.verify(campaign, replay=True)

@@ -253,3 +253,11 @@ No cambia el contrato de `run_replica` ni las columnas de `kpis.csv`.
 `manifest.json` fija código, configs, versiones, plan y ampliaciones. Los
 checkpoints locales permiten `--resume`; no se mezclan experimentos de distinto
 modelo. Los manifiestos usan `/` en sus claves de ruta también en Windows.
+
+**Huella del modelo en la verificación (`scripts/verify_results.py --replay`).**
+Antes de repetir réplicas se exige que cada fichero `src/` del manifiesto tenga
+la misma huella SHA-256 (con LF) que en el cálculo original. Se excluyen los
+módulos de `verify_results.ANALYSIS_ONLY`, que no intervienen en la simulación
+ni en los KPIs: hoy solo `src/sanmames/capacity.py` (análisis de A; ningún
+módulo de la simulación lo importa, lo comprueba un test). Un módulo nuevo solo
+puede entrar en esa lista si ningún módulo que genera datos lo importa.

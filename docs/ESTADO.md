@@ -206,7 +206,18 @@ recuentos terminales, reparto, relojes, rangos de KPIs y NaN según la fase.
 Recalcula resumen, contrastes emparejados (P4 con colectivos comparables) y precisión.
 Con `--replay` se han repetido 19 réplicas (una por escenario, semilla 20261105):
 IDs y terminación correctos, los 21 KPIs coinciden con T5.3 en todos los casos.
-Código de `src/` contrastado por SHA-256 con el de la campaña.
+Código de `src/` contrastado por SHA-256 con el de la campaña, salvo
+`capacity.py` (módulo de análisis, ver abajo).
+
+**Arreglo de CI (A, rama `fix/cuadros-verify-capacity`).** Tras T6.2 de A (PR #33),
+`test_bad_replay_is_rejected_instead_of_reporting_success` fallaba: `--replay`
+rechazaba la huella de `src/sanmames/capacity.py`, que ganó funciones nuevas
+(modelo fluido, `busy_rate_per_turnstile`). El diff respecto a `fd6475c` es solo
+aditivo y ningún módulo que genera datos importa `capacity`, así que se excluye
+de la comprobación de huellas (`ANALYSIS_ONLY`). Tests nuevos: cambiar
+`capacity.py` no bloquea el replay y cambiar `runner.py` sí. `--replay` completo
+repetido el 2026-11-25 (Python 3.13.2): 19 escenarios, los 21 KPIs coinciden.
+No cambian `results/final` ni el modelo.
 Informe y límites: `docs/VERIFICACION_C_T6.2.md`. No se alteran modelo ni datos.
 
 **T6.2 sigue en curso**: A y B deben revisar/confirmar la evidencia existente
