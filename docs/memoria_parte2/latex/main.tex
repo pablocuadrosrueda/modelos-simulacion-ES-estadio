@@ -1,0 +1,120 @@
+% Memoria de la Parte 2 · Simulación de San Mamés (DMS, UJA 2026/27)
+% Compilar con XeLaTeX (como la Parte 1):  latexmk -xelatex main.tex
+% Fuentes de las cifras: Markdown de docs/memoria_parte2 (A1-A3, B1-B3, C1-C3),
+% contrastados en INFORME_COHERENCIA.md con results/final y results/figures.
+\documentclass[11pt,a4paper]{article}
+
+% --- Idioma y fuentes (Inter, como la Parte 1) -------------------------------
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont{Inter}[
+  Extension=.otf, UprightFont=*-Regular, BoldFont=*-Bold,
+  ItalicFont=*-Italic, BoldItalicFont=*-BoldItalic, Scale=0.92]
+\newfontfamily\titlefont{Inter}[
+  Extension=.otf, UprightFont=*-ExtraBold, BoldFont=*-Black]
+\setmathfont{latinmodern-math.otf}
+\usepackage[spanish,es-noshorthands,es-tabla]{babel}
+
+% --- Página -------------------------------------------------------------------
+\usepackage[a4paper,top=2.4cm,bottom=2.4cm,left=2.3cm,right=2.3cm,headheight=14pt]{geometry}
+\usepackage{microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\linespread{1.08}
+
+% --- Colores de la Parte 1 ----------------------------------------------------
+\usepackage{xcolor}
+\definecolor{marino}{rgb}{0.098,0.184,0.255}
+\definecolor{azul}{rgb}{0.09,0.235,0.345}
+\definecolor{turquesa}{rgb}{0.075,0.545,0.569}
+\definecolor{gris}{rgb}{0.388,0.471,0.541}
+\definecolor{grisclaro}{rgb}{0.796,0.843,0.875}
+
+% --- Títulos de sección -------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}{\titlefont\Large\color{marino}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries\large\color{azul}}{\thesubsection.}{0.6em}{}
+\titleformat{\subsubsection}{\bfseries\color{turquesa}}{}{0em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.1em}{0.4em}
+
+% --- Cabecera y pie (como la Parte 1) -----------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{gris}DISEÑO DE MODELOS DE SIMULACIÓN}
+\fancyhead[R]{\footnotesize\color{gris}PARTE 2 · SAN MAMÉS}
+\fancyfoot[L]{\footnotesize\color{gris}UJA · CURSO 2026/2027}
+\fancyfoot[R]{\footnotesize\color{gris}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\color{grisclaro}\hrule height\headrulewidth}
+
+% --- Tablas, figuras, listas, enlaces -----------------------------------------
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{graphicx}
+\graphicspath{{../../../results/figures/}}
+\usepackage{float}
+\usepackage[section]{placeins}
+% Los flotantes no cruzan el inicio de un apartado.
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\oldsubsection}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\usepackage[font=small,labelfont={bf,color=azul},labelsep=period]{caption}
+\usepackage{enumitem}
+\setlist{itemsep=0.2em,topsep=0.3em}
+\usepackage{makecell}
+\renewcommand{\cellalign}{tl}
+\renewcommand{\theadfont}{\normalsize}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Simulación del control de accesos, salida y gestión de incidencias en un estadio de fútbol. Parte 2},
+  pdfauthor={Pablo Cuadros Rueda; Pablo Pérez Molina; José María Chamorro Bueno}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\renewcommand{\arraystretch}{1.15}
+
+% --- Macros -------------------------------------------------------------------
+% Cifra que no se ha podido comprobar en el repositorio: se ve en rojo.
+\newcommand{\pend}{\textcolor{red}{\textbf{PENDIENTE DE CONFIRMAR}}}
+
+\begin{document}
+
+% --- Portada (misma estructura que la Parte 1) --------------------------------
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  {\color{gris}\small ESCUELA POLITÉCNICA SUPERIOR DE JAÉN\par}
+  \vspace{0.4em}
+  {\color{azul}\large\bfseries DISEÑO DE MODELOS DE SIMULACIÓN\par}
+  \vspace{5.5cm}
+  {\titlefont\color{marino}\huge Simulación del control de accesos, salida\\[0.2em]
+   y gestión de incidencias en un estadio de\\[0.2em] fútbol\par}
+  \vspace{1em}
+  {\color{turquesa}\large Caso de referencia: Estadio de San Mamés Bilbao\par}
+  \vspace{0.6em}
+  {\color{gris}\large Parte 2 · Implementación, verificación y resultados\par}
+  \vfill
+  \begin{tabular}{@{}l@{\hspace{3em}}l@{}}
+    {\color{gris}\small INTEGRANTES} & {\color{gris}\small HERRAMIENTA}\\[0.3em]
+    Pablo Cuadros Rueda (pcr00036) & Python 3 + SimPy\\
+    Pablo Pérez Molina (ppm00052) & \\[0.3em]
+    José María Chamorro Bueno (jmcb0024) & {\color{gris}\small FECHA DE ENTREGA}\\
+     & \pend\\
+  \end{tabular}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\input{01_introduccion}
+\input{02_modelo}
+\input{03_desviaciones}
+\input{04_verificacion}
+\input{05_resultados}
+\input{06_sensibilidad}
+\input{07_conclusiones}
+\input{08_referencias}
+
+\end{document}

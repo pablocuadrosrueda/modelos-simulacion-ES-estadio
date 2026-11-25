@@ -16,6 +16,11 @@ de la Parte 1 no se modifica.
 | `B3_respuestas_P5_P6_P8.md` | Respuestas a P5, P6 y P8 con sus figuras | B |
 | `C1_metodo_estadistico_y_campana.md`, `C2_sensibilidad.md`, `C3_conclusiones_y_limites.md` | Método estadístico, campaña, sensibilidad y conclusiones (ver `LEEME_C.md`) | C |
 
+**Integración (T6.3):** `INFORME_COHERENCIA.md` (cifras, terminología y solapes)
+y la memoria única en LaTeX en `latex/` (`latexmk -xelatex main.tex`; las figuras
+se leen de `results/figures`). La memoria aplica la regla de no citar código,
+ficheros ni números de decisión.
+
 Reglas del borrador: todas las cifras salen de `results/final`,
 `results/figures` o `docs/*.md`; lo que no se ha podido comprobar se marca
 «PENDIENTE DE CONFIRMAR».

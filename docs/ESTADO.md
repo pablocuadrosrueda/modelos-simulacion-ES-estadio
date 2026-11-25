@@ -1,7 +1,8 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-25. Inc0–Inc5 y T6.1 completos. T6.2 de A/B/C
-fusionada (PR #33/#32/#31). T6.3 en curso por secciones; C preparada para revisión._
+fusionada (PR #33/#32/#31). T6.3: partes A, B y C fusionadas (PR #34/#35/#36);
+integración en LaTeX en revisión._
 
 ## Hecho
 
@@ -157,7 +158,7 @@ la protección de `main` exigiendo esos checks.
   `results/final`. Pendiente de B y C, listado en VERIFICACION: salida 7,7 min,
   evacuación 5,9/7,1 min, dispersión de I1, KPIs de C.
 
-* T6.3, parte de A (en revisión; rama `feat/cuadros-T6.3-memoria-A`): borrador
+* T6.3, parte de A (hecho; PR #34): borrador
   de la Parte 2 en Markdown en `docs/memoria_parte2/` (solo hay el PDF de la
   Parte 1, sin fuente ni formato para la Parte 2). `A1_modelo_implementado.md`
   (entrada, I2, I3, números comunes y desviaciones D31, D23, D25, D33, D34, ρ de
@@ -166,6 +167,21 @@ la protección de `main` exigiendo esos checks.
   frente a supuesto, limitaciones y cruces con B y C). Cifras de `results/final`
   sin regenerar. Una «PENDIENTE DE CONFIRMAR»: contraste emparejado X6 con
   redirección − X0, que no está en `comparisons.csv`. No cambia código ni datos.
+
+* **T6.3, integración (A, en revisión; rama `feat/cuadros-T6.3-integracion`).**
+  `docs/memoria_parte2/INFORME_COHERENCIA.md` contrasta las cifras repetidas de
+  A, B y C con `results/final` (solo lectura) y fija la regla de terminología:
+  la memoria no cita nombres de código, ficheros ni números de decisión. Memoria
+  única en `docs/memoria_parte2/latex/` (`main.tex` y un `.tex` por sección):
+  introducción, modelo, desviaciones respecto a la Parte 1, verificación y
+  método, P1–P8 en orden, sensibilidad, conclusiones y referencias, con las
+  figuras de `results/figures`. Estilo de la Parte 1 (XeLaTeX, Inter, A4, misma
+  cabecera). Compila con `latexmk -xelatex` (TeX Live 2026): 26 páginas, sin
+  errores ni cajas desbordadas. Siguen «PENDIENTE DE CONFIRMAR», en rojo: el
+  contraste sin conflictos de B (0,08 ± 0,01 puntos), la comprobación con F2 y
+  la fecha de entrega. La hipótesis del cierre (cola ya formada) va como
+  hipótesis adoptada con `% DECIDIR`. No cambia código, datos ni los Markdown de
+  A, B y C.
 
 ## Siguiente paso
 
