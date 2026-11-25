@@ -14,8 +14,31 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · Borrador de la Parte 2 (T6.3, parte de A)
+**Estado:** en revisión en `feat/cuadros-T6.3-memoria-A`.
+
+* Borrador en Markdown en `docs/memoria_parte2/` (no hay fuente de la memoria
+  en el repo). B y C: añadid ahí vuestras secciones; `LEEME.md` tiene el índice.
+  Al final de A3, «Cruces con B y C» lista lo que el texto de A da por supuesto
+  de vosotros.
+* **C · incoherencia en una figura.** En P3 (`scripts/plot_results.py`, línea
+  134) el panel de `late_pct` se titula «Entrada tardía atribuible a colas»,
+  y en P6 «Entrada tardía por colas». El indicador (llega antes de t = 0 y se
+  sienta después) incluye el recorrido y los conflictos: con 4 tornos, con
+  espera casi nula, sigue en 3,754 ± 0,016 %. Propuesta: «Entrada tardía». No lo
+  he cambiado.
+* **C · contraste que falta.** `comparisons.csv` compara X6 con redirección con
+  X6 sin redirección, pero no con X0. A3 (P7) lo marca «PENDIENTE DE
+  CONFIRMAR»; si queréis darlo, sería la diferencia emparejada X6_con − X0.
+* **C · tablero.** `docs/TAREAS.md` sigue marcando T6.1 «en revisión» y ESTADO
+  dice «preparada para revisión», aunque el PR #30 está fusionado. No lo toco.
+* **Grupo · D23.** `docs/DECISIONES.md` aún dice «Hipótesis pendiente de
+  confirmar por el grupo», mientras ESTADO y T5.3 dicen que se mantiene. A1 la
+  presenta como hipótesis conservada; conviene anotarlo en DECISIONES.
+
+
 ### 2026-11-25 · A → B, C · T6.2: parte de A hecha, lo vuestro listado
-**Estado:** en revisión en `feat/cuadros-T6.2-verificacion`.
+**Estado:** fusionada en `main` (PR #33).
 
 * Entrada y capacidad verificadas con `results/final` (sin regenerarlo) en
   `docs/VERIFICACION.md`, sección T6.2, con la tabla «Validación frente a la

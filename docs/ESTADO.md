@@ -1,7 +1,8 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
-(T5.3 fusionada en PR #29) y T6.1 (PR #30). T6.2, parte de A, en revisión._
+(T5.3 fusionada en PR #29), T6.1 (PR #30) y la parte de A de T6.2 (PR #33).
+T6.3, parte de A, en revisión._
 
 ## Hecho
 
@@ -140,7 +141,7 @@ la protección de `main` exigiendo esos checks.
 
 **Inc6: en curso.**
 
-* T6.2, parte de A (en revisión; rama `feat/cuadros-T6.2-verificacion`):
+* T6.2, parte de A (hecho; PR #33):
   entrada y capacidad contrastadas con `results/final` **sin regenerar datos**
   (`scripts/validate_final.py`, `tests/test_validacion_entrada.py`, resultados en
   `docs/VERIFICACION.md`). Cuadran con la memoria: E[S] 4,3 s (I2 3,001 ± 0,011 %),
@@ -156,6 +157,16 @@ la protección de `main` exigiendo esos checks.
   el script de T2.1). No cambia ningún parámetro, hipótesis ni dato de
   `results/final`. Pendiente de B y C, listado en VERIFICACION: salida 7,7 min,
   evacuación 5,9/7,1 min, dispersión de I1, KPIs de C.
+
+* T6.3, parte de A (en revisión; rama `feat/cuadros-T6.3-memoria-A`): borrador
+  de la Parte 2 en Markdown en `docs/memoria_parte2/` (solo hay el PDF de la
+  Parte 1, sin fuente ni formato para la Parte 2). `A1_modelo_implementado.md`
+  (entrada, I2, I3, números comunes y desviaciones D31, D23, D25, D33, D34, ρ de
+  X2), `A2_verificacion.md` (resumen de VERIFICACION) y
+  `A3_respuestas_P1_P2_P3_P4_P7.md` (respuestas con IC y n, figura, hallazgo
+  frente a supuesto, limitaciones y cruces con B y C). Cifras de `results/final`
+  sin regenerar. Una «PENDIENTE DE CONFIRMAR»: contraste emparejado X6 con
+  redirección − X0, que no está en `comparisons.csv`. No cambia código ni datos.
 
 ## Siguiente paso
 
@@ -196,9 +207,10 @@ No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
 comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
 vaciado y frecuencia observada de cumplir ocho minutos.
 
-**Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
-B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
-memoria de resultados, depende de T6.1 y T6.2.
+**Siguiente: T6.2 y T6.3 de B y C.** La lista de T6.2 está en
+`docs/VERIFICACION.md` («Pendiente de B y C»). Para T6.3, B y C añaden sus
+secciones en `docs/memoria_parte2/` (ver su `LEEME.md` y los «Cruces con B y C»
+al final de A3).
 En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
 necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
 I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
