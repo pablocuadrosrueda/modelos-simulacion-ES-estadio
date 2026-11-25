@@ -2,6 +2,7 @@
 
 import hashlib
 import importlib.util
+import json
 import shutil
 from pathlib import Path
 
@@ -89,6 +90,14 @@ def test_reordering_rows_does_not_change_pairing(verifier, campaign):
 def test_bad_replay_is_rejected_instead_of_reporting_success(verifier, campaign, monkeypatch):
     from sanmames.entities import SPECTATOR_COLUMNS
 
+    # Este test comprueba el rechazo de una réplica mal repetida, no la huella del
+    # código: se fijan las huellas del manifiesto para que un cambio posterior en
+    # un módulo que no simula (p. ej. capacity.py, T6.2 de A) no lo enmascare.
+    manifest = json.loads((campaign / "manifest.json").read_text(encoding="utf-8"))
+    digests = {k.replace("\\", "/"): v for k, v in manifest["source_sha256"].items()}
+    monkeypatch.setattr(
+        verifier, "model_digest", lambda path: digests[path.relative_to(ROOT).as_posix()]
+    )
     monkeypatch.setattr(
         verifier, "run_replica", lambda cfg, seed: pd.DataFrame(columns=SPECTATOR_COLUMNS)
     )

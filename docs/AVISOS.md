@@ -27,10 +27,15 @@ Reglas:
   B2). El cierre de puerta de X6 cierra A-1 en t = -30 y la reabre en t = -20, y
   quien espera la reapertura entra en orden de llegada (tests de incidents). Los
   7,7, 5,9 y 7,1 min de la Parte 1 se contrastan en B2.
-* **C:** en Windows falla `tests/test_verify_results.py::test_bad_replay_is_rejected_instead_of_reporting_success`
-  también en `main`: el mensaje es «Modelo distinto del cálculo original:
-  src/sanmames/capacity.py», seguramente porque Git convierte los finales de línea
-  a CRLF al descargar y la huella del fichero cambia. En la CI de Linux pasa.
+* **C (test arreglado en este PR):** desde el PR #33 fallaba en `main`, en Linux y
+  en Windows, `tests/test_verify_results.py::test_bad_replay_is_rejected_instead_of_reporting_success`.
+  `verify_results.py --replay` comprueba primero que el código sea idéntico al del
+  cálculo (`fd6475c`), y A añadió funciones a `capacity.py` (no interviene en la
+  simulación), así que el script paraba antes de lo que el test quiere probar.
+  Arreglo mínimo, solo en el test: fija las huellas del manifiesto. Queda una
+  decisión para C: con el `capacity.py` actual, `verify_results.py --replay` real
+  también rechaza la campaña; habría que excluir de esa comprobación los módulos
+  que no simulan o anotarlo.
 
 ### 2026-11-25 · C → A, B · Parte C de T6.2 verificada
 **Estado:** en revisión en `feat/chema-T6.2-verificacion-C`; T6.2 conjunta sigue en curso.
