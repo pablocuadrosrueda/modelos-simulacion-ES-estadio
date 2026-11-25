@@ -97,8 +97,8 @@ conjunto. La ausencia de validación externa/F2 se conserva como limitación.
 |---|---|---|
 | Modelo de entrada, verificación, P1–P4/P7 | A | fusionada en PR #34 |
 | Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | fusionada en PR #35 |
-| Método, campaña, sensibilidad y conclusiones | C | fusionada en PR #36; fuentes y PDF de 11 páginas |
-| Integración y revisión final de la memoria conjunta | A, B, C | integración en LaTeX fusionada (PR #40); cierre por roles en curso (ver ESTADO). B: correcciones en `feat/perez-T6.3-cierre` |
+| Método, campaña, sensibilidad y conclusiones | C | aportación fusionada (#36); cierre fusionado (#41), ver `REVISION_C_CIERRE.md` |
+| Integración y revisión final de la memoria conjunta | A, B, C | Integración inicial fusionada (#40); C revisada; cierre de B en `feat/perez-T6.3-cierre`; pendientes de A y decisiones del grupo |
 
 Mantenimiento de T6.2: PR #37 fusionó dos correcciones equivalentes de la
 exclusión analítica de `capacity.py` y dejó dos bloques sin cuerpo. Reparación

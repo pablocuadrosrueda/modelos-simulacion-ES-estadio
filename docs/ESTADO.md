@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 _Última actualización: 2026-11-25. Inc0 a Inc5, T6.1 y T6.2 completos. T6.3: partes
-A, B y C (PR #34, #35 y #36) e integración en LaTeX (PR #40) fusionadas; falta el
-cierre por roles (ver «Cierre de T6.3: instrucciones por rol»). Entrega de la
+A, B y C (PR #34, #35 y #36), integración en LaTeX (PR #40) y cierre de C (PR #41)
+fusionados; falta el cierre de B (en revisión), del grupo y de A (ver «Cierre de T6.3: instrucciones por rol»). Entrega de la
 memoria: 11 de diciembre de 2026; defensa: 14 o 17 de diciembre._
 
 ## Hecho
@@ -215,8 +215,8 @@ LaTeX y la da por cerrada. Después, preparar la defensa.
 
 ## Cierre de T6.3 · instrucciones por rol
 
-Estado: las tres partes están en `main`; la memoria única en LaTeX
-(`docs/memoria_parte2/latex/`) está en el PR de A. **Quedan cuatro cosas, y cada
+Estado: las tres partes y la integración inicial en LaTeX están en `main`
+(`docs/memoria_parte2/latex/`, PR #40). **Quedan cuatro cosas, y cada
 una tiene dueño.** Las discrepancias de cifras están en
 `docs/memoria_parte2/INFORME_COHERENCIA.md` (§5, «Qué decide cada uno»).
 Reglas comunes: no tocar `results/`, `src/` ni `configs/`; no cambiar la
@@ -249,19 +249,19 @@ punto 1, con las 180 semillas; ver aviso de B a A).
 
 ### Rol C (Chema, Codex) — rama `feat/chema-T6.3-cierre`
 
-1. Corregir en `C2_sensibilidad.md` el redondeo de la velocidad +15 % sobre el
-   vaciado: **−0,0861** (no −0,0862). Revisa que esa cifra no se repita en otro
-   sitio de C1–C3, en `docs/` o en el PDF `Memoria_Parte2_C.pdf`; si lo hay,
-   regenera el PDF.
-2. Opcional: dar IC y n de X6 en `C3_conclusiones_y_limites.md` (informe,
-   n.º 5 y 7), tomándolos de `results/final`.
-3. Pasar T6.1 a `hecho` en `docs/TAREAS.md` y `docs/ESTADO.md` (el PR #30 está
-   fusionado y sigue figurando «en revisión»).
-4. Revisar la memoria única de A (PR de integración): leer el PDF y comprobar
-   que sus cifras de la parte C coinciden con `results/final`. Si ves un error,
-   dilo en un aviso a A, no edites el LaTeX.
-5. Cuando se fusione todo, repetir `scripts/verify_results.py --replay` en
-   `main` y dejar constancia en `docs/VERIFICACION_C_T6.2.md`.
+**Preparado para revisión.** Detalle: `docs/memoria_parte2/REVISION_C_CIERRE.md`.
+
+1. Hecho: C2 redondeado a **−0,0861 ± 0,0182 min**, n = 180; fuentes y PDF C
+   corregidos, hashes y maquetación revisados (11 páginas).
+2. Hecho: C3 incluye IC/n del colectivo afectado de X6: sin redirección
+   9,6259 ± 0,1204 min (45); con redirección 0,5433 ± 0,0260 min (199).
+3. Hecho: T6.1 confirmado como `hecho` en ESTADO/TAREAS, PR #30 fusionado.
+4. Hecho: compilada y revisada la memoria única (26 páginas). Tablas 4/19 y
+   resultados de C contrastados con CSV, sin discrepancias numéricas. No se
+   edita el LaTeX de A; se le avisa de la legibilidad de la figura S1.
+5. Hecho sobre el código integrado de `main` en `eeea932`: replay de 19
+   escenarios con los 21 KPIs coincidentes; informe C actualizado. No se
+   modifican `results/`, `src/` ni `configs/`.
 
 ### Grupo (los tres) — decidir antes de la entrega
 
@@ -302,6 +302,13 @@ Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
+
+Cierre C de T6.3 (2026-11-25): `make check`, 453 passed y 2 skipped
+(lentas opcionales), lint/docs-check limpios. Cifras corregidas y PDF C
+reexportado; revisión
+numérica/visual de la integración LaTeX, sin editarla. Replay de los 19 escenarios
+tras la integración: correcto. Ver `docs/memoria_parte2/REVISION_C_CIERRE.md`.
+
 
 Reparación de integración (2026-11-25): PR #37 dejó un `if` y un `with`
 sin cuerpo al combinar las correcciones de A y C de `capacity.py`. Se conserva
