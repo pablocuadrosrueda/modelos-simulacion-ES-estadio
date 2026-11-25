@@ -2,6 +2,7 @@
 
 import hashlib
 import importlib.util
+import json
 import shutil
 from pathlib import Path
 
@@ -114,3 +115,26 @@ def test_model_digest_ignores_crlf_but_detects_code_changes(verifier, tmp_path):
     assert verifier.model_digest(source) == expected
     source.write_bytes(b"x = 3\r\ny = 2\r\n")
     assert verifier.model_digest(source) != expected
+
+
+@pytest.mark.parametrize(
+    ("module", "message"),
+    [
+        ("src/sanmames/capacity.py", "identidades del runner"),
+        ("src/sanmames/runner.py", "Modelo distinto"),
+    ],
+)
+def test_replay_hash_excludes_only_analytical_capacity(
+    verifier, campaign, monkeypatch, module, message
+):
+    from sanmames.entities import SPECTATOR_COLUMNS
+
+    path = campaign / "manifest.json"
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    manifest["source_sha256"][module] = "0" * 64
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    monkeypatch.setattr(
+        verifier, "run_replica", lambda cfg, seed: pd.DataFrame(columns=SPECTATOR_COLUMNS)
+    )
+    with pytest.raises(ValueError, match=message):
+        verifier.verify(campaign, replay=True)
