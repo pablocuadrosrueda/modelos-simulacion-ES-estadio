@@ -104,3 +104,24 @@ bloqueo falla la capacidad.
   al título de P3 y sustituir la comparación de medias de P7 por la diferencia
   emparejada de C. Los Markdown de A se actualizarán en otro PR si el grupo lo
   pide; la memoria en LaTeX ya lo incorpora.
+
+## 6. Cierre (feat/cuadros-T6.3-entrega)
+
+Tras los cierres de B (PR #42) y C (PR #41), cada cifra de la memoria se ha
+comprobado de nuevo en `results/final` o en `results/figures/statistics.csv`
+antes de escribirla:
+
+| Cifra | Markdown | `results/` | Memoria |
+|---|---|---|---|
+| Entrada tardía y acceso de X0 con conflictos | B2: 4,578 % y 1,972 min | `summary.csv`: 4,578 ± 0,052 % y 1,972 ± 0,008 min (180) | Igual |
+| X0 sin conflictos (4,488 %, 1,941 min; diferencias 0,090 ± 0,006 puntos y 0,032 ± 0,001 min, 180 parejas) | B2 y `docs/VALIDACION_T6.2.md` §3 | No está en `results/final`: es una simulación adicional de B, reproducible con `scripts/validate_b.py` (180 semillas de la campaña). Los valores con conflictos sí coinciden con `results/final` | Se usa la de B; deja de estar pendiente |
+| P5, máximo en una salida | B3: 1.460 (1,3) y 746 (1,4); −714 (0,6) | `statistics.csv`: 1.459,95 ± 1,33 y 746,07 ± 1,39; `comparisons.csv`: −713,878 ± 0,573 | 1.460,0 ± 1,3; 746,1 ± 1,4; −713,9 ± 0,6 |
+| P5, vaciado | B3: 8,37 (0,02) y 9,59 (0,11); +1,22 (0,11) | 8,3668 ± 0,0188 y 9,5907 ± 0,1077; +1,224 ± 0,105 | Igual, con 3 decimales |
+| P6, entrada tardía con 6 acomodadores | B3: **7,20 %** (0,14) | `statistics.csv`: 7,1947 ± 0,1389 | **7,19 ± 0,14 %**. Redondeo de B3; se avisa a B |
+| P6, resto de cifras y P8 | B3 | `statistics.csv` | Coinciden |
+| S1, velocidad +15 %, vaciado | C2: −0,0861 ± 0,0182 | −0,08615 ± 0,01820 | Igual (corregido por C) |
+| X6, colectivo afectado | C3: 9,6259 ± 0,1204 (45) y 0,5433 ± 0,0260 (199) | `audit.csv` | 9,626 ± 0,120 y 0,543 ± 0,026 |
+| X6 con redirección − X0 | C3: +0,04989 ± 0,00346 (180) | Leído de `kpis.csv` con 180 semillas comunes | +0,050 ± 0,003 |
+
+Pendientes que quedan en la memoria: la fecha de entrega (la pone Pablo
+Cuadros) y la comprobación directa con F2, que no puede hacerse con el repo.
