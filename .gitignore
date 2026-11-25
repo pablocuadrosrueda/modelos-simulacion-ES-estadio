@@ -28,3 +28,11 @@ results/final/*
 !results/final/pilot/
 results/final/pilot/*
 !results/final/pilot/*.csv
+
+# T6.1: figuras definitivas y valores dibujados; sin checkpoints.
+!results/figures/
+results/figures/*
+!results/figures/*.png
+!results/figures/*.svg
+!results/figures/statistics.csv
+!results/figures/manifest.json
