@@ -56,27 +56,6 @@ def cfg(*overrides: dict[str, Any]) -> Config:
     return load_config(overrides=merged)
 
 
-def busy_rate_per_turnstile(df: Any, config: Config, min_len: float = 5.0) -> float:
-    """Servicios por torno y minuto en periodos de cola de ``min_len`` min o más."""
-    done, busy = 0, 0.0
-    for _, d in df.groupby(["zone", "gate_used"]):
-        waits = sorted(
-            (a, b) for a, b in zip(d.t_arrival, d.t_start_control, strict=True) if b - a > 1e-9
-        )
-        merged: list[list[float]] = []
-        for a, b in waits:
-            if merged and a <= merged[-1][1]:
-                merged[-1][1] = max(merged[-1][1], b)
-            else:
-                merged.append([a, b])
-        ends = np.sort(d.t_end_control.to_numpy())
-        for a, b in merged:
-            if b - a >= min_len:
-                busy += b - a
-                done += int(np.searchsorted(ends, b) - np.searchsorted(ends, a, side="right"))
-    return done / (busy * config.turnstiles_per_gate) if busy else float("nan")
-
-
 def analytic_rows() -> list[Row]:
     base = load_config()
     ant = cfg({"arrival_profile": "anticipated"})
@@ -187,7 +166,8 @@ def simulation_rows(reps: int) -> tuple[list[Row], dict[str, float]]:
     for name, inc in (("todas las incidencias", with_i2), ("sin incidencias", NO_INCIDENTS)):
         c2 = cfg(inc, {"turnstiles_per_gate": 2})
         theory = cap.capacity_per_turnstile_min(c2)
-        rate = float(np.mean([busy_rate_per_turnstile(run_replica(c2, s), c2) for s in seeds[:2]]))
+        rates = [cap.busy_rate_per_turnstile(run_replica(c2, s), c2) for s in seeds[:2]]
+        rate = float(np.mean(rates))
         rows.append(
             row(f"Ritmo por torno con cola, 2 tornos {name}", theory, rate, 0.03 * theory, ".2f")
         )
