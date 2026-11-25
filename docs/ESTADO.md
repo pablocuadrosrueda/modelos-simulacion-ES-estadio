@@ -1,5 +1,7 @@
 # Estado del proyecto
 
+_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos y
+T6.1 (PR #30). T6.2 en curso: parte de B en la rama `feat/perez-T6.2-validation`._
 _Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
 (T5.3 fusionada en PR #29) y T6.1 (PR #30). T6.2, parte de A, en revisión._
 
@@ -188,7 +190,7 @@ no inferiores al plan, 180 semillas con idénticos conflictos en X5 3/6/9, y
 verificación del cierre/redirección. Hay CI Linux 3.10/3.12 y Windows específica
 para rutas y procesos/reanudación. Checkpoints locales, agregados versionados.
 
-**T6.1 preparada para revisión** en `feat/chema-T6.1-plots`: figuras P1–P8
+**T6.1 hecha (PR #30)**: figuras P1–P8
 y suplemento S1 en PNG 300 dpi + SVG, con IC del 95 %, unidades y n.
 Comando: `.venv/bin/python scripts/plot_results.py`. Índice e interpretación en
 `docs/GRAFICAS_T6.1.md`; puntos exactos y hashes en `results/figures`.
@@ -196,6 +198,18 @@ No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
 comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
 vaciado y frecuencia observada de cumplir ocho minutos.
 
+**T6.2 en curso.** Documento común `docs/VALIDACION_T6.2.md`: mapa de cada
+comprobación del apartado 6 de la especificación con su prueba y su resultado,
+para que A y C revisen su parte. B añade `scripts/validate_b.py`, con dos
+comprobaciones sobre la simulación completa. En X5, con acomodadores casi
+ilimitados la duración de un conflicto baja a 4,62 min, la media teórica de la
+resolución (4,67): la saturación se debe a los acomodadores. En X7 con todas las
+salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
+persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
+7,36 min. Con una salida bloqueada manda la cola en las salidas.
+
+**Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
+ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
 **Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
 B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
 memoria de resultados, depende de T6.1 y T6.2.

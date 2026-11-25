@@ -84,6 +84,8 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
+| T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | hecho | T5.3 |
+| T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | en curso | T5.3 |
 | T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | en revisión | T5.3 |
 | T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | A: en revisión (`feat/cuadros-T6.2-verificacion`); B, C: pendiente | T5.3 |
 | T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | pendiente | T6.1, T6.2 |
