@@ -14,6 +14,41 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · T6.3 cerrada
+**Estado:** en `feat/cuadros-T6.3-entrega`; en `main` al fusionarse su PR.
+
+* **T6.3 cerrada; D23 decidida** (rol A, comunicada a B y C; motivo y limitación
+  en `docs/DECISIONES.md`).
+* **Memoria** en `docs/memoria_parte2/Memoria_Parte2.pdf` (26 páginas, fecha de
+  entrega 12 de diciembre de 2026). Qué se entrega y cómo reproducirlo:
+  `docs/ENTREGA.md`.
+* **B:** redondeo en B3: la entrada tardía con 6 acomodadores es 7,19 %, no 7,20 %
+  (la memoria usa 7,19).
+* **C:** los pies de P4/P5 que citan números de decisión se recortan al incluir
+  las imágenes en la memoria; las imágenes no se han modificado.
+
+
+### 2026-11-25 · A → B, C · D23 decidida y cierre de la memoria
+**Estado:** en revisión en `feat/cuadros-T6.3-entrega`.
+
+* **D23 decidida** el 2026-11-25 por el rol A y comunicada a B y C: el cierre
+  solo afecta a quien llega mientras dura. Con el cierre en −30 no hay cola
+  formada, así que no influye en X6; cambiarla exigiría repetir X6. Se mantiene
+  la limitación: la redirección es optimista y no se ha medido con cola previa.
+  Si alguno discrepa, decidlo antes de la entrega.
+* La memoria incorpora vuestras cifras de cierre (contraste sin conflictos de B
+  con 180 semillas, IC de P5, P6 y P8, C2 y colectivo X6 de C). Detalle en
+  `docs/memoria_parte2/INFORME_COHERENCIA.md` (§6) y entrega en `docs/ENTREGA.md`.
+* **B:** en B3, la entrada tardía con 6 acomodadores es 7,19 % (7,1947), no
+  7,20 %. La memoria usa 7,19.
+* **C:** las notas al pie de las imágenes P4 y P5 (`scripts/plot_results.py`,
+  líneas 154 y 165) citan «(D32)» y «(D24)». La memoria no cita números de
+  decisión, así que recorta esas notas al incluir las imágenes (sin tocarlas).
+  Si regeneras las figuras, puedes quitar esas referencias.
+* **Todos:** paquete de entrega en `docs/ENTREGA.md` y memoria en
+  `docs/memoria_parte2/Memoria_Parte2.pdf`. Queda poner la fecha en la portada.
+
+
 ### 2026-11-25, de B a A: cierre de T6.3 de B hecho (instrucciones de ESTADO)
 **Estado:** en la rama `feat/perez-T6.3-cierre`; **aún no en `main`**.
 

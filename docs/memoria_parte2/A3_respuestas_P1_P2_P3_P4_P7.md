@@ -53,7 +53,10 @@ espera es casi nula (0,016 ± 0,001 min), el porcentaje sigue siendo
 −0,824 ± 0,048 puntos porcentuales (180 parejas). Interpretación: eliminar casi
 toda la cola de X0 reduce la entrada tardía en menos de un punto; el resto se
 explica por quienes llegan en los últimos minutos y por el recorrido hasta el
-asiento, incluidos los conflictos (parte de B).
+asiento. Los conflictos pesan poco: repitiendo X0 sin conflictos con las mismas
+180 semillas (B, `docs/VALIDACION_T6.2.md`), la entrada tardía baja del 4,578 %
+al 4,488 %, 0,090 ± 0,006 puntos, y el acceso de 1,972 a 1,941 min,
+0,032 ± 0,001 min (n = 180).
 
 **Hallazgo y supuestos.** Que los tornos sean el recurso más cargado y que la
 espera sea corta con ρ = 0,93 se sigue de los parámetros. Las cifras absolutas
@@ -151,8 +154,6 @@ datos.
   (incentivos, información) ni si un 30 % es alcanzable.
 * La mejora absoluta de la espera es pequeña porque en X0 ya es corta; el efecto
   sería mayor en un escenario más cargado, que no se ha simulado.
-* En la figura P3 el panel de entrada tardía se titula «atribuible a colas»,
-  pero el indicador incluye también el recorrido hasta el asiento (ver P1).
 
 ---
 
@@ -226,10 +227,10 @@ parejas; figura **P7**):
   de llegadas durante 10 minutos, con una holgura que lo permite (ρ = 0,93). Las
   colas de esas puertas crecen poco y la espera de los afectados se queda en
   medio minuto.
-* La espera media de todo el estadio con redirección (0,243 ± 0,009 min) sigue
-  por encima de la de X0 sin cierre (0,192 ± 0,008 min). Es una comparación de
-  medias de muestras distintas: `comparisons.csv` no incluye el contraste
-  emparejado X6 con redirección − X0, que queda **PENDIENTE DE CONFIRMAR**.
+* La redirección mitiga el cierre, pero no lo hace invisible: frente a X0 sin
+  cierre, la espera media de todo el público con redirección es
+  +0,050 ± 0,003 min mayor (diferencia emparejada, 180 parejas; calculada por C
+  a partir de `kpis.csv`).
 * El efecto se ve en el colectivo afectado y en la cola máxima, no en las medias
   globales: el cierre afecta a 1 de las 24 puertas.
 
@@ -263,10 +264,8 @@ Lo que este texto da por supuesto de los otros roles:
 
 **B (estadio, salida, evacuación, I1, I4)**
 * La entrada tardía y el tiempo de acceso (P1, P3) incluyen el paso por el
-  vomitorio y los conflictos de asiento, que son de B. La lectura de P1 de que
-  la entrada tardía «se explica por el recorrido, incluidos los conflictos»
-  requiere que B confirme qué parte aportan los conflictos de X0 (0,5 %, 6
-  acomodadores).
+  vomitorio y los conflictos de asiento, que son de B. B ha medido el peso de
+  los conflictos en X0 (0,090 ± 0,006 puntos de entrada tardía, n = 180).
 * La afirmación de que los vomitorios no son cuello de botella «sin conflictos»
   (P1) es analítica; con conflictos, la respuesta es de B (P6).
 * P7 supone que el proceso de cierre (`gate_closure_process`, de B) cierra A-1
@@ -283,7 +282,6 @@ Lo que este texto da por supuesto de los otros roles:
 * Intervalos t de Student, emparejamiento por semilla y tamaños por precisión
   (D29, D34): la sección de método de C debe explicarlos, porque este texto
   solo los cita.
-* Figuras P1–P4 y P7 de `results/figures`. El título del panel de entrada tardía
-  de P3 («atribuible a colas») no coincide con lo que mide el indicador.
-* El contraste emparejado X6 con redirección − X0 no está en
-  `comparisons.csv` (P7, pendiente de confirmar).
+* Figuras P1–P4 y P7 de `results/figures`.
+* El contraste emparejado X6 con redirección − X0 (P7) lo calcula C, porque no
+  está en `comparisons.csv`, cuya referencia de X6 es sin redirección.

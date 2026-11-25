@@ -37,7 +37,8 @@ Entrada tardía & 4,578 $\pm$ 0,052~\% \\
 \centering
 \includegraphics[width=\textwidth]{P1.png}
 \caption{P1. Operativa actual (X0, $n=180$): espera media, máximo de personas
-esperando en una puerta, utilización de los tornos y entrada tardía. Medias entre
+esperando en una puerta, utilización de los tornos y entrada tardía (incluye
+recorrido; en la figura, «llegada antes de $t=0$, asiento después»). Medias entre
 réplicas con IC del 95~\%.}
 \label{fig:p1}
 \end{figure}
@@ -53,10 +54,11 @@ sección~\ref{sec:sensibilidad}).
 \textbf{La entrada tardía no se debe sobre todo a la cola.} Con 4 tornos, donde la
 espera es casi nula (0,016~$\pm$~0,001~min), sigue siendo del
 3,754~$\pm$~0,016~\% ($n=183$); la diferencia emparejada con X0 es de
-$-0{,}824 \pm 0{,}048$ puntos (180 parejas). Tampoco se debe a los conflictos: en
-una comprobación con las 20 primeras réplicas de X0 y los mismos números
-aleatorios, quitar los conflictos reduce la entrada tardía solo en
-0,08~$\pm$~0,01 puntos (\pend). La mayor parte se explica, por tanto, por quienes
+$-0{,}824 \pm 0{,}048$ puntos (180 parejas). Tampoco se debe a los conflictos: repitiendo X0 sin conflictos con las mismas
+180 semillas, la entrada tardía baja del 4,578~\% al 4,488~\%, una diferencia
+emparejada de 0,090~$\pm$~0,006 puntos, y el tiempo de acceso de 1,972 a
+1,941~min, 0,032~$\pm$~0,001~min ($n=180$). Los conflictos explican menos del
+2~\% de la entrada tardía. La mayor parte se explica, por tanto, por quienes
 llegan en los últimos minutos y por el recorrido hasta el asiento.
 
 \textbf{Resultado y supuestos.} Que los tornos sean el recurso más cargado y que la
@@ -152,9 +154,8 @@ Entrada tardía (\%) & 4,578 $\pm$ 0,052 & 2,604 $\pm$ 0,014 & $-$1,970 $\pm$ 0,
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{P3.png}
-\caption{P3. Espera media y entrada tardía con el perfil actual (X0, $n=180$) y
-el anticipado (X2, $n=138$). Medias con IC del 95~\%. La entrada tardía incluye
-el recorrido hasta el asiento.}
+\caption{P3. Espera media y entrada tardía (incluye recorrido) con el perfil
+actual (X0, $n=180$) y el anticipado (X2, $n=138$). Medias con IC del 95~\%.}
 \label{fig:p3}
 \end{figure}
 
@@ -198,7 +199,9 @@ Resto, espera media (min) & 0,192 $\pm$ 0,008 & 0,217 $\pm$ 0,009 & $+$0,0248 $\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{P4.png}
+% Se recorta la nota al pie de la imagen (cita un número de decisión interno);
+% el pie de figura da la misma información.
+\includegraphics[width=\textwidth,trim=0 36 0 0,clip]{P4.png}
 \caption{P4. Espera de mayores y PMR y del resto del público en FIFO (X0,
 $n=180$) y con prioridad (X3, $n=181$), con los mismos colectivos; cambio
 emparejado en el resto (180 parejas). Medias con IC del 95~\%.}
@@ -238,7 +241,7 @@ minuto más en vaciarse.
 \toprule
 Indicador & Simultánea & Escalonada & Diferencia \\
 \midrule
-Máximo en una salida (personas) & 1.460 $\pm$ 1 & 746 $\pm$ 1 & $-$713,9 $\pm$ 0,6 \\
+Máximo en una salida (personas) & 1.460,0 $\pm$ 1,3 & 746,1 $\pm$ 1,4 & $-$713,9 $\pm$ 0,6 \\
 Vaciado desde el final del partido (min) & 8,367 $\pm$ 0,019 & 9,591 $\pm$ 0,108 & $+$1,224 $\pm$ 0,105 \\
 \bottomrule
 \end{tabular}
@@ -246,7 +249,8 @@ Vaciado desde el final del partido (min) & 8,367 $\pm$ 0,019 & 9,591 $\pm$ 0,108
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{P5.png}
+% Se recorta la nota al pie de la imagen (cita un número de decisión interno).
+\includegraphics[width=0.92\textwidth,trim=0 36 0 0,clip]{P5.png}
 \caption{P5. Máximo de personas en una salida y tiempo de vaciado con salida
 simultánea (X0) y escalonada (X4), $n=180$ cada una. Medias con IC del 95~\%. El
 máximo incluye a quien cruza la salida.}
@@ -291,7 +295,7 @@ Acomodadores & \makecell[r]{Duración media de\\un conflicto (min)} & \makecell[
 \centering
 \includegraphics[width=\textwidth]{P6.png}
 \caption{P6. Duración media de un conflicto (espera al acomodador más
-resolución), retraso al resto del bloque y entrada tardía con 3, 6 y 9
+resolución), retraso al resto del bloque y entrada tardía (incluye recorrido) con 3, 6 y 9
 acomodadores por macrozona ($n=180$ por nivel). Medias con IC del 95~\%.}
 \label{fig:p6}
 \end{figure}
@@ -368,8 +372,8 @@ la punta. La magnitud depende de supuestos que la favorecen.
   \item \textbf{Cola ya formada.} Según la hipótesis adoptada
     (sección~\ref{sec:desviaciones}), el cierre solo afecta a quien llega
     mientras dura. En $t=-30$ apenas hay cola formada, así que casi no influye;
-    con cierres más tardíos la alternativa daría un efecto mayor.
-    % DECIDIR: confirmar con el grupo la hipótesis de la cola ya formada.
+    con cierres más tardíos la alternativa daría un efecto mayor, que no se ha
+    medido.
   \item \textbf{Redirección optimista.} Quien llega a la puerta cerrada conoce al
     instante la cola de las demás, elige la menor y no camina ninguna distancia
     extra, porque el modelo no representa el exterior. Una redirección real

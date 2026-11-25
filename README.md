@@ -6,7 +6,7 @@ en Python 3 + [SimPy](https://simpy.readthedocs.io/) de la entrada, permanencia,
 salida e incidencias del público en un partido de máxima afluencia en el estadio
 de San Mamés (Bilbao): 48.775 espectadores, 24 puertas y 72 tornos.
 
-Con el modelo se compararán políticas de gestión (número de tornos, llegada
+Con el modelo se comparan políticas de gestión (número de tornos, llegada
 anticipada, prioridad para mayores y PMR, salida escalonada) y el impacto de
 incidencias (conflictos por asiento, fallos de lectura, averías de torno, cierre
 de puerta y evacuación de emergencia). La especificación completa está en
@@ -21,13 +21,13 @@ resumen en [`docs/ESPECIFICACION.md`](docs/ESPECIFICACION.md).
 
 ## Estado actual
 
-**Inc0 (esqueleto) completado.** Hay tooling, configuraciones de todos los
-experimentos, carga y validación de configuración, generadores aleatorios por
-fuente, contratos entre módulos y tests de esas piezas.
-**Inc1:** la rama T1.6 permite ejecutar la cadena llegada → entrada → asiento,
-repetirla con semillas registradas y guardar KPIs en CSV. Runner (PR #6), métricas y ubicación ya fusionadas en `main`. Permanencia, salida,
-incidencias y emergencia se implementan en los incrementos siguientes.
-El detalle está en [`docs/ESTADO.md`](docs/ESTADO.md).
+**Modelo completo y campaña terminada.** Entrada, asiento, permanencia, salida,
+incidencias I1–I4 y evacuación están implementadas. Los resultados definitivos
+(2.965 réplicas de 19 escenarios) están en `results/final`, las figuras en
+`results/figures` y la memoria de la Parte 2 en
+[`docs/memoria_parte2/Memoria_Parte2.pdf`](docs/memoria_parte2/Memoria_Parte2.pdf).
+Qué se entrega y cómo reproducirlo: [`docs/ENTREGA.md`](docs/ENTREGA.md). El
+detalle está en [`docs/ESTADO.md`](docs/ESTADO.md).
 
 ## Estructura
 
@@ -41,15 +41,22 @@ El detalle está en [`docs/ESTADO.md`](docs/ESTADO.md).
 │   ├── base.json          # escenario base X0 con todos los parámetros
 │   └── experiments/       # X0–X7 y S1 como diff sobre base.json
 ├── docs/
-│   ├── Memoria_San_Mames-2.pdf
+│   ├── Memoria_San_Mames-2.pdf   # Parte 1
+│   ├── memoria_parte2/    # Parte 2: Memoria_Parte2.pdf, fuente LaTeX y borradores
+│   ├── ENTREGA.md         # qué se entrega y cómo reproducirlo
 │   ├── ESPECIFICACION.md  # destilado de la memoria
 │   ├── CONTRATOS.md       # columnas, KPIs, firmas y convenciones
+│   ├── VERIFICACION.md, VALIDACION_T6.2.md, VERIFICACION_C_T6.2.md
+│   ├── RESULTADOS_T5.3.md # informe de la campaña definitiva
 │   ├── TAREAS.md          # tablero por incrementos
 │   ├── ESTADO.md          # dónde estamos y dudas abiertas
 │   └── DECISIONES.md      # registro de decisiones
-├── results/               # salidas (no versionadas)
-├── scripts/
-│   └── run_experiment.py  # CLI: experimento y número de réplicas
+├── results/
+│   ├── final/             # campaña definitiva (agregados y procedencia, versionados)
+│   ├── figures/           # figuras P1–P8 y S1 (versionadas)
+│   └── pilot/             # piloto histórico de T5.1
+├── scripts/               # run_experiment, run_campaign, report_campaign,
+│                          # plot_results, verify_results, validate_*
 ├── src/sanmames/          # paquete: config, rng, entities, arrivals, entry,
 │                          # stadium, exit, emergency, incidents, metrics,
 │                          # runner, analysis, experiments
@@ -86,10 +93,10 @@ un JSON de experimento, también fuera de `configs/experiments`. La tabla se
 guarda en `results/<nombre_del_fichero>_kpis.csv`, con una fila por escenario
 y réplica y semilla `base_seed + replica`, común entre escenarios.
 
-Para Inc1 utiliza `configs/dev/i1_mini.json`: las configuraciones X0–X7 y S1
-requieren fases todavía pendientes. El runner rechaza incidencias/emergencia
-activadas en lugar de ignorarlas. La API `run_experiment` devuelve la tabla;
-la CLI es quien escribe el CSV.
+`configs/dev/` tiene configuraciones pequeñas (600 espectadores) para probar
+rápido; los experimentos X0–X7 y S1 de `configs/experiments` son los de la
+campaña. La API `run_experiment` devuelve la tabla; la CLI es quien escribe el
+CSV. Para reproducir la campaña completa, ver «Campaña T5.3» más abajo.
 
 Desde Python, la carga de configuración ya funciona:
 
@@ -99,7 +106,7 @@ cfg = load_config(overrides={"turnstiles_per_gate": 4})
 exp = load_experiment("configs/experiments/S1_sensibilidad.json")  # 6 variantes
 ```
 
-En la rama T5.2, el análisis entre réplicas se puede comprobar con datos sencillos:
+El análisis entre réplicas se puede comprobar con datos sencillos:
 
 ```python
 from sanmames.analysis import confidence_interval, required_replications
@@ -236,9 +243,23 @@ definitivas, conservación terminal, KPIs, relojes, reparto, colectivos y análi
 emparejado. Con `--replay` contrasta IDs, terminación y KPIs contra las semillas
 originales; no modifica ni amplía la campaña. Con entorno activado puede usarse
 `python` también en Windows; para un informe temporal allí, usa
-`--output verificacion_local.md`. T6.2 sigue pendiente del cierre conjunto de A/B/C.
+`--output verificacion_local.md`. T6.2 está cerrada (A, B y C).
 
-### Memoria Parte 2: aportación C (T6.3)
+### Memoria Parte 2 (T6.3)
+
+Memoria única: [`docs/memoria_parte2/Memoria_Parte2.pdf`](docs/memoria_parte2/Memoria_Parte2.pdf).
+Fuente LaTeX en `docs/memoria_parte2/latex/`; se compila con XeLaTeX (TeX Live,
+fuente Inter):
+
+```bash
+cd docs/memoria_parte2/latex
+latexmk -xelatex -outdir=build main.tex   # genera build/main.pdf
+```
+
+Las figuras se leen directamente de `results/figures`. La fecha de entrega se
+pone en `main.tex` (`\fechaentrega`).
+
+#### Aportación C
 
 [Fuentes editables e integración](docs/memoria_parte2/LEEME_C.md) y
 [PDF de lectura](docs/memoria_parte2/Memoria_Parte2_C.pdf). Incluye método,

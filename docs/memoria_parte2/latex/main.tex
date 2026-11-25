@@ -11,7 +11,7 @@
   Extension=.otf, UprightFont=*-Regular, BoldFont=*-Bold,
   ItalicFont=*-Italic, BoldItalicFont=*-BoldItalic, Scale=0.92]
 \newfontfamily\titlefont{Inter}[
-  Extension=.otf, UprightFont=*-ExtraBold, BoldFont=*-Black]
+  Extension=.otf, UprightFont=*-ExtraBold, BoldFont=*-Black, Ligatures=TeX]
 \setmathfont{latinmodern-math.otf}
 \usepackage[spanish,es-noshorthands,es-tabla]{babel}
 
@@ -61,7 +61,10 @@
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\textfraction}{0.08}
 \renewcommand{\floatpagefraction}{0.75}
+% Las páginas solo de flotantes empiezan arriba, no centradas.
+\makeatletter\setlength{\@fptop}{0pt}\setlength{\@fpsep}{1.2em}\makeatother
 \usepackage[font=small,labelfont={bf,color=azul},labelsep=period]{caption}
+\usepackage{subcaption}
 \usepackage{enumitem}
 \setlist{itemsep=0.2em,topsep=0.3em}
 \usepackage{makecell}
@@ -78,6 +81,8 @@
 % --- Macros -------------------------------------------------------------------
 % Cifra que no se ha podido comprobar en el repositorio: se ve en rojo.
 \newcommand{\pend}{\textcolor{red}{\textbf{PENDIENTE DE CONFIRMAR}}}
+% Fecha de entrega de la memoria.
+\newcommand{\fechaentrega}{12 de diciembre de 2026}
 
 \begin{document}
 
@@ -101,11 +106,14 @@
     Pablo Cuadros Rueda (pcr00036) & Python 3 + SimPy\\
     Pablo Pérez Molina (ppm00052) & \\[0.3em]
     José María Chamorro Bueno (jmcb0024) & {\color{gris}\small FECHA DE ENTREGA}\\
-     & \pend\\
+     & \fechaentrega\\
   \end{tabular}
 \end{titlepage}
 
+% Índice compacto: que quepa en una página, como en la Parte 1.
+\begingroup\setlength{\parskip}{0pt}\linespread{0.95}\selectfont
 \tableofcontents
+\endgroup
 \newpage
 
 \input{01_introduccion}
