@@ -2,7 +2,8 @@
 
 _Última actualización: 2026-11-25. Inc0 a Inc5, T6.1 y T6.2 completos. T6.3: partes
 A, B y C (PR #34, #35 y #36), integración en LaTeX (PR #40) y cierre de C (PR #41)
-fusionados; falta el cierre de B (en revisión), del grupo y de A (ver «Cierre de T6.3: instrucciones por rol»). Entrega de la
+fusionados, y cierre de B (PR #42). Cierre de A y paquete de entrega en revisión
+(`feat/cuadros-T6.3-entrega`; ver `docs/ENTREGA.md`). Entrega de la
 memoria: 11 de diciembre de 2026; defensa: 14 o 17 de diciembre._
 
 ## Hecho
@@ -280,10 +281,18 @@ punto 1, con las 180 semillas; ver aviso de B a A).
 
 ### Rol A (Pablo Cuadros, Claude Code) — después de B, C y el grupo
 
-Cerrar el PR de integración, fusionar, actualizar A3 (quitar la crítica al
-título de P3 y la comparación de medias no emparejada de P7), aplicar D23 en
-`DECISIONES.md` si se confirma, quitar los `\pend` y `% DECIDIR` resueltos,
-recompilar con `latexmk -xelatex`, y marcar T6.3 como `hecho`.
+**Estado:** en revisión en `feat/cuadros-T6.3-entrega`.
+
+* D23 decidida (rol A, comunicada a B y C) y `% DECIDIR` retirados del LaTeX.
+* Memoria con las cifras de cierre de B y C, comprobadas en `results/final` o
+  `results/figures/statistics.csv` (`INFORME_COHERENCIA.md` §6). A3 actualizado.
+* Figura S1 en tres paneles legibles; revisión de formato de las 26 páginas.
+* Paquete de entrega: `docs/ENTREGA.md`, README al día y
+  `docs/memoria_parte2/Memoria_Parte2.pdf`. `make check` (453 passed,
+  2 skipped), `make docs-check` y `verify_results.py --replay` correctos.
+* Pendientes manuales: fecha de entrega en la portada (`\fechaentrega`) y la
+  limitación F2 (declarada, no comprobable con el repo).
+* T6.3 pasa a `hecho` al fusionarse este PR.
 
 ## Reparto
 

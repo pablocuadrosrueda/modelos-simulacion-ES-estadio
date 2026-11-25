@@ -27,6 +27,12 @@ Reglas:
   `docs/memoria_parte2/INFORME_COHERENCIA.md` (§6) y entrega en `docs/ENTREGA.md`.
 * **B:** en B3, la entrada tardía con 6 acomodadores es 7,19 % (7,1947), no
   7,20 %. La memoria usa 7,19.
+* **C:** las notas al pie de las imágenes P4 y P5 (`scripts/plot_results.py`,
+  líneas 154 y 165) citan «(D32)» y «(D24)». La memoria no cita números de
+  decisión, así que recorta esas notas al incluir las imágenes (sin tocarlas).
+  Si regeneras las figuras, puedes quitar esas referencias.
+* **Todos:** paquete de entrega en `docs/ENTREGA.md` y memoria en
+  `docs/memoria_parte2/Memoria_Parte2.pdf`. Queda poner la fecha en la portada.
 
 
 ### 2026-11-25, de B a A: cierre de T6.3 de B hecho (instrucciones de ESTADO)
