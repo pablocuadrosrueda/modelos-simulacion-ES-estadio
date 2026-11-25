@@ -1,7 +1,7 @@
 # Entrega de la Parte 2
 
-Qué se entrega, dónde está y cómo reproducirlo. Entrega de la memoria: 11 de
-diciembre de 2026 (según `docs/ESTADO.md`); defensa: 14 o 17 de diciembre.
+Qué se entrega, dónde está y cómo reproducirlo. Entrega de la memoria: 12 de
+diciembre de 2026; defensa: 14 o 17 de diciembre.
 
 ## Qué se entrega
 
@@ -53,10 +53,13 @@ make check                                     # lint + tests
 
 ## Pendientes manuales antes de entregar
 
-1. **Fecha de entrega en la portada.** En `docs/memoria_parte2/latex/main.tex`,
-   sustituir `\newcommand{\fechaentrega}{\pend}` por la fecha, recompilar y
-   copiar el PDF. Es el único texto en rojo que queda en la memoria.
-2. **Fuente F2.** La memoria contrasta el ritmo por torno con la cifra que la
+1. **Revisar el PDF** antes de entregarlo. La fecha de la portada ya está
+   puesta (12 de diciembre de 2026, `\fechaentrega` en `main.tex`) y no queda
+   ningún texto en rojo.
+2. **Corregir la Parte 1** según la sección 3 de la memoria (ρ de X2 = 0,81 y
+   cierre en t = −30 min), si el guion lo pide; el PDF de la Parte 1 no se ha
+   modificado.
+3. **Fuente F2.** La memoria contrasta el ritmo por torno con la cifra que la
    Parte 1 atribuye a F2 (15 pers/min) y lo declara como limitación: no se ha
    comprobado en el artículo original. Si alguien tiene el artículo, se puede
    confirmar y retirar la limitación.

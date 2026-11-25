@@ -4,7 +4,7 @@ _Última actualización: 2026-11-25. Inc0 a Inc5, T6.1 y T6.2 completos. T6.3: p
 A, B y C (PR #34, #35 y #36), integración en LaTeX (PR #40) y cierre de C (PR #41)
 fusionados, y cierre de B (PR #42). Cierre de A y paquete de entrega en revisión
 (`feat/cuadros-T6.3-entrega`; ver `docs/ENTREGA.md`). Entrega de la
-memoria: 11 de diciembre de 2026; defensa: 14 o 17 de diciembre._
+memoria: 12 de diciembre de 2026; defensa: 14 o 17 de diciembre._
 
 ## Hecho
 
