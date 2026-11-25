@@ -20,6 +20,7 @@ qué resultado da. Cada rol completa y revisa su parte.
 | Evacuación frente a la Parte 1 | 5,9 min con todas las salidas y 7,1 con una bloqueada | `tests/test_emergency.py` y `docs/VERIFICACION.md` | 5,9 y 7,1 min | B |
 | Saturación de acomodadores (P6) | La cola de X5 se debe a los acomodadores | `scripts/validate_b.py` (abajo) | Con acomodadores casi ilimitados, la duración vuelve a la teórica | B |
 | Causa de no cumplir 8 min (P8) | Saber si falla la capacidad de las salidas o la marcha | `scripts/validate_b.py` (abajo) | Con todas las salidas, falla una sola persona de movilidad reducida | B |
+| Peso de los conflictos en la entrada tardía de X0 (P1) | Cuánto aporta I1 a la entrada tardía y al acceso del escenario base | `scripts/validate_b.py` (abajo) | 0,090 puntos de entrada tardía y 0,032 min de acceso, con 180 parejas | B |
 | Números aleatorios comunes | Los escenarios comparados usan los mismos números | Tests de cada módulo y auditoría de `results/final` | Cumple; por ejemplo, X5 con 3, 6 y 9 tiene los mismos conflictos en las 180 semillas | A, B, C |
 | Precisión de los resultados | Semianchura del intervalo de la espera media no mayor que el 5 % | `docs/RESULTADOS_T5.3.md` | Cumple en los 19 escenarios; máximo 4,99 % | C |
 
@@ -66,6 +67,23 @@ Con una salida bloqueada, en cambio, el vaciado lo marca la cola en las salidas
 Para la respuesta a P8 conviene distinguir los dos casos: con todas las salidas
 el riesgo está en evacuar a las personas de movilidad reducida, no en la anchura
 de las salidas.
+
+### 3. Peso de los conflictos en la entrada tardía del escenario base
+
+X0 tal como está en `results/final` frente a X0 sin conflictos por asiento, con
+las mismas 180 semillas (20261105 a 20261284). Los valores con conflictos se leen
+de `results/final/kpis.csv`; los valores sin conflictos se simulan con
+`scripts/validate_b.py`. Media y semianchura del intervalo de confianza del 95 %
+(t de Student); las diferencias son emparejadas por semilla.
+
+| Indicador | Con conflictos | Sin conflictos | Diferencia | n |
+|---|---|---|---|---|
+| Entrada tardía (%) | 4,578 (0,052) | 4,488 (0,051) | 0,090 (0,006) | 180 |
+| Tiempo medio de acceso (min) | 1,972 (0,008) | 1,941 (0,008) | 0,032 (0,001) | 180 |
+
+Los valores con conflictos coinciden con los oficiales de `results/final`. Los
+conflictos explican menos del 2 % de la entrada tardía del escenario base.
+Sustituye a la estimación anterior con 20 semillas (0,08 puntos).
 
 ## Partes A y C
 

@@ -14,8 +14,27 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25, de B a A: cierre de T6.3 de B hecho (instrucciones de ESTADO)
+**Estado:** en la rama `feat/perez-T6.3-cierre`; **aún no en `main`**.
+
+* **Punto 1, opción «reproducirlo»:** `scripts/validate_b.py` repite X0 sin
+  conflictos con las 180 semillas de `results/final` (tabla en
+  `docs/VALIDACION_T6.2.md`, apartado 3). Diferencia emparejada: entrada tardía
+  0,090 ± 0,006 puntos (4,578 % frente a 4,488 %) y acceso 0,032 ± 0,001 min
+  (1,972 frente a 1,941 min), n = 180. Sustituye a la cifra de 20 semillas
+  (0,08 ± 0,01): en el LaTeX y en A3 (P1) hay que usar la nueva y quitar el
+  «PENDIENTE DE CONFIRMAR».
+* **Punto 2:** B3 da ya los IC de P5 (vaciado 8,37 (0,02) y 9,59 (0,11) min; cola
+  máxima 1.460 (1,3) y 746 (1,4); diferencia 714 (0,6)) y de P6 (duración, retraso
+  al resto del bloque y entrada tardía con 3, 6 y 9 acomodadores, n = 180), y el
+  98,56 % (0,03) de P8. B2 añade n = 5 al caso de acomodadores casi ilimitados.
+* **Punto 3:** B2 da la entrada tardía y el acceso oficiales de X0 (4,58 % y
+  1,97 min, 180 réplicas) y el contraste con las mismas 180.
+* Además: B2 dice «un cuarto del aforo (unas 12.194 personas)» en la
+  validación de salida (informe n.º 14). ESTADO y TAREAS, puestos al día.
+
 ### 2026-11-25 · C → A, B · Instrucciones de cierre de C aplicadas
-**Estado:** preparado para revisión en `feat/chema-T6.3-cierre`.
+**Estado:** **en `main`** (PR #41).
 
 * C2/PDF: corregido a −0,0861 ± 0,0182 min (180 parejas), desde el valor
   exacto −0,0861497117744193. C3/PDF: añadidos IC y n del colectivo X6.
