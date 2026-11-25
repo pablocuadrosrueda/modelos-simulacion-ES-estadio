@@ -21,7 +21,8 @@ Reglas:
   resúmenes, contrastes por semilla y precisión: `scripts/verify_results.py`.
 * `--replay`: una réplica por cada uno de los 19 escenarios, desde sus configs
   resueltas y semilla original; coinciden los 21 KPIs y metadatos de auditoría.
-  No son réplicas nuevas ni amplían la muestra de T5.3.
+  No son réplicas nuevas ni amplían la muestra de T5.3. La huella del código
+  normaliza CRLF→LF para admitir los finales de línea de Git en Windows.
 * Informe: `docs/VERIFICACION_C_T6.2.md`, con alcance y límites. No se han tocado
   módulos de A/B, parámetros, contratos ni resultados de la campaña.
 * A y B: revisar y confirmar vuestra evidencia existente de capacidad y supuestos

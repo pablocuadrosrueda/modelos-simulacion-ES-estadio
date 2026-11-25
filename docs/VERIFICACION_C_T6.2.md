@@ -4,7 +4,7 @@
 
 Campaña: 2965 réplicas, 19 escenarios. Código del cálculo original: `fd6475cdf4982b4f2ff9c7dd03dccd8a848f52cb`.
 
-Verificador SHA-256: `ac8aaf207a4bb7b3e8e3f3513976beea796790645bdb414a1e7afa430c660e96`. Python 3.12.14.
+Verificador SHA-256: `f3a2914cd5cc733a0e8adccc37022cccc56bd4d4c38698938db66d048695bfd8`. Python 3.12.14.
 
 ## Comprobaciones
 
@@ -18,7 +18,7 @@ La conservación de las 2.965 réplicas se comprueba con los recuentos agregados
 
 ## Reproducción desde las configs y semillas originales
 
-Código de `src/` idéntico por SHA-256 al usado en T5.3. Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs y metadatos de auditoría coincidentes. Tolerancia numérica: rtol=1e-9, atol=1e-8 en unidades de cada indicador; tiempos ordenados con tolerancia 1e-9 min.
+Código de `src/` coincidente por SHA-256 con T5.3, normalizando CRLF a LF para permitir la conversión de finales de línea de Git en Windows. Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs y metadatos de auditoría coincidentes. Tolerancia numérica: rtol=1e-9, atol=1e-8 en unidades de cada indicador; tiempos ordenados con tolerancia 1e-9 min.
 
 | Escenario | Semilla | Espectadores |
 |---|---:|---:|

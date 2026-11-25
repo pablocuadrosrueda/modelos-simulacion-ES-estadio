@@ -215,12 +215,13 @@ por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
-T6.2 C (2026-11-25, Python 3.12): `make check`, 420 passed y 1 skipped
-(capacidad lenta opcional), lint y docs-check limpios. Trece pruebas nuevas
+T6.2 C (2026-11-25, Python 3.12): `make check`, 421 passed y 1 skipped
+(capacidad lenta opcional), lint y docs-check limpios. Catorce pruebas nuevas
 detectan corrupción de auditoría, reloj, reparto, resumen, contrastes, precisión,
 KPIs, colectivos y reproducción; comprueban invariancia al reordenar y que un
-fallo no sobrescriba el informe. Reproducidos realmente los 19 escenarios, una
-semilla cada uno, con los 21 KPIs y metadatos de auditoría coincidentes.
+fallo no sobrescriba el informe. Se normaliza CRLF→LF al verificar el código
+para admitir el checkout de Windows sin ocultar cambios reales. Reproducidos
+realmente los 19 escenarios, una semilla cada uno, con los 21 KPIs y metadatos de auditoría coincidentes.
 
 
 T6.1 (2026-11-25, Python 3.12): `make check`, 407 passed y 1 skipped

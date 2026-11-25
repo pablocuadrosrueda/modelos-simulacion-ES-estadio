@@ -24,6 +24,11 @@ FILES = ("kpis", "audit", "zones", "groups", "summary", "comparisons", "precisio
 KEYS = ["scenario", "seed"]
 
 
+def model_digest(path: Path) -> str:
+    """Huella del código con LF: Git en Windows puede convertir LF a CRLF."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def require(condition, message):
     if not condition:
         raise ValueError(message)
@@ -265,7 +270,7 @@ def verify(directory: Path, *, replay=False) -> dict:
         for name, digest in manifest["source_sha256"].items():
             if name.startswith("src/"):
                 require(
-                    hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest,
+                    model_digest(ROOT / name) == digest,
                     f"Modelo distinto del cálculo original: {name}",
                 )
         for scenario, raw in configs.items():
@@ -344,7 +349,8 @@ def render_report(result: dict) -> str:
     ]
     if result["replays"]:
         lines += [
-            "Código de `src/` idéntico por SHA-256 al usado en T5.3. "
+            "Código de `src/` coincidente por SHA-256 con T5.3, normalizando CRLF a LF "
+            "para permitir la conversión de finales de línea de Git en Windows. "
             "Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, "
             "terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs "
             "y metadatos de auditoría coincidentes. Tolerancia numérica: rtol=1e-9, atol=1e-8 "

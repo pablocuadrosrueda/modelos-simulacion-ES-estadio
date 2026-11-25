@@ -104,3 +104,13 @@ def test_failure_preserves_previous_report(verifier, campaign):
         verifier.main(["--data", str(campaign), "--output", str(output)])
     assert exc.value.code == 2
     assert output.read_text(encoding="utf-8") == "Informe anterior"
+
+
+def test_model_digest_ignores_crlf_but_detects_code_changes(verifier, tmp_path):
+    source = tmp_path / "source.py"
+    source.write_bytes(b"x = 1\ny = 2\n")
+    expected = verifier.model_digest(source)
+    source.write_bytes(b"x = 1\r\ny = 2\r\n")
+    assert verifier.model_digest(source) == expected
+    source.write_bytes(b"x = 3\r\ny = 2\r\n")
+    assert verifier.model_digest(source) != expected
