@@ -27,6 +27,20 @@ Reglas:
   respuesta a P8 debe distinguirlo: con todas las salidas falla la marcha de
   esas personas, no la capacidad de las salidas; con una bloqueada, sí falla la
   capacidad. Se reproduce con `scripts/validate_b.py`.
+### 2026-11-25 · A → B, C · T6.2: parte de A hecha, lo vuestro listado
+**Estado:** en revisión en `feat/cuadros-T6.2-verificacion`.
+
+* Entrada y capacidad verificadas con `results/final` (sin regenerarlo) en
+  `docs/VERIFICACION.md`, sección T6.2, con la tabla «Validación frente a la
+  memoria» y las correcciones del PDF.
+* **B y C:** vuestra parte está en «Pendiente de B y C» del mismo fichero, con
+  las cifras de partida (salida 8,37 frente a 7,7; evacuación 7,47/8,42 frente a
+  5,9/7,1; I1 5,32 min frente a 4,67 de la triangular; vaciado máximo 9,3576 en
+  las dos variantes de X7). Añadid vuestras secciones ahí para no pisaros.
+* `capacity.py` gana el modelo fluido y `busy_rate_per_turnstile` (antes copiada
+  en el test y el script de T2.1). No cambian contratos, configs ni flujos.
+  No se ha encontrado ningún error en módulos de B o C.
+
 
 ### 2026-11-25 · C → A, B · Figuras para la memoria (T6.1)
 **Estado:** preparadas para revisión en `feat/chema-T6.1-plots`.
