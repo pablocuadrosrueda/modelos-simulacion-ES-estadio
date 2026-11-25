@@ -1,10 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos y
-T6.1 (PR #30). T6.2 en curso: parte de B en la rama `feat/perez-T6.2-validation`._
-_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
-(T5.3 fusionada en PR #29). T6.1 fusionada en PR #30; parte C de T6.2 en revisión._
-(T5.3 fusionada en PR #29) y T6.1 (PR #30). T6.2, parte de A, en revisión._
+_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos, T6.1 y
+las partes de A, B y C de T6.2. En curso: T6.3 (memoria)._
 
 ## Hecho
 
@@ -222,6 +219,14 @@ resolución (4,67): la saturación se debe a los acomodadores. En X7 con todas l
 salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
 persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
 7,36 min. Con una salida bloqueada manda la cola en las salidas.
+
+**T6.3 en curso.** La parte de B de la memoria está en `docs/memoria_parte2/`,
+con la convención de A: `B1_modelo_implementado.md` (asiento, I1, I4, salida,
+evacuación, números aleatorios comunes e hipótesis), `B2_verificacion.md`
+(contraste con la Parte 1, casos límite y peso de los conflictos en la entrada
+tardía de X0) y `B3_respuestas_P5_P6_P8.md` (con sus figuras). Redactada como
+texto final, sin referencias internas (decisiones, tareas ni nombres de código).
+P7 la responde A3 y los cambios comunes respecto a la Parte 1 están en A1.
 
 **Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
 ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
