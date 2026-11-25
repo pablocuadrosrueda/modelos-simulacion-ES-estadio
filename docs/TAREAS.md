@@ -95,6 +95,11 @@ conjunto. La ausencia de validación externa/F2 se conserva como limitación.
 
 | Sección T6.3 | Responsable | Estado |
 |---|---|---|
+| C · Chema | en revisión | Auditoría de las tablas de T5.3 y reproducción de 19 réplicas; `docs/VERIFICACION_C_T6.2.md` y `scripts/verify_results.py` |
+| A · Pablo Cuadros | hecho (PR #33); arreglo del verificador en revisión (`fix/cuadros-verify-capacity`) | Entrada y capacidad frente a `results/final` en `docs/VERIFICACION.md`; `capacity.py` excluido de las huellas de `verify_results.py` por ser solo de análisis |
+| B · Pablo Pérez | pendiente de revisión final | Confirmar capacidad y supuestos de vomitorios, acomodadores, salida y evacuación; evidencia existente en tests y `docs/VERIFICACION.md` |
+
+T6.3 espera al cierre conjunto de T6.2; T6.1 ya está fusionada (PR #30).
 | Modelo de entrada, verificación, P1–P4/P7 | A | en revisión, PR #34 |
 | Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | texto a integrar por su responsable |
 | Método, campaña, sensibilidad y conclusiones | C | en revisión, `docs/memoria_parte2/LEEME_C.md`; PDF de 11 páginas |

@@ -14,6 +14,25 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → C · `verify_results.py` ya no exige la huella de `capacity.py`
+**Estado:** en revisión en `fix/cuadros-verify-capacity`.
+
+* **Problema:** CI fallaba en `test_bad_replay_is_rejected_instead_of_reporting_success`
+  con «Modelo distinto del cálculo original: src/sanmames/capacity.py», porque
+  T6.2 de A (PR #33) añadió funciones de análisis a ese fichero.
+* **Comprobado:** el diff de `capacity.py` desde `fd6475c` es solo aditivo (dos
+  bloques nuevos, ninguna línea cambiada o borrada); ningún módulo de `src/`
+  lo importa (solo `scripts/validate_*.py` y sus tests); el resto de `src/` y
+  `configs/` es idéntico a `fd6475c`.
+* **Cambio en tu script** (lo menciono porque es tuyo): constante
+  `ANALYSIS_ONLY = {"src/sanmames/capacity.py"}` con su justificación, excluida
+  del bucle de huellas de `--replay`, y una frase en el informe. Tests nuevos en
+  `tests/test_verify_results.py`: no hay imports de `capacity` en `src/`, cambiar
+  `capacity.py` no bloquea el replay y cambiar `runner.py` sí.
+* `--replay` completo vuelve a pasar (19 escenarios, 21 KPIs). No he regenerado
+  `docs/VERIFICACION_C_T6.2.md`: su línea «Código de `src/` coincidente» y la
+  huella del verificador quedan de la versión anterior; regenéralo tú si quieres
+  que refleje la exclusión.
 ### 2026-11-25 · C → A, B · Aportación C de T6.3
 **Estado:** preparada para revisión en `feat/chema-T6.3-memoria-C`.
 

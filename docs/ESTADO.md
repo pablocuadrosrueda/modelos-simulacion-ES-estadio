@@ -196,6 +196,45 @@ No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
 comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
 vaciado y frecuencia observada de cumplir ocho minutos.
 
+**T6.2 · parte C preparada para revisión**, rama `feat/chema-T6.2-verificacion-C`.
+`scripts/verify_results.py` comprueba las 2.965 réplicas: identidades entre tablas,
+recuentos terminales, reparto, relojes, rangos de KPIs y NaN según la fase.
+Recalcula resumen, contrastes emparejados (P4 con colectivos comparables) y precisión.
+Con `--replay` se han repetido 19 réplicas (una por escenario, semilla 20261105):
+IDs y terminación correctos, los 21 KPIs coinciden con T5.3 en todos los casos.
+Código de `src/` contrastado por SHA-256 con el de la campaña, salvo
+`capacity.py` (módulo de análisis, ver abajo).
+
+**Arreglo de CI (A, rama `fix/cuadros-verify-capacity`).** Tras T6.2 de A (PR #33),
+`test_bad_replay_is_rejected_instead_of_reporting_success` fallaba: `--replay`
+rechazaba la huella de `src/sanmames/capacity.py`, que ganó funciones nuevas
+(modelo fluido, `busy_rate_per_turnstile`). El diff respecto a `fd6475c` es solo
+aditivo y ningún módulo que genera datos importa `capacity`, así que se excluye
+de la comprobación de huellas (`ANALYSIS_ONLY`). Tests nuevos: cambiar
+`capacity.py` no bloquea el replay y cambiar `runner.py` sí. `--replay` completo
+repetido el 2026-11-25 (Python 3.13.2): 19 escenarios, los 21 KPIs coinciden.
+No cambian `results/final` ni el modelo.
+Informe y límites: `docs/VERIFICACION_C_T6.2.md`. No se alteran modelo ni datos.
+
+**T6.2 sigue en curso**: A y B deben revisar/confirmar la evidencia existente
+de capacidad y supuestos de sus módulos (`docs/VERIFICACION.md`). No se da
+por cerrada su parte. T6.3 (memoria) depende del cierre conjunto de T6.2; las
+figuras de T6.1 ya están en main.
+**T6.2 en curso.** Documento común `docs/VALIDACION_T6.2.md`: mapa de cada
+comprobación del apartado 6 de la especificación con su prueba y su resultado,
+para que A y C revisen su parte. B añade `scripts/validate_b.py`, con dos
+comprobaciones sobre la simulación completa. En X5, con acomodadores casi
+ilimitados la duración de un conflicto baja a 4,62 min, la media teórica de la
+resolución (4,67): la saturación se debe a los acomodadores. En X7 con todas las
+salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
+persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
+7,36 min. Con una salida bloqueada manda la cola en las salidas.
+
+**Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
+ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
+**Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
+B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
+memoria de resultados, depende de T6.1 y T6.2.
 **T6.2 completada en el alcance de verificación interna acordado.** Las partes
 de A (PR #33), B (PR #32) y C (PR #31) están fusionadas; Chema confirma el
 cierre conjunto para empezar T6.3. Evidencia en `docs/VERIFICACION.md`,
