@@ -1,10 +1,26 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-25. Inc0 a Inc5, T6.1 y T6.2 completos. T6.3: partes
-A, B y C (PR #34, #35 y #36), integración en LaTeX (PR #40) y cierre de C (PR #41)
-fusionados, y cierre de B (PR #42). Cierre de A y paquete de entrega en revisión
-(`feat/cuadros-T6.3-entrega`; ver `docs/ENTREGA.md`). Entrega de la
-memoria: 12 de diciembre de 2026; defensa: 14 o 17 de diciembre._
+_Última actualización: 2026-11-25. **Inc0–Inc6 completos.** La memoria de la
+Parte 2 está integrada y lista en `docs/memoria_parte2/Memoria_Parte2.pdf`
+(26 páginas, fuente LaTeX en `docs/memoria_parte2/latex/`); qué se entrega y cómo
+reproducirlo, en `docs/ENTREGA.md`. Entrega de la memoria: 12 de diciembre de
+2026; defensa: 14 o 17 de diciembre._
+
+## Estado final
+
+* **Hecho:** modelo completo (entrada, asiento, salida, incidencias I1–I4 y
+  evacuación), campaña definitiva (2.965 réplicas de 19 escenarios en
+  `results/final`), figuras, verificación interna de A, B y C, y memoria única de
+  la Parte 2 con fecha en la portada y sin textos pendientes.
+* **Validación:** interna y de coherencia con la Parte 1. **No hay validación
+  externa** con datos reales de colas, salida o evacuación, y el ritmo por torno
+  no se ha comprobado en la fuente F2; la memoria lo declara como limitación.
+* **Pendientes manuales (fuera del repo):**
+  1. Revisión del PDF por el usuario antes de entregarlo.
+  2. Corrección de la Parte 1 según la sección 3 de la memoria (ρ de X2 = 0,81 y
+     cierre en t = −30 min), si el guion lo pide. El PDF de la Parte 1 no se ha
+     modificado.
+  3. Entrega (12 de diciembre de 2026) y preparación de la defensa.
 
 ## Hecho
 
@@ -148,7 +164,7 @@ la protección de `main` exigiendo esos checks.
   espectador al evacuar; resultados idénticos. Sin más cuellos de botella en los
   módulos de B.
 
-**Inc6: en curso (falta cerrar T6.3).**
+**Inc6: completado.**
 
 * T6.1 (C, hecho; PR #30): figuras P1 a P8 y S1 en PNG y SVG con IC del 95 %,
   en `results/figures` (`scripts/plot_results.py`, índice en
@@ -203,9 +219,8 @@ la protección de `main` exigiendo esos checks.
 
 ## Siguiente paso
 
-Cerrar T6.3 siguiendo el apartado de abajo: cada rol corrige lo suyo, el grupo
-decide D23, la fecha de la portada y la fuente F2, y A recompila la memoria en
-LaTeX y la da por cerrada. Después, preparar la defensa.
+T6.3 cerrada (ver «Estado final»). Queda revisar el PDF, corregir la Parte 1 si
+procede, entregar y preparar la defensa.
 
 * T6.3 parte C (hecho; PR #36): `C1_metodo_estadistico_y_campana.md`,
   `C2_sensibilidad.md` y `C3_conclusiones_y_limites.md`, con un PDF de lectura
@@ -281,7 +296,7 @@ punto 1, con las 180 semillas; ver aviso de B a A).
 
 ### Rol A (Pablo Cuadros, Claude Code) — después de B, C y el grupo
 
-**Estado:** en revisión en `feat/cuadros-T6.3-entrega`.
+**Estado:** hecho en `feat/cuadros-T6.3-entrega`.
 
 * D23 decidida (rol A, comunicada a B y C) y `% DECIDIR` retirados del LaTeX.
 * Memoria con las cifras de cierre de B y C, comprobadas en `results/final` o
@@ -292,7 +307,7 @@ punto 1, con las 180 semillas; ver aviso de B a A).
   2 skipped), `make docs-check` y `verify_results.py --replay` correctos.
 * Pendientes manuales: fecha de entrega en la portada (`\fechaentrega`) y la
   limitación F2 (declarada, no comprobable con el repo).
-* T6.3 pasa a `hecho` al fusionarse este PR.
+* T6.3 `hecho`: fecha de portada puesta (12 de diciembre de 2026); sin `\pend` en la memoria.
 
 ## Reparto
 

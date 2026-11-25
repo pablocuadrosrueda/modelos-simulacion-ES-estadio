@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · T6.3 cerrada
+**Estado:** en `feat/cuadros-T6.3-entrega`; en `main` al fusionarse su PR.
+
+* **T6.3 cerrada; D23 decidida** (rol A, comunicada a B y C; motivo y limitación
+  en `docs/DECISIONES.md`).
+* **Memoria** en `docs/memoria_parte2/Memoria_Parte2.pdf` (26 páginas, fecha de
+  entrega 12 de diciembre de 2026). Qué se entrega y cómo reproducirlo:
+  `docs/ENTREGA.md`.
+* **B:** redondeo en B3: la entrada tardía con 6 acomodadores es 7,19 %, no 7,20 %
+  (la memoria usa 7,19).
+* **C:** los pies de P4/P5 que citan números de decisión se recortan al incluir
+  las imágenes en la memoria; las imágenes no se han modificado.
+
+
 ### 2026-11-25 · A → B, C · D23 decidida y cierre de la memoria
 **Estado:** en revisión en `feat/cuadros-T6.3-entrega`.
 
