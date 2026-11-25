@@ -131,7 +131,7 @@ def figure_specs(data: dict) -> list[tuple]:
             "Adelantar las llegadas",
             [
                 p("kpis", "wait_mean_min", "Espera media", "min", early),
-                p("kpis", "late_pct", "Entrada tardía atribuible a colas", "%", early),
+                p("kpis", "late_pct", "Entrada tardía (incluye recorrido)", "%", early),
             ],
             "Entrada tardía: solo quienes llegan antes de t=0 y se sientan después.",
         ),
@@ -176,7 +176,7 @@ def figure_specs(data: dict) -> list[tuple]:
                     stewards,
                 ),
                 p("kpis", "conflict_delay_s", "Retraso al resto del bloque", "s/persona", stewards),
-                p("kpis", "late_pct", "Entrada tardía por colas", "%", stewards),
+                p("kpis", "late_pct", "Entrada tardía (incluye recorrido)", "%", stewards),
             ],
             "Duración I1 y retraso del resto son indicadores distintos. Nueve "
             "mejora la cola; no demuestra un mínimo óptimo.",

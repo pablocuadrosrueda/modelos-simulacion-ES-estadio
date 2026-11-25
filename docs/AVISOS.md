@@ -14,31 +14,48 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-25 · A → B, C · Borrador de la Parte 2 (T6.3, parte de A)
-**Estado:** en revisión en `feat/cuadros-T6.3-memoria-A`.
+### 2026-11-25 · A → C · `verify_results.py` ya no exige la huella de `capacity.py`
+**Estado:** en revisión en `fix/cuadros-verify-capacity`.
 
-* Borrador en Markdown en `docs/memoria_parte2/` (no hay fuente de la memoria
-  en el repo). B y C: añadid ahí vuestras secciones; `LEEME.md` tiene el índice.
-  Al final de A3, «Cruces con B y C» lista lo que el texto de A da por supuesto
-  de vosotros.
-* **C · incoherencia en una figura.** En P3 (`scripts/plot_results.py`, línea
-  134) el panel de `late_pct` se titula «Entrada tardía atribuible a colas»,
-  y en P6 «Entrada tardía por colas». El indicador (llega antes de t = 0 y se
-  sienta después) incluye el recorrido y los conflictos: con 4 tornos, con
-  espera casi nula, sigue en 3,754 ± 0,016 %. Propuesta: «Entrada tardía». No lo
-  he cambiado.
-* **C · contraste que falta.** `comparisons.csv` compara X6 con redirección con
-  X6 sin redirección, pero no con X0. A3 (P7) lo marca «PENDIENTE DE
-  CONFIRMAR»; si queréis darlo, sería la diferencia emparejada X6_con − X0.
-* **C · tablero.** `docs/TAREAS.md` sigue marcando T6.1 «en revisión» y ESTADO
-  dice «preparada para revisión», aunque el PR #30 está fusionado. No lo toco.
-* **Grupo · D23.** `docs/DECISIONES.md` aún dice «Hipótesis pendiente de
-  confirmar por el grupo», mientras ESTADO y T5.3 dicen que se mantiene. A1 la
-  presenta como hipótesis conservada; conviene anotarlo en DECISIONES.
+* **Problema:** CI fallaba en `test_bad_replay_is_rejected_instead_of_reporting_success`
+  con «Modelo distinto del cálculo original: src/sanmames/capacity.py», porque
+  T6.2 de A (PR #33) añadió funciones de análisis a ese fichero.
+* **Comprobado:** el diff de `capacity.py` desde `fd6475c` es solo aditivo (dos
+  bloques nuevos, ninguna línea cambiada o borrada); ningún módulo de `src/`
+  lo importa (solo `scripts/validate_*.py` y sus tests); el resto de `src/` y
+  `configs/` es idéntico a `fd6475c`.
+* **Cambio en tu script** (lo menciono porque es tuyo): constante
+  `ANALYSIS_ONLY = {"src/sanmames/capacity.py"}` con su justificación, excluida
+  del bucle de huellas de `--replay`, y una frase en el informe. Tests nuevos en
+  `tests/test_verify_results.py`: no hay imports de `capacity` en `src/`, cambiar
+  `capacity.py` no bloquea el replay y cambiar `runner.py` sí.
+* `--replay` completo vuelve a pasar (19 escenarios, 21 KPIs). No he regenerado
+  `docs/VERIFICACION_C_T6.2.md`: su línea «Código de `src/` coincidente» y la
+  huella del verificador quedan de la versión anterior; regenéralo tú si quieres
+  que refleje la exclusión.
+### 2026-11-25 · C → A, B · Aportación C de T6.3
+**Estado:** preparada para revisión en `feat/chema-T6.3-memoria-C`.
+
+* Chema pide solo C: tres fuentes editables y PDF en `docs/memoria_parte2`
+  (`LEEME_C.md`): método/campaña, sensibilidad y conclusiones. No se copian ni
+  modifican los capítulos de A (PR #34) o B; la integración conjunta sigue pendiente.
+* T6.2 A/B/C fusionada (#33/#32/#31); se eliminan duplicados de contexto que
+  habían quedado tras los merges. Se conservan las limitaciones externas y F2.
+* A: confirmado el contraste adicional X6 con redirección − X0: +0,04989 ±
+  0,00346 min, 180 parejas. Su receta está en `LEEME_C.md`; no se cambian las
+  referencias oficiales de `comparisons.csv`.
+* P3/P6: corregidas etiquetas de entrada tardía para indicar que incluye el
+  recorrido. Las cifras no cambian. P8 incorpora el diagnóstico de B: las 17
+  superaciones sin bloqueo se deben a una persona PMR; con bloqueo domina cola.
+* Tras el merge de A, `verify_results.py --replay` excluye `capacity.py` de la
+  huella del modelo: es verificación analítica, no interviene en la simulación.
+  Se mantiene el control de cambios del runner y los demás módulos. La evidencia
+  histórica de las 19 reproducciones no se reescribe.
+* Equipo: revisar y combinar fuentes; la aportación C no cierra T6.3 global.
 
 
 ### 2026-11-25 · C → A, B · Parte C de T6.2 verificada
-**Estado:** en revisión en `feat/chema-T6.2-verificacion-C`; T6.2 conjunta sigue en curso.
+**Estado:** fusionada en PR #31; cierre conjunto confirmado por Chema.
 
 * Auditoría reproducible de 2.965 filas finales, reparto, colectivos, relojes,
   resúmenes, contrastes por semilla y precisión: `scripts/verify_results.py`.
@@ -52,7 +69,7 @@ Reglas:
   para cerrar T6.2. No hace falta rehacer comprobaciones vigentes.
 * T6.1 ya fusionada en PR #30. T6.3 depende del cierre conjunto de T6.2.
 ### 2026-11-25, de B a A y C: T6.2 en marcha y lectura de P8
-**Estado:** en la rama `feat/perez-T6.2-validation`; **aún no en `main`**.
+**Estado:** fusionada en `main`, PR #32.
 
 * **A y C:** `docs/VALIDACION_T6.2.md` reúne todas las comprobaciones del
   apartado 6 de la especificación con su prueba y resultado. Revisad vuestras
@@ -65,7 +82,7 @@ Reglas:
   esas personas, no la capacidad de las salidas; con una bloqueada, sí falla la
   capacidad. Se reproduce con `scripts/validate_b.py`.
 ### 2026-11-25 · A → B, C · T6.2: parte de A hecha, lo vuestro listado
-**Estado:** fusionada en `main` (PR #33).
+**Estado:** fusionada en `main`, PR #33.
 
 * Entrada y capacidad verificadas con `results/final` (sin regenerarlo) en
   `docs/VERIFICACION.md`, sección T6.2, con la tabla «Validación frente a la
