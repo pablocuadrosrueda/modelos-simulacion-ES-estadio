@@ -25,12 +25,27 @@ Servicio $+$25~\% & 30 & $+$1,2172 $\pm$ 0,0341 & $+$1,2283 $\pm$ 0,0339 & $\app
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+% La figura S1 tiene tres paneles en una sola imagen; se recortan con trim/clip
+% (unidades: bp sobre la imagen de 4590 x 1440 px a 300 ppp) para mostrarlos más
+% grandes. No se modifica la imagen ni sus datos.
+\begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth]{S1.png}
-\caption{S1. Cambio respecto a X0 de la espera media, el tiempo de acceso y el
-vaciado ordinario en cada variante, emparejado por semilla, con IC del 95~\%
-(entre 30 y 180 parejas según la variante).}
+\begin{subfigure}{\textwidth}\centering
+  \includegraphics[width=0.66\textwidth,trim=0 57.6 732 72,clip]{S1.png}
+  \caption{Cambio de la espera media.}
+\end{subfigure}\\[0.6em]
+\begin{subfigure}{\textwidth}\centering
+  \includegraphics[width=0.66\textwidth,trim=369.6 57.6 369.6 72,clip]{S1.png}
+  \caption{Cambio del tiempo de acceso.}
+\end{subfigure}\\[0.6em]
+\begin{subfigure}{\textwidth}\centering
+  \includegraphics[width=0.66\textwidth,trim=732 57.6 0 72,clip]{S1.png}
+  \caption{Cambio del tiempo de vaciado ordinario.}
+\end{subfigure}
+\caption{S1. Cambio respecto a X0 en cada variante (N: aforo; serv: tiempo de
+servicio; vel: velocidad), emparejado por semilla. Puntos: medias; barras: IC
+del 95~\%; $n$: parejas por variante (entre 30 y 180). Las variantes no tienen
+alarma, así que no indican la sensibilidad de la evacuación.}
 \label{fig:s1}
 \end{figure}
 
