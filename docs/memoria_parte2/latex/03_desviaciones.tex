@@ -1,0 +1,102 @@
+\section{Desviaciones respecto a la Parte 1}\label{sec:desviaciones}
+
+Esta sección reúne todo lo que difiere de la Parte 1. Se distinguen tres tipos:
+correcciones de errores del texto de la Parte 1, cambios de diseño decididos por
+el grupo e hipótesis que la Parte 1 no precisaba. Ninguna cambia la lógica del
+modelo salvo las indicadas como cambios de diseño.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Correcciones y cambios de diseño respecto a la Parte 1.}
+\label{tab:desviaciones}
+\begin{tabularx}{\textwidth}{@{}p{3.3cm}p{2.4cm}p{2.4cm}Y@{}}
+\toprule
+Aspecto & Parte 1 & Parte 2 & Motivo \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Correcciones del texto de la Parte 1}}\\
+Intensidad de tráfico ρ del perfil anticipado (X2) & 0,65 & 0,81 &
+La franja más cargada del perfil anticipado es la de $-45$ a $-30$~min
+(24,4~\%, 793~pers/min), no la de $-30$ a $-15$. Con ella, $\rho = 793/978 \approx 0{,}81$.
+No cambian el modelo ni los parámetros; los datos lo confirman
+(apartado~\ref{sec:rho}). \\
+Caso de 2 tornos por puerta & «la cola crece sin parar» & crece durante la punta &
+La cola crece sin cota solo mientras dura la punta con $\rho>1$ (de $-30$ a 0~min);
+después se vacía y todos entran. \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Cambios de diseño decididos por el grupo}}\\
+Instante del cierre de puerta (X6) & $t=+20$~min & $t=-30$~min &
+P7 pregunta por un cierre «en hora punta», pero en $t=+20$ llega solo el 2~\%
+del público. En un estudio previo con 5 réplicas y seis instantes, la diferencia
+sin\,$-$\,con redirección en la espera media de los asignados a la puerta cerrada
+era de 4~$\pm$~1~s a $+20$ y de 292~$\pm$~24~s a $-30$, la mayor de las
+probadas. Se mantienen la puerta (A-1) y la duración (10~min). \\
+Acomodadores en X5 & 3 y 6 & 3, 6 y 9 &
+Con 3 la cola de conflictos se satura. Se conservan la probabilidad del 1~\% y la
+resolución Triangular(1,~3,~10)~min, y se añade un nivel de 9 para estudiar la
+acumulación en lugar de ajustar los parámetros. \\
+Número de réplicas & unas 30 por escenario & 30 a 247 &
+Con el criterio de la propia Parte 1 (IC del 95~\% con semianchura $\le$~5~\% de la
+espera media), el piloto estimó tamaños muy distintos. Se usan al menos 30 y el
+tamaño necesario de cada escenario, comprobando la precisión al terminar
+(apartado~\ref{sec:campana}). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Hipótesis adoptadas}
+
+La Parte 1 no precisaba los aspectos de la tabla~\ref{tab:hipotesis}. En cada
+uno se ha elegido la lectura más sencilla y fiel al enunciado.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Hipótesis adoptadas donde la Parte 1 no era explícita.}
+\label{tab:hipotesis}
+\begin{tabularx}{\textwidth}{@{}p{4.2cm}Y@{}}
+\toprule
+Aspecto & Hipótesis adoptada \\
+\midrule
+Cola formada al cerrar una puerta & Ver el párrafo siguiente. \\
+Reloj de las averías & El tiempo entre fallos cuenta solo en funcionamiento;
+240~min es el tiempo medio de buen funcionamiento. \\
+Recuento de averías & Se cuentan todas las averías registradas en la réplica,
+también las posteriores a la entrada. No equivale al número de averías que
+perjudicaron a alguien. \\
+Relectura y prioridad & La relectura no libera el torno; la prioridad no expulsa un
+control en curso. \\
+Utilización de los tornos & Se mide con el número nominal de tornos, desde la
+apertura hasta el último control. Las averías cuentan como tiempo disponible no
+ocupado. \\
+Distancia en la evacuación & Quien está caminando hacia su asiento al sonar la
+alarma recorre la distancia completa hasta la salida: no se conoce su posición y
+es el caso más desfavorable. \\
+Cola exterior al sonar la alarma & Quien está fuera, en cola o pasando el torno,
+abandona y no cuenta en la evacuación. \\
+Salida bloqueada & Se bloquea la salida 1 de la macrozona A; las 6 son iguales,
+así que la elección no cambia el resultado. \\
+Elección de salida & Se elige al llegar a la zona de salidas, cuando se ven las
+colas, y no al levantarse. \\
+Conflicto en curso al sonar la alarma & Se da por terminado: el espectador deja el
+asiento para evacuar. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Cola formada al cerrar una puerta.}
+% DECIDIR: confirmar con el grupo. El registro de decisiones del proyecto aún la
+% tiene como «pendiente de confirmar por el grupo». No presentarla como confirmada.
+Hipótesis adoptada: el cierre solo afecta a quien \emph{llega} mientras la puerta
+está cerrada; quien ya estaba en su cola o en un torno sigue siendo atendido. Es
+la lectura literal de la Parte 1 («nadie entra por esa puerta», «las llegadas se
+redirigen o esperan»), que no trata la cola existente. La alternativa, parar
+también esa cola, daría un efecto mayor del cierre. Con el cierre en $t=-30$
+apenas importa: en el estudio previo había 0 o 2 personas en cola al cerrar,
+frente a unas 380 llegadas durante el cierre. Con cierres más tardíos ($-20$,
+$-10$) llegaba a haber unas 100.
+
+Esta hipótesis va unida a una limitación de la redirección: quien llega a la
+puerta cerrada conoce al instante la cola de todas las demás, elige la menor y no
+camina ninguna distancia extra. La redirección del modelo es, por tanto,
+optimista respecto a una real (apartado~\ref{sec:p7}).

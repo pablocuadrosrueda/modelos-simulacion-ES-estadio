@@ -1,0 +1,177 @@
+\section{Modelo implementado}\label{sec:modelo}
+
+\subsection{Organización general}
+
+El modelo se ha implementado en Python 3 con la librería SimPy, como preveía la
+Parte 1. Es una simulación terminante: cada réplica es un partido completo, que
+empieza con el estadio vacío al abrir las puertas en $t=-90$~min y termina
+cuando todos los espectadores han salido o están a salvo. No hay periodo de
+calentamiento, porque el estadio vacío es el estado inicial real y la entrada
+forma parte de las preguntas. El reloj de SimPy trabaja en segundos con $t=0$ en
+el inicio del partido; los resultados se expresan en minutos respecto a ese
+instante. El final ordinario del partido es $t=+105$~min (90 de juego y 15 de
+descanso).
+
+Todos los parámetros están en un fichero de configuración. Cada experimento
+declara solo lo que cambia respecto al escenario base, lo que hace explícito el
+principio de la Parte 1 de cambiar un solo factor. La carga de la configuración
+la valida y rechaza claves desconocidas, de modo que un error tipográfico no
+produce en silencio un escenario distinto del previsto. Ningún parámetro del
+modelo está escrito en el código.
+
+Cada espectador es un único proceso que encadena entrada, ubicación,
+permanencia y salida; la alarma de emergencia puede interrumpirlo para pasar a
+la evacuación. Las averías de los tornos son procesos auxiliares que se repiten
+indefinidamente y no determinan el fin de la réplica. Al terminar, la réplica
+devuelve una fila por espectador con todos sus instantes, y los indicadores se
+calculan a partir de esas filas (sección~\ref{sec:indicadores}).
+
+\subsection{Generación de espectadores y llegadas}
+
+Al empezar la réplica se generan los $N=48.775$ espectadores con todos sus
+atributos:
+
+\begin{itemize}
+  \item \textbf{Hora de llegada.} Se sortea la franja de 15~min con las
+    probabilidades del perfil (base o anticipado, tabla de la Parte 1) y un
+    instante uniforme dentro de ella.
+  \item \textbf{Macrozona, puerta y bloque.} Macrozona con un 25~\% de
+    probabilidad cada una y, dentro de ella, puerta (1--6) y bloque (1--10)
+    uniformes. Los bloques 1--5 forman la grada inferior y los 6--10 la
+    superior.
+  \item \textbf{Grupo.} Estándar (88~\%), mayores (10~\%) o personas con
+    movilidad reducida, PMR (2~\%), con un factor de velocidad de 1, 0,8 y 0,5.
+  \item \textbf{Velocidad, distancia y servicio.} Velocidad Normal(1,45;
+    0,23)~m/s truncada en [0,6;~2,2] y multiplicada por el factor del grupo;
+    distancia de la puerta al asiento Uniforme(60,~180)~m, que se usa también
+    para salir; tiempo de servicio en el torno Triangular(2,~4,~6)~s.
+\end{itemize}
+
+Los espectadores se ordenan por hora de llegada. Cada atributo sale de su
+propia fuente de números aleatorios (apartado~\ref{sec:nac}).
+
+\subsection{Entrada: colas, tornos y prioridad}
+
+Cada puerta es un recurso con tantas plazas como tornos (3 en el escenario
+base) y una cola con prioridades. El espectador espera hasta su hora de
+llegada, elige puerta (apartado~\ref{sec:cierre}), espera un torno libre y lo
+ocupa durante su tiempo de servicio y, si le toca, la relectura de la entrada.
+La espera en cola es el inicio del control menos la llegada.
+
+Con la disciplina FIFO todos piden con el mismo nivel. Con prioridad (X3),
+mayores y PMR piden con un nivel más alto y adelantan a los demás en la cola de
+su puerta. La prioridad no es expulsiva: nunca interrumpe un control ya
+iniciado. Dentro de cada nivel se mantiene el orden de llegada. Las averías
+tienen un nivel aún más alto.
+
+\subsection{Cierre de puerta y redirección}\label{sec:cierre}
+
+En el experimento X6 la puerta 1 de la macrozona A se cierra durante 10~min
+(cierre de puerta, I4). Mientras está cerrada nadie entra por ella. La puerta
+se elige una sola vez, al llegar, con el estado de ese instante:
+
+\begin{itemize}
+  \item si la puerta asignada está abierta, el espectador va a ella;
+  \item si está cerrada y la redirección está activa, va a la puerta abierta de
+    su macrozona con menos cola (se desempata por personas en servicio y, después,
+    por número de puerta; es una regla determinista, sin azar);
+  \item si está cerrada y no hay redirección, espera a que reabra y entra después
+    por su puerta, en el mismo orden en que llegaron quienes esperaban.
+\end{itemize}
+
+Quien se redirige no recorre ninguna distancia adicional, porque el modelo no
+representa el exterior del estadio. Quien ya estaba en la cola de la puerta
+cuando se cierra sigue siendo atendido; es una hipótesis adoptada que se discute
+en la sección~\ref{sec:desviaciones}.
+
+\subsection{Incidencias en el torno}
+
+\textbf{Fallo de lectura (I2).} Con probabilidad 3~\%, al terminar el servicio
+la entrada se vuelve a leer durante Uniforme(5,~15)~s más, sin liberar el torno.
+La relectura no interrumpe ni es interrumpida.
+
+\textbf{Avería de torno (I3).} Cada torno alterna periodos de funcionamiento
+Exponencial(media 240~min) y reparaciones Uniforme(3,~10)~min. El tiempo entre
+fallos se mide en funcionamiento: el reloj se detiene durante la reparación, de
+modo que 240~min es el tiempo medio de buen funcionamiento y un torno no puede
+averiarse mientras está parado. Al vencer ese tiempo, la avería pide el torno con
+la prioridad máxima y sin expulsión: el torno termina el servicio en curso y
+después se para, como indicaba la Parte 1 («cuando el torno queda libre»). La
+avería adelanta a toda la cola, incluidos los grupos priorizados.
+
+\subsection{Ubicación en el asiento y conflictos}
+
+Tras el torno, el espectador camina hasta el vomitorio de su bloque a su propia
+velocidad. Cada bloque tiene un vomitorio de 8 plazas atendidas por orden de
+llegada; el paso dura Triangular(5,~10,~20)~s y al salir del vomitorio se sienta.
+
+\textbf{Conflicto por asiento (I1).} Al llegar a su asiento, el espectador lo
+encuentra ocupado con probabilidad 0,5~\% en el escenario base y 1~\% en el
+experimento de acomodadores (X5). Mientras dura el conflicto no suelta su plaza
+del vomitorio: pide un acomodador de su macrozona (6 en el escenario base),
+espera si están todos ocupados y el conflicto se resuelve en Triangular(1,~3,~10)~min
+desde que llega el acomodador. Retener la plaza es lo que hace que un conflicto
+retrase también al resto del bloque: con varios conflictos a la vez, el
+vomitorio pierde plazas y quienes vienen detrás esperan más (pregunta P6).
+
+\subsection{Salida ordinaria}
+
+Al final del partido cada macrozona dispone de 6 salidas de 4~m. Con 66 personas
+por metro y minuto, cada salida deja pasar 264 personas por minuto, una cada
+0,227~s. Cada espectador vuelve a recorrer su distancia y, al llegar a la zona de
+salidas, elige la de su macrozona con menos personas en ese momento. Se han
+simulado dos políticas: salida simultánea en $t=+105$ y salida escalonada (X4),
+en la que la grada superior sale 3~min después que la inferior.
+
+\subsection{Evacuación de emergencia}
+
+En X7 suena una alarma en $t=+40$~min. Se cierran los accesos, las salidas se
+ensanchan un 30~\% (de 4 a 5,2~m, una persona cada 0,175~s) y cada espectador
+actúa según dónde está:
+
+\begin{itemize}
+  \item quien aún no ha llegado ya no llega y no cuenta en la evacuación;
+  \item quien está en la cola exterior o pasando el torno abandona y tampoco cuenta;
+  \item quien ya ha pasado el torno, esté caminando, en el vomitorio, en un
+    conflicto o sentado, evacúa: espera su tiempo de reacción,
+    Triangular(30,~60,~120)~s, camina un 20~\% más rápido hasta la salida de su
+    macrozona con menos cola y la atraviesa.
+\end{itemize}
+
+En la variante con bloqueo, una de las 6 salidas de la macrozona A queda
+inutilizada y su público se reparte entre las otras 5.
+
+\subsection{Números aleatorios comunes}\label{sec:nac}
+
+La Parte 1 pedía usar las mismas semillas en todos los escenarios y un generador
+independiente por fuente de azar. La implementación va un paso más allá, porque
+las mismas semillas no bastan si los números se asignan en distinto orden:
+
+\begin{itemize}
+  \item \textbf{Un generador por fuente.} Cada una de las 13 fuentes de azar
+    (llegadas, asignación, grupo, velocidad, distancia, servicio, relectura,
+    vomitorio, conflicto, avería, elección de salida, reacción y desempate de
+    puerta) tiene su propio generador, derivado de la semilla de la réplica y de
+    la posición fija de la fuente. Consumir más o menos números de una fuente no
+    altera las demás.
+  \item \textbf{Todo sorteo por espectador se hace al empezar la réplica.} Si el
+    servicio o la relectura se sortearan durante la simulación con un generador
+    compartido, cada número caería en un espectador distinto según el orden en
+    que el modelo lo atiende, y ese orden cambia entre escenarios (por ejemplo,
+    con 2 o 4 tornos). Por eso el servicio, la relectura y su duración, el paso
+    por el vomitorio, el conflicto y su resolución, el desempate entre salidas y
+    el tiempo de reacción se sortean una vez por espectador y quedan asociados a
+    él. Además, conflicto y relectura se deciden comparando un uniforme con la
+    probabilidad: al pasar del 0,5~\% al 1~\% de conflictos se conservan los de
+    la base y solo se añaden otros, y las tres variantes de X5 tienen
+    exactamente los mismos conflictos.
+  \item \textbf{Un generador por torno para las averías.} El calendario de averías
+    de cada torno es el mismo con 2, 3 o 4 tornos por puerta y no depende de las
+    demás macrozonas.
+  \item \textbf{Semilla de cada réplica:} $20261105+r$ para la réplica $r$
+    (numerada desde 0), igual en todos los escenarios.
+\end{itemize}
+
+Así, la diferencia entre dos escenarios con la misma semilla se debe solo a lo
+que cambia entre ellos. El efecto se comprueba en el
+apartado~\ref{sec:reproducibilidad}.

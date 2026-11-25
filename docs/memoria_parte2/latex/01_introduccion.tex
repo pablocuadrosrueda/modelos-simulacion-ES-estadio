@@ -1,0 +1,26 @@
+\section{Introducción}
+
+En la Parte 1 se especificó un modelo de simulación de eventos discretos de la
+entrada, la permanencia, la salida y las incidencias del público en el estadio
+de San Mamés, con ocho preguntas (P1--P8) y un diseño experimental de escenarios
+X0--X7 más una sensibilidad S1. Esta Parte 2 recoge el modelo implementado en
+Python 3 con SimPy, su verificación y validación, y las respuestas a las ocho
+preguntas.
+
+La memoria se organiza así. La sección~\ref{sec:modelo} describe el modelo tal
+como se ha implementado, y la sección~\ref{sec:desviaciones} reúne, con su
+motivo, todo lo que difiere de la Parte 1. La sección~\ref{sec:verificacion}
+explica cómo se calculan los indicadores, el método estadístico y la campaña de
+réplicas, y las comprobaciones que dan confianza en el modelo. La
+sección~\ref{sec:resultados} responde a P1--P8 en orden, la
+sección~\ref{sec:sensibilidad} analiza la sensibilidad y la
+sección~\ref{sec:conclusiones} cierra con las conclusiones y los límites.
+
+\paragraph{Cómo leer las cifras.} Cada réplica es un partido completo. Salvo que
+se indique otra cosa, las cifras son la media entre réplicas $\pm$ la
+semianchura del intervalo de confianza (IC) del 95~\% (t de Student, una
+observación por réplica), con el número de réplicas $n$. Las diferencias entre
+escenarios están \emph{emparejadas}: se calculan réplica a réplica con la misma
+semilla y $n$ es el número de parejas. Como no hay datos reales de colas ni de
+salidas, los resultados se interpretan como comparaciones entre escenarios y no
+como predicciones exactas de San Mamés, tal como advertía la Parte 1.

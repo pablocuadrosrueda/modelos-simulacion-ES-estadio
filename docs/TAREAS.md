@@ -86,7 +86,7 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 |---|---|---|---|---|
 | T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | hecho | T5.3 |
 | T6.2 | Verificación/validación de A, B y C; alcance interno y limitaciones documentadas | A, B, C | hecho | T5.3 |
-| T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | en curso | T6.1, T6.2 |
+| T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | integración en revisión (`feat/cuadros-T6.3-integracion`) | T6.1, T6.2 |
 
 ### Cierre de T6.2 y seguimiento de T6.3
 
@@ -95,10 +95,10 @@ conjunto. La ausencia de validación externa/F2 se conserva como limitación.
 
 | Sección T6.3 | Responsable | Estado |
 |---|---|---|
-| Modelo de entrada, verificación, P1–P4/P7 | A | aportación en PR #34 |
-| Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | aportación en PR #35 |
+| Modelo de entrada, verificación, P1–P4/P7 | A | fusionada en PR #34 |
+| Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | fusionada en PR #35 |
 | Método, campaña, sensibilidad y conclusiones | C | fusionada en PR #36; fuentes y PDF de 11 páginas |
-| Integración y revisión final de la memoria conjunta | A, B, C | pendiente |
+| Integración y revisión final de la memoria conjunta | A, B, C | A: integración en LaTeX en revisión (`docs/memoria_parte2/latex`); B y C: revisar y decidir lo del aviso |
 
 Mantenimiento de T6.2: PR #37 fusionó dos correcciones equivalentes de la
 exclusión analítica de `capacity.py` y dejó dos bloques sin cuerpo. Reparación

@@ -1,0 +1,59 @@
+\section{Conclusiones y límites}\label{sec:conclusiones}
+
+\subsection{Conclusiones}
+
+Con los parámetros ensayados, y siempre como comparación entre escenarios:
+
+\begin{itemize}
+  \item \textbf{Entrada (P1, P2).} Los tornos son el recurso más cargado, con una
+    intensidad de tráfico de 0,93 en la punta. Tres tornos por puerta, el valor
+    actual, cumplen el objetivo de espera y dos no; el margen es sensible al
+    tiempo de servicio.
+  \item \textbf{Llegada anticipada (P3).} Reduce la espera y, sobre todo, la
+    entrada tardía, que depende más de cuándo llega el público y del recorrido
+    hasta el asiento que de la cola del torno.
+  \item \textbf{Prioridad (P4).} Beneficia a mayores y PMR con un coste pequeño y
+    repartido para el resto, sin cambiar la espera total.
+  \item \textbf{Salida escalonada (P5).} Reduce casi a la mitad la aglomeración en
+    las salidas a cambio de alargar algo más de un minuto el vaciado.
+  \item \textbf{Acomodadores (P6).} Son decisivos cuando se duplica la probabilidad
+    de conflicto: con 3 por macrozona el sistema se satura y con 9 la duración de
+    un conflicto se acerca a la de su resolución.
+  \item \textbf{Cierre de puerta (P7).} La redirección a la puerta con menos cola
+    absorbe casi todo el efecto de un cierre en la punta, en condiciones
+    favorables a la redirección.
+  \item \textbf{Evacuación (P8).} Con todas las salidas la capacidad basta, pero no
+    siempre se evacúa a tiempo a las personas con movilidad reducida; con una
+    salida bloqueada no se cumple la referencia de 8~minutos. El promedio de
+    vaciado, por sí solo, no responde a la pregunta.
+\end{itemize}
+
+Estas conclusiones deben acompañarse de los IC, los tamaños por escenario y los
+límites siguientes.
+
+\subsection{Límites}
+
+\begin{itemize}
+  \item \textbf{Validación externa.} La verificación comprueba conservación,
+    orden, capacidades, casos límite, cálculo de indicadores y reproducibilidad.
+    No hay datos completos de colas, salida y evacuación con los que cuantificar
+    el error respecto al estadio real, y el ritmo por torno no se ha contrastado
+    directamente con la fuente F2 (\pend).
+  \item \textbf{Precisión.} El criterio de precisión controla la incertidumbre
+    muestral de la espera media; no controla el error de los parámetros, de la
+    representación espacial ni de las reglas de comportamiento.
+  \item \textbf{Generalización.} Las decisiones se estudian con perfiles,
+    probabilidades y recursos concretos: no cabe generalizar que tres tornos
+    basten para cualquier demanda ni que nueve acomodadores sean siempre
+    suficientes.
+  \item \textbf{Representación espacial.} El exterior del estadio no está
+    representado y la redirección no añade marcha ni información imperfecta.
+    Los peatones tienen velocidades y distancias sorteadas, sin un modelo de
+    densidad, empujones o asistencia. Esto afecta sobre todo a P7 y P8.
+  \item \textbf{Hipótesis adoptadas.} En particular, que el cierre de una puerta
+    solo afecta a quien llega mientras dura (sección~\ref{sec:desviaciones}).
+    % DECIDIR: confirmar con el grupo esta hipótesis antes de la entrega.
+  \item \textbf{Sensibilidad.} S1 cambia cada factor por separado y no incluye la
+    emergencia; no responde a combinaciones de aforo, servicio y velocidad ni a
+    medidas de evacuación asistida.
+\end{itemize}

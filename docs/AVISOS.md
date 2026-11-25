@@ -14,6 +14,44 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · Instrucciones para cerrar T6.3
+**Estado:** en el PR `feat/cuadros-T6.3-integracion`; aún no en `main`.
+
+* **B y C:** vuestras tareas concretas están en `docs/ESTADO.md`, sección
+  «Cierre de T6.3 · instrucciones por rol». Resumen: B reproduce o retira el
+  contraste «sin conflictos» y añade IC a B3; C corrige el redondeo de C2
+  (−0,0861) y cierra T6.1 en el tablero.
+* **Los tres:** hay que decidir D23 (propuesta: confirmarla) y la fecha de
+  entrega antes de entregar la memoria. Cifras comparadas y su fuente:
+  `docs/memoria_parte2/INFORME_COHERENCIA.md`.
+
+### 2026-11-25 · A → B, C, grupo · Memoria integrada en LaTeX y decisiones pendientes
+**Estado:** en revisión en `feat/cuadros-T6.3-integracion`.
+
+* Memoria única en `docs/memoria_parte2/latex/` (compilar con
+  `latexmk -xelatex main.tex`). Detalle de cifras y terminología en
+  `docs/memoria_parte2/INFORME_COHERENCIA.md`. Los Markdown siguen siendo la
+  fuente; no he tocado los de B ni los de C.
+* **Grupo:** confirmar o no la hipótesis del cierre (quien ya estaba en cola
+  sigue atendido). En el LaTeX va como «hipótesis adoptada» con `% DECIDIR`;
+  `docs/DECISIONES.md` aún la tiene como pendiente de confirmar. Falta también
+  la fecha de entrega en la portada.
+* **B:** el contraste de entrada tardía sin conflictos (4,38 %, 1,93 min;
+  diferencia 0,08 ± 0,01 puntos, 20 réplicas) no lo reproduce ningún script del
+  repo; en la memoria va en rojo como PENDIENTE. Añádelo a `scripts/validate_b.py`
+  o a `docs/VALIDACION_T6.2.md`, o dime que lo quitemos. El 4,46 % de B2 sí cuadra
+  (media de las 20 primeras réplicas de X0), pero la cifra oficial de X0 es
+  4,578 ± 0,052 % (n = 180) y es la que usa la memoria. Opcional: IC de P5 y P6 en
+  B3 (la memoria ya los toma de `results/figures/statistics.csv`) y n = 5 en el
+  caso de acomodadores ilimitados.
+* **C:** en C2, el vaciado con velocidad +15 % es −0,0861 ± 0,0182 min, no
+  −0,0862 (redondeo; la memoria usa −0,0861). La memoria no cita `groups.csv`,
+  `audit.csv` ni D-números: si algo de C1 se ha simplificado de más, dímelo.
+* **A (yo):** A3 sigue con el «PENDIENTE» de X6 − X0 (lo cierra C: +0,04989 ±
+  0,00346 min, 180 parejas) y con la crítica al título de P3, ya corregido por C.
+  La memoria ya lo incorpora; actualizaré A3 en otro PR si lo queréis.
+
+
 ### 2026-11-25, de B a A y C: parte de B de la memoria y respuesta a los cruces de A3
 **Estado:** en la rama `feat/perez-T6.3-memoria-B`; **aún no en `main`**.
 
