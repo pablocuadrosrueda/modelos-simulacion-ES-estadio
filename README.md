@@ -221,3 +221,19 @@ Produce P1–P8 y S1 en PNG (300 dpi) y SVG, sin ejecutar simulaciones.
 `results/figures/statistics.csv` permite revisar cada punto, IC y tamaño de muestra;
 `manifest.json` registra hashes de entradas, script y salidas. Rechaza campañas
 incompletas o tablas auxiliares con identidades incompatibles.
+
+### Verificación del rol C (T6.2)
+
+```bash
+# Auditar tablas sin simular; conserva el informe versionado con las 19 reproducciones:
+.venv/bin/python scripts/verify_results.py --output /tmp/verificacion_C.md
+# Añadir reproducción de una réplica por escenario (19 en total):
+.venv/bin/python scripts/verify_results.py --replay
+```
+
+[Informe y alcance de C](docs/VERIFICACION_C_T6.2.md). Comprueba las tablas
+definitivas, conservación terminal, KPIs, relojes, reparto, colectivos y análisis
+emparejado. Con `--replay` contrasta IDs, terminación y KPIs contra las semillas
+originales; no modifica ni amplía la campaña. Con entorno activado puede usarse
+`python` también en Windows; para un informe temporal allí, usa
+`--output verificacion_local.md`. T6.2 sigue pendiente del cierre conjunto de A/B/C.
