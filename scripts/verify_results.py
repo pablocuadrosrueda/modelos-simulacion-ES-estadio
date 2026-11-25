@@ -22,6 +22,14 @@ from sanmames.runner import run_replica
 ROOT = Path(__file__).resolve().parents[1]
 FILES = ("kpis", "audit", "zones", "groups", "summary", "comparisons", "precision")
 KEYS = ["scenario", "seed"]
+# Ficheros de src/ con huella en el manifiesto que NO intervienen en la simulación
+# ni en los KPIs. capacity.py es un módulo de análisis (rol A, T2.1/T6.2): fórmulas
+# de capacidad y un modelo de cola fluido para contrastar la simulación con la
+# teoría. Ningún módulo que genera datos (config, rng, entities, arrivals, entry,
+# stadium, exit, emergency, incidents, runner, metrics, experiments) lo importa,
+# así que cambiarlo no puede alterar los resultados de T5.3. Exigir su huella
+# bloquearía la verificación por mejoras de análisis posteriores (PR #33).
+ANALYSIS_ONLY = frozenset({"src/sanmames/capacity.py"})
 
 
 def model_digest(path: Path) -> str:
@@ -268,7 +276,8 @@ def verify(directory: Path, *, replay=False) -> dict:
     replays = []
     if replay:
         for name, digest in manifest["source_sha256"].items():
-            if name.startswith("src/"):
+            # ANALYSIS_ONLY (capacity.py): análisis, no participa en las réplicas.
+            if name.startswith("src/") and name not in ANALYSIS_ONLY:
                 require(
                     model_digest(ROOT / name) == digest,
                     f"Modelo distinto del cálculo original: {name}",
@@ -349,7 +358,9 @@ def render_report(result: dict) -> str:
     ]
     if result["replays"]:
         lines += [
-            "Código de `src/` coincidente por SHA-256 con T5.3, normalizando CRLF a LF "
+            "Código de simulación/KPIs coincidente por SHA-256 con T5.3 "
+            "(se excluye capacity.py, comprobación analítica independiente), "
+            "normalizando CRLF a LF "
             "para permitir la conversión de finales de línea de Git en Windows. "
             "Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, "
             "terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs "

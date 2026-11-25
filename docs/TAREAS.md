@@ -85,20 +85,25 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | ID | Tarea | Resp. | Estado | Depende de |
 |---|---|---|---|---|
 | T6.1 | Gráficas (matplotlib) por pregunta P1–P8 en `results/` | C | hecho | T5.3 |
-| T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | hecho | T5.3 |
+| T6.2 | Verificación/validación de A, B y C; alcance interno y limitaciones documentadas | A, B, C | hecho | T5.3 |
 | T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | en curso | T6.1, T6.2 |
 
-### Seguimiento de T6.2 por rol
+### Cierre de T6.2 y seguimiento de T6.3
 
-Las tres partes están fusionadas: T6.2 queda **hecha**.
+T6.2: A, B y C fusionadas en PR #33, #32 y #31. Chema confirma el cierre
+conjunto. La ausencia de validación externa/F2 se conserva como limitación.
 
-| Rol | Estado de su parte | Evidencia / pendiente |
+| Sección T6.3 | Responsable | Estado |
 |---|---|---|
-| C · Chema | hecho (PR #31) | Auditoría de las tablas de T5.3 y reproducción de 19 réplicas; `docs/VERIFICACION_C_T6.2.md` y `scripts/verify_results.py` |
-| A · Pablo Cuadros | hecho (PR #33) | Confirmar vigencia de la evidencia de entrada: ρ>1 con dos tornos, ritmo por torno/F2 y capacidad (`docs/VERIFICACION.md`) |
-| B · Pablo Pérez | hecho (PR #32) | Mapa común `docs/VALIDACION_T6.2.md` y `scripts/validate_b.py`: saturación de acomodadores en X5 y causa de no vaciar en 8 min en X7; tests de capacidad de vomitorios, acomodadores y salidas |
+| Modelo de entrada, verificación, P1–P4/P7 | A | aportación en PR #34 |
+| Ubicación, salida, evacuación, I1/I4, P5/P6/P8 | B | aportación en PR #35 |
+| Método, campaña, sensibilidad y conclusiones | C | fusionada en PR #36; fuentes y PDF de 11 páginas |
+| Integración y revisión final de la memoria conjunta | A, B, C | pendiente |
 
-T6.1 (PR #30) y T6.2 están fusionadas; T6.3 puede cerrarse.
+Mantenimiento de T6.2: PR #37 fusionó dos correcciones equivalentes de la
+exclusión analítica de `capacity.py` y dejó dos bloques sin cuerpo. Reparación
+en `feat/chema-fix-verify-capacity`, conservando `ANALYSIS_ONLY` y los tests
+de A y C; actualización del informe de reproducción.
 
 ## Prompts de arranque de Inc1
 
