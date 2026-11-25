@@ -159,6 +159,9 @@ def test_changing_runner_still_blocks_replay(verifier, campaign, model_copy):
     with (model_copy / "runner.py").open("a", encoding="utf-8") as f:
         f.write("\n# cambio en el modelo\n")
     with pytest.raises(ValueError, match="Modelo distinto del cálculo original: .*runner.py"):
+        verifier.verify(campaign, replay=True)
+
+
 @pytest.mark.parametrize(
     ("module", "message"),
     [

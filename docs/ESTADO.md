@@ -157,6 +157,12 @@ la protección de `main` exigiendo esos checks.
   `results/final`. Pendiente de B y C, listado en VERIFICACION: salida 7,7 min,
   evacuación 5,9/7,1 min, dispersión de I1, KPIs de C.
 
+**Arreglo de `main` (A, `fix/cuadros-verify-merge`).** La fusión del PR #37 dejó
+errores de sintaxis en `scripts/verify_results.py` y su test al combinar el
+arreglo de A con el de C (PR #36). Corregido sin cambiar la lógica: se excluye
+`capacity.py` de las huellas mediante `ANALYSIS_ONLY` y se mantienen los tests de
+ambos. `make check` limpio.
+
 ## Siguiente paso
 
 T5.3 terminada y fusionada en PR #29.

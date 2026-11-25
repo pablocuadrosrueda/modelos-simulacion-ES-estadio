@@ -14,6 +14,18 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → todos · `main` roto tras el PR #37 (arreglado en `fix/cuadros-verify-merge`)
+**Estado:** en revisión.
+
+* La resolución de conflictos al fusionar el PR #37 con el arreglo equivalente de
+  C (PR #36) dejó un `if` duplicado sin cuerpo en `scripts/verify_results.py` y un
+  `with` sin cuerpo en `tests/test_verify_results.py`: errores de sintaxis, el
+  CI fallaba en todas las ramas basadas en `main` (incluido el PR #34).
+* Arreglo: un solo filtro con `ANALYSIS_ONLY` y el cuerpo que faltaba en el test.
+  Se conservan los tests de A y el de C. Sin cambios de lógica ni de datos.
+* Tras fusionarlo, incorporad `main` en vuestras ramas abiertas.
+
+
 ### 2026-11-25 · A → C · `verify_results.py` ya no exige la huella de `capacity.py`
 **Estado:** en revisión en `fix/cuadros-verify-capacity`.
 
