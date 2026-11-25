@@ -1,5 +1,8 @@
 # Verificación y validación del modelo (T6.2)
 
+**Cierre (2026-11-25):** partes A/B/C fusionadas en PR #33/#32/#31;
+Chema confirma su terminación. Se mantiene la limitación de validación externa.
+
 Documento común de A, B y C. Reúne, para cada comprobación que pide la
 especificación (apartado 6 de `docs/ESPECIFICACION.md`), dónde está la prueba y
 qué resultado da. Cada rol completa y revisa su parte.
@@ -8,11 +11,11 @@ qué resultado da. Cada rol completa y revisa su parte.
 
 | Comprobación | Qué se exige | Dónde está la prueba | Resultado | Rol |
 |---|---|---|---|---|
-| Conservación | La suma de espectadores en todos los estados es siempre N | `tests/test_conservacion.py` (T1.7, T3.4) y auditoría de `results/final` | Cumple en todas las transiciones; cero pérdidas o duplicados en las 2.965 réplicas | C |
+| Conservación | La suma de espectadores en todos los estados es siempre N | `tests/test_conservacion.py` (T1.7, T3.4) y auditoría de `results/final` | Pruebas por transición y auditoría final agregada de 2.965 réplicas; detalle en VERIFICACION_C_T6.2.md | C |
 | Orden temporal | Llegada, inicio y fin de control, vomitorio, asiento y salida en orden | `tests/test_orden_temporal.py` y tests de cada módulo | Cumple, con tolerancia de 1e-9 min por el paso de segundos a minutos | C |
 | Capacidad de recursos | Ningún recurso supera su capacidad | Tests de tornos, vomitorios, acomodadores y salidas | Cumple: tornos, 8 plazas por vomitorio, acomodadores por zona y una persona por salida cada 0,227 s | A, B |
 | Casos límite de entrada | Muchos tornos, colas casi nulas; 2 tornos, saturación en punta | `docs/VERIFICACION.md` (T2.1) | Cumple; carga en punta de 1,40 con 2 tornos, 0,93 con 3 y 0,70 con 4 | A |
-| Ritmo por torno frente a F2 | El ritmo de paso por torno coincide con el de la fuente | `docs/VERIFICACION.md` (T2.1) | Cumple: 13,58 pers/min por torno con cola, frente a 13,59 calculados | A |
+| Ritmo por torno frente a F2 | El ritmo coincide con el derivado de los parámetros de la Parte 1 | `docs/VERIFICACION.md` (T2.1) | Coherente con la Parte 1: 13,54–13,59 pers/min; F2 no consultada directamente | A |
 | Salida frente a la Parte 1 | Una macrozona cruza sus 6 salidas en unos 7,7 min | `tests/test_exit.py` y `docs/VERIFICACION.md` | 7,7 min | B |
 | Evacuación frente a la Parte 1 | 5,9 min con todas las salidas y 7,1 con una bloqueada | `tests/test_emergency.py` y `docs/VERIFICACION.md` | 5,9 y 7,1 min | B |
 | Saturación de acomodadores (P6) | La cola de X5 se debe a los acomodadores | `scripts/validate_b.py` (abajo) | Con acomodadores casi ilimitados, la duración vuelve a la teórica | B |
@@ -66,4 +69,7 @@ de las salidas.
 
 ## Partes A y C
 
-Pendiente de que cada rol revise su fila del mapa y añada lo que falte.
+A: `docs/VERIFICACION.md`, sección T6.2 (PR #33). C: `docs/VERIFICACION_C_T6.2.md`
+(PR #31), con las comprobaciones por réplica, recálculo de tablas y diecinueve
+reproducciones. No se ha consultado F2 directamente; el ritmo se contrasta con
+los parámetros de la memoria, sin afirmar validación independiente de esa fuente.

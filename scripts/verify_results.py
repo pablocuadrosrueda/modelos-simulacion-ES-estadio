@@ -268,7 +268,8 @@ def verify(directory: Path, *, replay=False) -> dict:
     replays = []
     if replay:
         for name, digest in manifest["source_sha256"].items():
-            if name.startswith("src/"):
+            # capacity.py es verificación analítica; no participa en las réplicas.
+            if name.startswith("src/") and name != "src/sanmames/capacity.py":
                 require(
                     model_digest(ROOT / name) == digest,
                     f"Modelo distinto del cálculo original: {name}",
@@ -349,7 +350,9 @@ def render_report(result: dict) -> str:
     ]
     if result["replays"]:
         lines += [
-            "Código de `src/` coincidente por SHA-256 con T5.3, normalizando CRLF a LF "
+            "Código de simulación/KPIs coincidente por SHA-256 con T5.3 "
+            "(se excluye capacity.py, comprobación analítica independiente), "
+            "normalizando CRLF a LF "
             "para permitir la conversión de finales de línea de Git en Windows. "
             "Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, "
             "terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs "

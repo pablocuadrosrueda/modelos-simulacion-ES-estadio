@@ -237,3 +237,11 @@ emparejado. Con `--replay` contrasta IDs, terminación y KPIs contra las semilla
 originales; no modifica ni amplía la campaña. Con entorno activado puede usarse
 `python` también en Windows; para un informe temporal allí, usa
 `--output verificacion_local.md`. T6.2 sigue pendiente del cierre conjunto de A/B/C.
+
+### Memoria Parte 2: aportación C (T6.3)
+
+[Fuentes editables e integración](docs/memoria_parte2/LEEME_C.md) y
+[PDF de lectura](docs/memoria_parte2/Memoria_Parte2_C.pdf). Incluye método,
+campaña, sensibilidad y conclusiones; se integra con A y B. El texto de C no
+cierra la revisión de la memoria conjunta. Las cifras proceden de T5.3 y no se
+han repetido ni ampliado sus simulaciones para redactar esta aportación.

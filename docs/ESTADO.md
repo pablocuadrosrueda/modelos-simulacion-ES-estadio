@@ -1,10 +1,7 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos y
-T6.1 (PR #30). T6.2 en curso: parte de B en la rama `feat/perez-T6.2-validation`._
-_Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
-(T5.3 fusionada en PR #29). T6.1 fusionada en PR #30; parte C de T6.2 en revisión._
-(T5.3 fusionada en PR #29) y T6.1 (PR #30). T6.2, parte de A, en revisión._
+_Última actualización: 2026-11-25. Inc0–Inc5 y T6.1 completos. T6.2 de A/B/C
+fusionada (PR #33/#32/#31). T6.3 en curso por secciones; C preparada para revisión._
 
 ## Hecho
 
@@ -191,7 +188,6 @@ no inferiores al plan, 180 semillas con idénticos conflictos en X5 3/6/9, y
 verificación del cierre/redirección. Hay CI Linux 3.10/3.12 y Windows específica
 para rutas y procesos/reanudación. Checkpoints locales, agregados versionados.
 
-**T6.1 fusionada en PR #30**: figuras P1–P8
 **T6.1 hecha (PR #30)**: figuras P1–P8
 y suplemento S1 en PNG 300 dpi + SVG, con IC del 95 %, unidades y n.
 Comando: `.venv/bin/python scripts/plot_results.py`. Índice e interpretación en
@@ -200,34 +196,26 @@ No se repiten simulaciones ni se alteran los datos finales. P4 usa colectivos
 comparables; P6 distingue duración I1 y retraso del resto; P8 separa media de
 vaciado y frecuencia observada de cumplir ocho minutos.
 
-**T6.2 · parte C preparada para revisión**, rama `feat/chema-T6.2-verificacion-C`.
-`scripts/verify_results.py` comprueba las 2.965 réplicas: identidades entre tablas,
-recuentos terminales, reparto, relojes, rangos de KPIs y NaN según la fase.
-Recalcula resumen, contrastes emparejados (P4 con colectivos comparables) y precisión.
-Con `--replay` se han repetido 19 réplicas (una por escenario, semilla 20261105):
-IDs y terminación correctos, los 21 KPIs coinciden con T5.3 en todos los casos.
-Código de `src/` contrastado por SHA-256 con el de la campaña.
-Informe y límites: `docs/VERIFICACION_C_T6.2.md`. No se alteran modelo ni datos.
+**T6.2 completada en el alcance de verificación interna acordado.** Las partes
+de A (PR #33), B (PR #32) y C (PR #31) están fusionadas; Chema confirma el
+cierre conjunto para empezar T6.3. Evidencia en `docs/VERIFICACION.md`,
+`docs/VALIDACION_T6.2.md` y `docs/VERIFICACION_C_T6.2.md`. No se afirma validación
+externa con datos de colas/salida ni consulta independiente de F2.
 
-**T6.2 sigue en curso**: A y B deben revisar/confirmar la evidencia existente
-de capacidad y supuestos de sus módulos (`docs/VERIFICACION.md`). No se da
-por cerrada su parte. T6.3 (memoria) depende del cierre conjunto de T6.2; las
-figuras de T6.1 ya están en main.
-**T6.2 en curso.** Documento común `docs/VALIDACION_T6.2.md`: mapa de cada
-comprobación del apartado 6 de la especificación con su prueba y su resultado,
-para que A y C revisen su parte. B añade `scripts/validate_b.py`, con dos
-comprobaciones sobre la simulación completa. En X5, con acomodadores casi
-ilimitados la duración de un conflicto baja a 4,62 min, la media teórica de la
-resolución (4,67): la saturación se debe a los acomodadores. En X7 con todas las
-salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
-persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
-7,36 min. Con una salida bloqueada manda la cola en las salidas.
+**T6.3 · parte C preparada para revisión**, por petición expresa de Chema de
+hacer solo C. Fuentes en `docs/memoria_parte2/C1_metodo_estadistico_y_campana.md`,
+`C2_sensibilidad.md` y `C3_conclusiones_y_limites.md`; PDF de lectura de 11 páginas
+`Memoria_Parte2_C.pdf`, con hashes de sus fuentes editables. Índice: `LEEME_C.md`.
+C1 explica runner, KPIs, semillas, IC y tamaños; C2 analiza S1; C3 sintetiza P1–P8,
+cambios respecto a Parte 1 y límites. No se ha compuesto la memoria conjunta.
+A tiene su borrador en PR #34; B aporta sus secciones de ubicación/salida/evacuación.
 
-**Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
-ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
-**Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
-B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
-memoria de resultados, depende de T6.1 y T6.2.
+Corregidas etiquetas P3/P6 de las figuras: entrada tardía incluye recorrido, no
+solo colas. Contraste adicional para P7 (con redirección − X0): +0,04989 ± 0,00346
+min, 180 parejas; se documenta sin cambiar `results/final/comparisons.csv`.
+
+**Siguiente:** revisión del texto C, integración por el equipo con A/B, formato y
+revisión final de la memoria conjunta. T6.3 global sigue en curso.
 En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
 necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
 I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
@@ -252,6 +240,14 @@ Autorización vigente (2026-11-23): implementar y publicar las siguientes tareas
 por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
+
+T6.3 C (2026-11-25): `make check`, 450 passed y 2 skipped (capacidad y réplica
+completa lentas opcionales), lint y docs-check limpios. PDF de 11 páginas
+revisado visualmente y cifras contrastadas
+con CSV. Etiquetas P3/P6 corregidas. Tras el merge de T6.2, el verificador excluye
+de la huella del modelo solo `capacity.py` (comprobación analítica no usada por
+el runner); dos regresiones confirman que se siguen rechazando cambios del runner.
+
 
 T6.2 C (2026-11-25, Python 3.12): `make check`, 421 passed y 1 skipped
 (capacidad lenta opcional), lint y docs-check limpios. Catorce pruebas nuevas
