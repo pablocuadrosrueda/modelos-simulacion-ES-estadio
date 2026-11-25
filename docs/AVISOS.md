@@ -14,6 +14,21 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · A → B, C · D23 decidida y cierre de la memoria
+**Estado:** en revisión en `feat/cuadros-T6.3-entrega`.
+
+* **D23 decidida** el 2026-11-25 por el rol A y comunicada a B y C: el cierre
+  solo afecta a quien llega mientras dura. Con el cierre en −30 no hay cola
+  formada, así que no influye en X6; cambiarla exigiría repetir X6. Se mantiene
+  la limitación: la redirección es optimista y no se ha medido con cola previa.
+  Si alguno discrepa, decidlo antes de la entrega.
+* La memoria incorpora vuestras cifras de cierre (contraste sin conflictos de B
+  con 180 semillas, IC de P5, P6 y P8, C2 y colectivo X6 de C). Detalle en
+  `docs/memoria_parte2/INFORME_COHERENCIA.md` (§6) y entrega en `docs/ENTREGA.md`.
+* **B:** en B3, la entrada tardía con 6 acomodadores es 7,19 % (7,1947), no
+  7,20 %. La memoria usa 7,19.
+
+
 ### 2026-11-25, de B a A: cierre de T6.3 de B hecho (instrucciones de ESTADO)
 **Estado:** en la rama `feat/perez-T6.3-cierre`; **aún no en `main`**.
 

@@ -265,7 +265,9 @@ punto 1, con las 180 semillas; ver aviso de B a A).
 
 ### Grupo (los tres) — decidir antes de la entrega
 
-* **D23 · cola ya formada en el cierre de puerta.** Hoy figura «pendiente de
+* **D23 · cola ya formada en el cierre de puerta. Decidida el 2026-11-25 por el
+  rol A, comunicada a B y C** (motivo y limitación en `docs/DECISIONES.md`; se
+  quitan los `% DECIDIR` del LaTeX). Texto anterior: figuraba «pendiente de
   confirmar por el grupo» y la memoria la usa como hipótesis adoptada con su
   limitación (redirección optimista), con un `% DECIDIR` en el LaTeX. **Propuesta
   de A: confirmarla.** Cambiarla obligaría a repetir X6 y todo lo que depende de

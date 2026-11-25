@@ -188,7 +188,7 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
   I1 con números comunes), abierta antes; esta decisión toma D22.
 
 ### D23 · Cierre de puerta (I4): a quién afecta y a qué puerta se redirige — 2026-11-23
-* **Hipótesis pendiente de confirmar por el grupo.** El cierre afecta solo a
+* **Decidida el 2026-11-25 por el rol A, comunicada a B y C.** El cierre afecta solo a
   quien **llega** (E1) mientras dura (memoria §3.2: «nadie entra por esa puerta»,
   «las llegadas se redirigen o esperan»). Quien ya está en la cola o en control
   de esa puerta al cerrarse sigue su curso y los tornos siguen atendiéndolo. Es
@@ -210,6 +210,17 @@ anteriores, y X5 (3 frente a 6 acomodadores) compara los mismos conflictos.
 * Quien llega exactamente en el instante de reapertura puede encontrarse la
   puerta aún cerrada según el orden de los sucesos simultáneos de SimPy; con
   llegadas continuas tiene probabilidad nula.
+* **Motivo de la decisión (2026-11-25).** Con el cierre en t = −30 min (D31) no
+  hay cola formada al cerrar (0 o 2 personas en las réplicas del estudio, frente
+  a unas 380 llegadas durante el cierre; `docs/ESTUDIO_X6.md`), así que la
+  hipótesis no influye en X6. La alternativa (parar los tornos o redirigir la
+  cola existente) solo importaría con cierres posteriores, como −20, ya
+  descartado, y obligaría a repetir X6.
+* **Limitación que se mantiene.** La redirección del modelo es optimista
+  (información instantánea, sin desplazamiento extra) y no se ha medido con una
+  cola previa al cierre. No se afirma que la hipótesis valga para cierres
+  posteriores.
+* **Reversible**, pero cambiarla exige repetir X6 y todo lo que depende de él.
 
 ### D24. Salida ordinaria: elección de salida y desempate con números comunes (2026-11-23)
 * El espectador elige salida **al llegar** a la zona de salidas, tras recorrer
