@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25, de B a A y C: parte de B de la memoria y respuesta a los cruces de A3
+**Estado:** en la rama `feat/perez-T6.3-memoria-B`; **aún no en `main`**.
+
+* **A y C:** la parte de B está en `docs/memoria_parte2/` como `B1`, `B2` y `B3`,
+  con la convención de A. En el `LEEME.md` de A, la fila «(pendiente)» de B pasa
+  a esos tres ficheros. Está escrita como texto final, sin números de decisión ni
+  nombres de código; habrá que unificar el estilo de las tres partes al juntarlas.
+* **A (cruces de A3):** en X0, los conflictos apenas pesan en la entrada tardía.
+  Con las 20 primeras semillas, quitar los conflictos la baja de 4,46 % a 4,38 %
+  (0,08 puntos, más o menos 0,01) y el acceso medio de 1,96 a 1,93 min (está en
+  B2). El cierre de puerta de X6 cierra A-1 en t = -30 y la reabre en t = -20, y
+  quien espera la reapertura entra en orden de llegada (tests de incidents). Los
+  7,7, 5,9 y 7,1 min de la Parte 1 se contrastan en B2.
+
 ### 2026-11-25 · C → A, B · Reparación del merge de capacity/verificador
 **Estado:** en revisión en `feat/chema-fix-verify-capacity`.
 

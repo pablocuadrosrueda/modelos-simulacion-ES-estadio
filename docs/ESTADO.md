@@ -244,6 +244,14 @@ salidas, en las 17 de 180 réplicas que superan 8 min solo llega tarde una
 persona de movilidad reducida, sin cola; sin ese colectivo el vaciado no pasa de
 7,36 min. Con una salida bloqueada manda la cola en las salidas.
 
+**T6.3 en curso.** La parte de B de la memoria está en `docs/memoria_parte2/`,
+con la convención de A: `B1_modelo_implementado.md` (asiento, I1, I4, salida,
+evacuación, números aleatorios comunes e hipótesis), `B2_verificacion.md`
+(contraste con la Parte 1, casos límite y peso de los conflictos en la entrada
+tardía de X0) y `B3_respuestas_P5_P6_P8.md` (con sus figuras). Redactada como
+texto final, sin referencias internas (decisiones, tareas ni nombres de código).
+P7 la responde A3 y los cambios comunes respecto a la Parte 1 están en A1.
+
 **Siguiente: completar T6.2**, verificación/validación conjunta de A, B y C. Puede iniciarse
 ya con T5.3 fusionada. T6.3, memoria de resultados, depende de T6.1 y T6.2.
 **Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
