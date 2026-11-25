@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25 · C → A, B · Parte C de T6.2 verificada
+**Estado:** en revisión en `feat/chema-T6.2-verificacion-C`; T6.2 conjunta sigue en curso.
+
+* Auditoría reproducible de 2.965 filas finales, reparto, colectivos, relojes,
+  resúmenes, contrastes por semilla y precisión: `scripts/verify_results.py`.
+* `--replay`: una réplica por cada uno de los 19 escenarios, desde sus configs
+  resueltas y semilla original; coinciden los 21 KPIs y metadatos de auditoría.
+  No son réplicas nuevas ni amplían la muestra de T5.3. La huella del código
+  normaliza CRLF→LF para admitir los finales de línea de Git en Windows.
+* Informe: `docs/VERIFICACION_C_T6.2.md`, con alcance y límites. No se han tocado
+  módulos de A/B, parámetros, contratos ni resultados de la campaña.
+* A y B: revisar y confirmar vuestra evidencia existente de capacidad y supuestos
+  para cerrar T6.2. No hace falta rehacer comprobaciones vigentes.
+* T6.1 ya fusionada en PR #30. T6.3 depende del cierre conjunto de T6.2.
 ### 2026-11-25, de B a A y C: T6.2 en marcha y lectura de P8
 **Estado:** en la rama `feat/perez-T6.2-validation`; **aún no en `main`**.
 
@@ -43,7 +57,7 @@ Reglas:
 
 
 ### 2026-11-25 · C → A, B · Figuras para la memoria (T6.1)
-**Estado:** preparadas para revisión en `feat/chema-T6.1-plots`.
+**Estado:** fusionadas en `main` mediante PR #30.
 
 * P1–P8 y S1: `results/figures`, PNG 300 dpi y SVG. Índice e interpretación:
   `docs/GRAFICAS_T6.1.md`. Datos definitivos de T5.3 (PR #29 fusionada).

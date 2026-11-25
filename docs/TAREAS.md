@@ -90,6 +90,18 @@ Inc1 completo: T1.1–T1.7 fusionadas en los PR #1, #2, #4, #6, #3, #9 y #10.
 | T6.2 | Verificación/validación: casos límite (ρ > 1 con 2 tornos), ritmo por torno vs F2, capacidad | A, B, C | A: en revisión (`feat/cuadros-T6.2-verificacion`); B, C: pendiente | T5.3 |
 | T6.3 | Memoria Parte 2 (resultados y respuestas a P1–P8) | A, B, C | pendiente | T6.1, T6.2 |
 
+### Seguimiento de T6.2 por rol
+
+La tarea conjunta sigue **en curso**; no se cierra solo con la parte C.
+
+| Rol | Estado de su parte | Evidencia / pendiente |
+|---|---|---|
+| C · Chema | en revisión | Auditoría de las tablas de T5.3 y reproducción de 19 réplicas; `docs/VERIFICACION_C_T6.2.md` y `scripts/verify_results.py` |
+| A · Pablo Cuadros | pendiente de revisión final | Confirmar vigencia de la evidencia de entrada: ρ>1 con dos tornos, ritmo por torno/F2 y capacidad (`docs/VERIFICACION.md`) |
+| B · Pablo Pérez | pendiente de revisión final | Confirmar capacidad y supuestos de vomitorios, acomodadores, salida y evacuación; evidencia existente en tests y `docs/VERIFICACION.md` |
+
+T6.3 espera al cierre conjunto de T6.2; T6.1 ya está fusionada (PR #30).
+
 ## Prompts de arranque de Inc1
 
 Cada persona abre su sesión de agente en su clon y pega el prompt de su rol.
