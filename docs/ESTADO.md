@@ -2,6 +2,7 @@
 
 _Última actualización: 2026-11-25. `main` contiene Inc0 a Inc5 completos
 (T5.3 fusionada en PR #29). T6.1 fusionada en PR #30; parte C de T6.2 en revisión._
+(T5.3 fusionada en PR #29) y T6.1 (PR #30). T6.2, parte de A, en revisión._
 
 ## Hecho
 
@@ -138,6 +139,25 @@ la protección de `main` exigiendo esos checks.
   espectador al evacuar; resultados idénticos. Sin más cuellos de botella en los
   módulos de B.
 
+**Inc6: en curso.**
+
+* T6.2, parte de A (en revisión; rama `feat/cuadros-T6.2-verificacion`):
+  entrada y capacidad contrastadas con `results/final` **sin regenerar datos**
+  (`scripts/validate_final.py`, `tests/test_validacion_entrada.py`, resultados en
+  `docs/VERIFICACION.md`). Cuadran con la memoria: E[S] 4,3 s (I2 3,001 ± 0,011 %),
+  disponibilidad 97,4 % (I3 60,1 ± 1,0 averías frente a 59,4), 13,54 pers/min
+  medidos con cola frente a 13,59, ρ = 0,70 / 0,93 / 1,40, repartos por zona,
+  franja y grupo (χ², p ≥ 0,2), conservación en las 2.965 réplicas y números
+  comunes (KPIs de entrada idénticos semilla a semilla). Nuevo modelo fluido en
+  `capacity.py`: reproduce la espera de X1_2tornos (3,83 frente a 4,02 ± 0,08 min;
+  P95 11,76 frente a 11,9) y del cierre X6 (9,66 frente a 9,63 ± 0,12 sin
+  redirección; 0,59 frente a 0,54 con ella). Casos límite: la espera crece a
+  ρ − 1 con 2 tornos, plana con 4, y cierre en −30 con/sin redirección.
+  `busy_rate_per_turnstile` pasa a `capacity.py` (estaba duplicada en el test y
+  el script de T2.1). No cambia ningún parámetro, hipótesis ni dato de
+  `results/final`. Pendiente de B y C, listado en VERIFICACION: salida 7,7 min,
+  evacuación 5,9/7,1 min, dispersión de I1, KPIs de C.
+
 ## Siguiente paso
 
 T5.3 terminada y fusionada en PR #29.
@@ -190,6 +210,9 @@ Informe y límites: `docs/VERIFICACION_C_T6.2.md`. No se alteran modelo ni datos
 de capacidad y supuestos de sus módulos (`docs/VERIFICACION.md`). No se da
 por cerrada su parte. T6.3 (memoria) depende del cierre conjunto de T6.2; las
 figuras de T6.1 ya están en main.
+**Siguiente: T6.2**, verificación/validación conjunta. Parte de A en revisión;
+B y C tienen su lista en `docs/VERIFICACION.md` («Pendiente de B y C»). T6.3,
+memoria de resultados, depende de T6.1 y T6.2.
 En la Parte 2 se justifican X6 en −30 (D31), X5 con nueve (D33), los tamaños
 necesarios por precisión (D34) y ρ anticipado=0,81 de la verificación de A.
 I3 conserva D25: se cuentan todas las incidencias registradas, no solo las que
@@ -223,6 +246,10 @@ fallo no sobrescriba el informe. Se normaliza CRLF→LF al verificar el código
 para admitir el checkout de Windows sin ocultar cambios reales. Reproducidos
 realmente los 19 escenarios, una semilla cada uno, con los 21 KPIs y metadatos de auditoría coincidentes.
 
+T6.2, parte de A (2026-11-25, Python 3.13.2): `make check`, 434 passed y 2
+skipped (lentos opcionales; con `RUN_SLOW=1` pasan, incluida la réplica que
+reproduce `kpis.csv`), lint y docs-check limpios. `git diff` sin cambios en
+`results/`.
 
 T6.1 (2026-11-25, Python 3.12): `make check`, 407 passed y 1 skipped
 (prueba lenta opcional de capacidad), lint y docs-check limpios. Siete pruebas
@@ -260,6 +287,12 @@ de T3.3/T3.4; el PR #23 recoge también el arreglo de contexto del equipo.
 * Verificación de A: el pico real anticipado da ρ≈0,81, no 0,65 como decía la
   Parte 1. Corregir el texto; capacidad pura de salida ≈7,7 min y simulación
   añade marcha/cola. No se modifican parámetros por esa diferencia.
+* T6.2 (A): correcciones del PDF de la Parte 2 en `docs/VERIFICACION.md`
+  («Discrepancias»): ρ de X2 = 0,81; cierre I4 en −30 (D31); y matizar «la cola
+  crece sin parar» con 2 tornos (crece durante la punta y se vacía después).
+* Duda abierta (T6.2): §6 pide que el ritmo por torno coincida con F2. El modelo
+  da 13,6 pers/min, igual al derivado de los parámetros de la memoria, pero la
+  cifra publicada en F2 no está en el repo: contrastarla al redactar la Parte 2.
 
 Resueltas el 2026-11-20 (ver `docs/DECISIONES.md`): reparto de roles (arriba),
 I2/I3 en `entry.py` (D8), utilización de tornos (D12), puerta cerrada sin

@@ -13,7 +13,6 @@ import time
 from typing import Any
 
 import numpy as np
-import pandas as pd
 import pytest
 
 from sanmames import capacity as cap
@@ -105,33 +104,6 @@ def zone_cfg(turnstiles: int, incidents: dict[str, Any] = ALL_X0, **extra: Any) 
     )
 
 
-def busy_rate_per_turnstile(df: pd.DataFrame, cfg: Config, min_len: float = 5.0) -> float:
-    """Servicios por torno y minuto mientras hay cola en la puerta.
-
-    Une los intervalos ``[t_arrival, t_start_control)`` con espera de cada puerta y
-    cuenta los fines de control dentro. Solo periodos de cola de ``min_len`` min o
-    más: en los cortos domina el efecto de borde (cada periodo acaba en un fin).
-    """
-    done, busy = 0, 0.0
-    for _, d in df.groupby(["zone", "gate_used"]):
-        waits = sorted(
-            (a, b) for a, b in zip(d.t_arrival, d.t_start_control, strict=True) if b - a > 1e-9
-        )
-        merged: list[list[float]] = []
-        for a, b in waits:
-            if merged and a <= merged[-1][1]:
-                merged[-1][1] = max(merged[-1][1], b)
-            else:
-                merged.append([a, b])
-        ends = np.sort(d.t_end_control.to_numpy())
-        for a, b in merged:
-            if b - a >= min_len:
-                busy += b - a
-                done += int(np.searchsorted(ends, b) - np.searchsorted(ends, a, side="right"))
-    assert busy > 0, "no hay periodos de cola largos"
-    return done / (busy * cfg.turnstiles_per_gate)
-
-
 def test_zone_and_group_shares() -> None:
     cfg = load_config(overrides={"n_spectators": 4000})
     df = run_replica(cfg, SEEDS[0])
@@ -148,7 +120,7 @@ def test_service_rate_with_queue_matches_theory(incidents: dict[str, Any]) -> No
     """Con 2 tornos (ρ > 1) hay cola sostenida: el ritmo observado ≈ el teórico."""
     cfg = zone_cfg(2, incidents)
     theory = cap.capacity_per_turnstile_min(cfg)
-    rates = [busy_rate_per_turnstile(run_replica(cfg, s), cfg) for s in SEEDS[:2]]
+    rates = [cap.busy_rate_per_turnstile(run_replica(cfg, s), cfg) for s in SEEDS[:2]]
     assert np.mean(rates) == pytest.approx(theory, rel=0.03)
 
 
