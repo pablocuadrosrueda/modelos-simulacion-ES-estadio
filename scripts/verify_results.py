@@ -362,8 +362,6 @@ def render_report(result: dict) -> str:
             "(se excluye capacity.py, comprobación analítica independiente), "
             "normalizando CRLF a LF "
             "para permitir la conversión de finales de línea de Git en Windows. "
-            "Se excluye `src/sanmames/capacity.py`: es un módulo de análisis que no "
-            "importa ningún módulo de la simulación ni de los KPIs. "
             "Una réplica por escenario, comprobada individualmente: IDs 0..N−1 sin duplicados, "
             "terminación mediante `audit_replica`, orden de entrada/asiento, todos los KPIs "
             "y metadatos de auditoría coincidentes. Tolerancia numérica: rtol=1e-9, atol=1e-8 "

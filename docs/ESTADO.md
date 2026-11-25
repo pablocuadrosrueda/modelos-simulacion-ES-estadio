@@ -286,6 +286,15 @@ por ramas/PR separados, sin fusionarlos directamente.
 
 ## Verificación
 
+Reparación de integración (2026-11-25): PR #37 dejó un `if` y un `with`
+sin cuerpo al combinar las correcciones de A y C de `capacity.py`. Se conserva
+una sola condición basada en `ANALYSIS_ONLY`, se completa el test del runner y
+se mantienen las regresiones de ambos roles. `capacity.py` y los datos finales
+no se modifican. Informe de reproducción regenerado con la exclusión explícita.
+Validación: 453 passed y 2 skipped (lentas opcionales), lint/docs-check limpios;
+19 escenarios reproducidos con los 21 KPIs coincidentes.
+
+
 T6.3 C (2026-11-25): `make check`, 450 passed y 2 skipped (capacidad y réplica
 completa lentas opcionales), lint y docs-check limpios. PDF de 11 páginas
 revisado visualmente y cifras contrastadas

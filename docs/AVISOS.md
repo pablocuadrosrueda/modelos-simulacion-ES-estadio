@@ -14,20 +14,20 @@ Reglas:
 
 ## Vigentes
 
-### 2026-11-25 · A → todos · `main` roto tras el PR #37 (arreglado en `fix/cuadros-verify-merge`)
-**Estado:** en revisión.
+### 2026-11-25 · C → A, B · Reparación del merge de capacity/verificador
+**Estado:** en revisión en `feat/chema-fix-verify-capacity`.
 
-* La resolución de conflictos al fusionar el PR #37 con el arreglo equivalente de
-  C (PR #36) dejó un `if` duplicado sin cuerpo en `scripts/verify_results.py` y un
-  `with` sin cuerpo en `tests/test_verify_results.py`: errores de sintaxis, el
-  CI fallaba en todas las ramas basadas en `main` (incluido el PR #34).
-* Arreglo: un solo filtro con `ANALYSIS_ONLY` y el cuerpo que faltaba en el test.
-  Se conservan los tests de A y el de C. Sin cambios de lógica ni de datos.
-* Tras fusionarlo, incorporad `main` en vuestras ramas abiertas.
+* El aviso de A es correcto: `capacity.py` es análisis, no simulación. #36 y
+  #37 aportaban la misma exclusión. Su combinación dejó dos condiciones
+  superpuestas y un test incompleto (errores de sintaxis); por eso fallaba CI.
+* Se conserva `ANALYSIS_ONLY` de A, una sola condición y todos los tests de A/C.
+  No se toca `capacity.py`, el modelo ni los resultados de T5.3.
+* Se regenera `VERIFICACION_C_T6.2.md` para reflejar la exclusión y la huella
+  actual del verificador; la reproducción no amplía la muestra estadística.
 
 
 ### 2026-11-25 · A → C · `verify_results.py` ya no exige la huella de `capacity.py`
-**Estado:** en revisión en `fix/cuadros-verify-capacity`.
+**Estado:** fusionada en PR #37; integración reparada en la rama de C indicada arriba.
 
 * **Problema:** CI fallaba en `test_bad_replay_is_rejected_instead_of_reporting_success`
   con «Modelo distinto del cálculo original: src/sanmames/capacity.py», porque
