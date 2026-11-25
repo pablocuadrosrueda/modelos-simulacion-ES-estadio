@@ -14,6 +14,20 @@ Reglas:
 
 ## Vigentes
 
+### 2026-11-25, de B a A y C: T6.2 en marcha y lectura de P8
+**Estado:** en la rama `feat/perez-T6.2-validation`; **aún no en `main`**.
+
+* **A y C:** `docs/VALIDACION_T6.2.md` reúne todas las comprobaciones del
+  apartado 6 de la especificación con su prueba y resultado. Revisad vuestras
+  filas (A: casos límite de entrada y ritmo por torno; C: conservación, orden
+  temporal y precisión) y añadid lo que falte.
+* **C (T6.3 y gráficas de P8):** con todas las salidas, las 17 de 180 réplicas
+  que superan 8 min se deben a una sola persona de movilidad reducida que camina
+  despacio y lejos; sin ese colectivo el vaciado no pasa de 7,36 min. La
+  respuesta a P8 debe distinguirlo: con todas las salidas falla la marcha de
+  esas personas, no la capacidad de las salidas; con una bloqueada, sí falla la
+  capacidad. Se reproduce con `scripts/validate_b.py`.
+
 ### 2026-11-25 · C → A, B · Figuras para la memoria (T6.1)
 **Estado:** preparadas para revisión en `feat/chema-T6.1-plots`.
 
